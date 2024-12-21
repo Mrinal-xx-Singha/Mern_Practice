@@ -15,6 +15,7 @@ export const addToCart = async (req, res) => {
   const { productId, quantity } = req.body;
   try {
     const cartItem = new Cart({ productId, quantity });
+    await cartItem.save();
     res.status(201).json(cartItem);
   } catch (error) {
     res.status(400).json({ message: "Error adding to cart" });
