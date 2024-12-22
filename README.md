@@ -96,9 +96,10 @@ Pushing the boundaries with cutting-edge features and scalability.
 ## 🎯 **Want to Collaborate?**
 I'm always open to collaboration and feedback! If you have any suggestions or want to work together on a project, feel free to reach out. Let's build something amazing! 💻✨
 
-**Email**: mrinalsingha17@gmail.com
-**LinkedIn**: [https://www.linkedin.com/in/mrinal-singha/]()
+[**Email**](mrinalsingha17@gmail.com)
 
-**Portfolio**: [https://next-folio-bay.vercel.app/]()
+[**Linked In**](https://www.linkedin.com/in/mrinal-singha/)
+
+[**Portfolio**](https://next-folio-bay.vercel.app/)
 
 ---
