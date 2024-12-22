@@ -18,7 +18,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <div className="min-h-screen bg-gray-100 py-8 font-poppins-regular">
       <div className="container mx-auto px-4 text-center">
         <h1 className="text-5xl font-bold text-gray-800 mb-6">
           Welcome to QuickCart
@@ -75,14 +75,6 @@ const Home = () => {
                   <p className="text-lg font-semibold text-blue-600">
                     ${product.price}
                   </p>
-                </div>
-                <div className="p-4 border-t">
-                  <Link
-                    to={`/products/${product.id}`}
-                    className="text-blue-500 font-medium hover:underline"
-                  >
-                    View Details
-                  </Link>
                 </div>
               </div>
             ))}
