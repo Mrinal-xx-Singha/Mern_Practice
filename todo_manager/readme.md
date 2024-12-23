@@ -63,12 +63,12 @@ A simple and intuitive task management application built using the **MERN Stack*
 3. **Start the development server**:  
    - Start the backend:  
      ```bash  
-     cd frontend  
+     cd backend  
      npm run dev  
      ```  
    - Start the frontend:  
      ```bash  
-     cd backend  
+     cd frontend  
      npm run dev  
      ```  
 
