@@ -34,7 +34,7 @@ app.get("/tasks", async (req, res) => {
 });
 
 //Create a task
-app.get("/tasks", async (req, res) => {
+app.post("/tasks", async (req, res) => {
   const task = new Task(req.body);
   await task.save();
   res.json(task);
@@ -48,6 +48,7 @@ app.put("/tasks/:id", async (req, res) => {
   res.json(task);
 });
 
+// Delete a Task
 app.delete("/tasks/:id", async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);
   res.json({ message: "Task deleted successfully" });
