@@ -1,124 +1,144 @@
-require("dotenv").config();
+// Importing required modules
 const express = require("express");
-const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 const cors = require("cors");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const connectDB = require("./utils/db");
 
+const Blog = require("./models/blog.model");
 const User = require("./models/user.model");
 
+const connectDB = require("./utils/db");
+// Initializing dotenv
+dotenv.config();
 
-const {authenticateToken} = require('./utils/utils')
+// Constants
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET;
 
+// Initializing express app
 const app = express();
 
 // Middleware
+app.use(cors());
 app.use(express.json());
-app.use(cors({ origin: "*" }));
 
 // Routes
 
-//Create user account
-app.post("/create-account", async (req, res) => {
-  const { fullName, email, password } = req.body;
-
-  if (!fullName || !email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
+// User registration
+app.post("/api/register", async (req, res) => {
+  const { username, email, password } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword });
+    await newUser.save();
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error registering user", details: err.message });
   }
-  const isUser = await User.findOne({ email });
-  if (isUser) {
-    return res.status(400).json({ message: "User already exists" });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = new User({
-    fullName,
-    email,
-    password: hashedPassword,
-  });
-  await user.save();
-  const accessTOken = jwt.sign(
-    { userId: user._id },
-    process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: "72h",
-    }
-  );
-
-  return res.status(201).json({
-    user: { fullName: user.fullName, email: user.email },
-    accessTOken,
-    message: "Registration Successfull",
-  });
 });
 
-// Login
-app.post("/login", async (req, res) => {
+// User login
+app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and Password are required" });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid)
+      return res.status(401).json({ error: "Invalid credentials" });
+
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    res.status(200).json({ token });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error logging in user", details: err.message });
   }
-  const user = await User.findOne({ email });
-
-  //check user exists or not
-  if (!user) {
-    return res.status(400).json({ message: "User not found " });
-  }
-
-  // Check password
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-    return res.status(400).json({ message: "Invalid Credentials" });
-  }
-
-  // accessToken  
-  const accessToken = jwt.sign(
-    { userId: user._id },
-    process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: "72h",
-    }
-  );
-  return res.json({
-    message: "Login Successful",
-    user: { fullName: user.fullName, email: user.email },
-    accessToken,
-  });
 });
 
-// Get User
-app.get('/get-user',authenticateTokens,async(req,res)=>{
-  const {userId} = req.user
-
-  const isUser = await User.findOne({_id: userId})
-
-  if(!isUser){
-    return res.sendStatus(401)
+// Create a blog post
+app.post("/api/blogs", async (req, res) => {
+  const { title, content, author } = req.body;
+  try {
+    const newBlog = new Blog({ title, content, author });
+    await newBlog.save();
+    res
+      .status(201)
+      .json({ message: "Blog created successfully", blog: newBlog });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error creating blog", details: err.message });
   }
-  return res.json({
-    user:isUser,
-    message:''
-  })
+});
 
-})
+// Fetch all blogs
+app.get("/api/blogs", async (req, res) => {
+  try {
+    const blogs = await Blog.find().populate("author", "username email");
+    res.status(200).json(blogs);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error fetching blogs", details: err.message });
+  }
+});
 
+// Fetch a specific blog by ID
+app.get("/api/blogs/:id", async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate(
+      "author",
+      "username email"
+    );
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+    res.status(200).json(blog);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error fetching blog", details: err.message });
+  }
+});
 
-// Add Travel Story
-app.get('/add-travel',async(req,res)=>{
+// Update a blog post
+app.put("/api/blogs/:id", async (req, res) => {
+  const { title, content } = req.body;
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      { title, content, updatedAt: Date.now() },
+      { new: true }
+    );
+    if (!updatedBlog) return res.status(404).json({ error: "Blog not found" });
+    res
+      .status(200)
+      .json({ message: "Blog updated successfully", blog: updatedBlog });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error updating blog", details: err.message });
+  }
+});
 
+// Delete a blog post
+app.delete("/api/blogs/:id", async (req, res) => {
+  try {
+    const deletedBlog = await Blog.findByIdAndDelete(req.params.id);
+    if (!deletedBlog) return res.status(404).json({ error: "Blog not found" });
+    res.status(200).json({ message: "Blog deleted successfully" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error deleting blog", details: err.message });
+  }
+});
 
-})
-
-
-
-
-
-// Define the PORT with a default value
-const PORT = process.env.PORT;
-
-// Start the server
+// Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectDB();
