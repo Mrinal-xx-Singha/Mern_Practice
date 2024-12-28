@@ -43,7 +43,7 @@ export const getAllProducts = async (req, res) => {
 };
 
 // Update controller
-export const updateProducts = async (req,res) => {
+export const updateProducts = async (req, res) => {
   const { id } = req.params;
   const product = req.body;
 
