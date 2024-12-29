@@ -9,7 +9,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
       <Header />
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<CreatePage />} />
