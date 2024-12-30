@@ -24,6 +24,30 @@ export const createProduct = createAsyncThunk(
   }
 );
 
+export const deleteProduct = createAsyncThunk(
+  "products/deleteProduct",
+  async (id, { rejectWithValue }) => {
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      return id; //Return the deleted product's ID
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  "products/updateProduct",
+  async ({ id, product }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`${API_URL}/${id}`, product);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "products",
   initialState: { products: [], loading: false, error: null },
@@ -31,6 +55,7 @@ const productSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Fetch Products
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
       })
@@ -52,6 +77,36 @@ const productSlice = createSlice({
         state.products.push(action.payload);
       })
       .addCase(createProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //  Delete Product
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = state.products.filter((p) => p._id !== action.payload);
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Update Product
+      .addCase(updateProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.products.findIndex(
+          (product) => product._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { createProduct } from "../features/products/productSlice.js";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const CreatePage = () => {
   const dispatch = useDispatch();
@@ -11,6 +12,9 @@ const CreatePage = () => {
     price: "",
     image: "",
   });
+
+  // Navigate to home page after product is created
+  const navigate = useNavigate();
 
   const handleAddProduct = () => {
     if (!newProduct.name || !newProduct.price || !newProduct.image) {
@@ -22,6 +26,7 @@ const CreatePage = () => {
       ? toast.success("Product added successfully")
       : null;
     setNewProduct({ name: "", price: "", image: "" });
+    navigate("/");
   };
 
   return (
