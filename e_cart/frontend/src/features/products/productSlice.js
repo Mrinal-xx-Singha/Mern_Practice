@@ -38,12 +38,12 @@ export const deleteProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
-  async ({ id, product }, { rejectWithValue }) => {
+  async ({ id, updatedData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${API_URL}/${id}`, product);
+      const response = await axios.put(`${API_URL}/${id}`, updatedData);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response.data.message);
+      return rejectWithValue(error.response?.data?.message || "Failed to update product");
     }
   }
 );

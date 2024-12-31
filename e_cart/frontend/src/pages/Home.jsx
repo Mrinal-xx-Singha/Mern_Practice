@@ -13,6 +13,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    console.log(dispatch(fetchProducts()));
   }, [dispatch]);
 
   // Function to delete Product
@@ -24,9 +25,16 @@ const Home = () => {
     toast.success("Product deleted Successfully"),
   ];
 
+  const formatDate = function (date) {
+    const formattedDate = new Date(date).toLocaleDateString("en-US");
+    return <>{formattedDate}</>;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-4 text-center">All Products</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center uppercase">
+        All Products
+      </h2>
       {/* Display Products */}
       {loading && (
         <p className="text-center font-bold text-gray-500 text-xl">
@@ -51,16 +59,29 @@ const Home = () => {
             key={product._id}
             className="p-4 border rounded-md shadow-md flex flex-col items-center"
           >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-40 object-cover rounded-md mb-4 "
-            />
-            <h3 className="text-lg font-bold">{product.name}</h3>
-            <p className="text-gray-600">₹ {product.price}</p>
+            <div className="w-full h-44 overflow-hidden rounded-md mb-4">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform transform hover:scale-110"
+              />
+            </div>
+
+            <div className="flex flex-col w-full flex-1 justify-center items-baseline gap-3 ">
+              <h3 className="text-lg font-bold">Name: {product.name}</h3>
+              <p className="text-gray-700 font-bold">
+                <span className="text-orange-500 font-bold">Price:</span> ₹{" "}
+                {product.price}
+              </p>
+
+              <p className="text-sm text-gray-500 mb-2">
+                <span className="text-[#cfb5fc] font-bold"> Date:</span>
+                {formatDate(product.updatedAt)}
+              </p>
+            </div>
             <div className="flex justify-between items-center w-full">
               <Link to={`/update/${product._id}`}>
-                <button className="mt-2 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700">
+                <button className="mt-2 px-4 py-2 bg-[#386868]  text-white text-bold rounded-md hover:bg-[#315c5c]">
                   Update
                 </button>
               </Link>

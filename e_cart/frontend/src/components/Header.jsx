@@ -8,7 +8,7 @@ const Header = () => {
       <div className="flex items-center justify-between">
         {/* Logo Section */}
         <Link to="/">
-          <h1 className="text-3xl font-extrabold tracking-wide text-blue-600 dark:text-blue-400 uppercase">
+          <h1 className="text-3xl font-extrabold tracking-wide text-[#18568f] dark:text-[#0b3963] uppercase">
             Swift Cart
           </h1>
         </Link>
