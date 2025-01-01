@@ -30,12 +30,12 @@ const CreatePage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 h-[90vh]">
       <div className="w-full max-w-lg  p-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl ">
         <h1 className="text-2xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-6  uppercase">
           Add a New Product
         </h1>
-        <form className="space-y-6 " onSubmit={(e) => e.preventDefault()}>
+        <form className="sm:space-y-4 md:space-y-5 lg:space-y-6 " onSubmit={(e) => e.preventDefault()}>
           {/* Product Name */}
           <div>
             <label
