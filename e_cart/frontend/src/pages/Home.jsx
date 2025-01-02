@@ -8,7 +8,9 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import SortFeature from "../components/SortFeature";
-import { Trash, SquarePen } from "lucide-react";
+import { Trash, SquarePen, Heart } from "lucide-react";
+
+import { addToWishlist } from "../features/products/productSlice";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -57,6 +59,11 @@ const Home = () => {
     return new Date(date).toLocaleDateString("en-US");
   };
 
+  const handleAddToWishList = (product) => {
+    dispatch(addToWishlist(product));
+    toast.success(`${product.name}  added to wishlist!`);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold mb-6 text-center uppercase text-gray-800">
@@ -91,6 +98,7 @@ const Home = () => {
             key={product._id}
             className="p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-white"
           >
+            {/* Product image */}
             <div className="w-full h-44 overflow-hidden rounded-md mb-4">
               <img
                 src={product.image}
@@ -99,6 +107,7 @@ const Home = () => {
               />
             </div>
 
+            {/* Product Details */}
             <div className="flex flex-col w-full flex-1 justify-center gap-2 mb-4">
               <h3 className="text-lg font-bold text-gray-800">
                 Name: {product.name}
@@ -120,6 +129,13 @@ const Home = () => {
                   <SquarePen />
                 </button>
               </Link>
+              {/* Wishlist */}
+              <button
+                onClick={() => handleAddToWishList(product)}
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+              >
+                <Heart />
+              </button>
 
               <button
                 onClick={() => handleDeleteProduct(product._id)}

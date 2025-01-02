@@ -43,16 +43,51 @@ export const updateProduct = createAsyncThunk(
       const response = await axios.put(`${API_URL}/${id}`, updatedData);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to update product");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update product"
+      );
     }
   }
 );
 
+// Helper function to manage localStorage
+const loadFromLocalStorage = (key) => {
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : [];
+};
+
+const saveToLocalStorage = (key, value) => [
+  localStorage.setItem(key, JSON.stringify(value)),
+];
+
 const productSlice = createSlice({
   name: "products",
-  initialState: { products: [], loading: false, error: null },
+  // Load initial wishlist from localStorage
+  initialState: {
+    products: [],
+    wishlist: loadFromLocalStorage("wishlist"),
+    loading: false,
+    error: null,
+  },
 
-  reducers: {},
+  reducers: {
+    addToWishlist: (state, action) => {
+      const product = action.payload;
+      const isAlreadyInWishlist = state.wishlist.some(
+        (item) => item._id === product._id
+      );
+      if (!isAlreadyInWishlist) {
+        state.wishlist.push(product);
+        saveToLocalStorage("wishlist", state.wishlist); // save updated wishlist to localStorage
+      }
+    },
+    removeFromWishlist: (state, action) => {
+      state.wishlist = state.wishlist.filter(
+        (item) => item._id !== action.payload
+      );
+      saveToLocalStorage('wishlist',state.wishlist) //Save updated wishlist to localStorage
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Fetch Products
@@ -112,5 +147,7 @@ const productSlice = createSlice({
       });
   },
 });
+
+export const { addToWishlist, removeFromWishlist } = productSlice.actions;
 
 export default productSlice.reducer;

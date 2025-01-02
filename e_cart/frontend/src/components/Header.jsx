@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, Heart } from "lucide-react";
 
 const Header = () => {
   return (
@@ -16,9 +16,16 @@ const Header = () => {
         {/* Action Button Section */}
         <div className="flex items-center gap-4">
           <Link to="/create">
-            <button className="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg shadow-md transition-all">
+            <button className="flex items-center gap-2 px-4 py-2 text-white bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 rounded-lg shadow-md transition-all">
               <Plus className="w-5 h-5" />
               <span className="hidden sm:inline">Add Item</span>
+            </button>
+          </Link>
+
+          {/* WishList */}
+          <Link to="/wishlist">
+            <button className="flex items-center gap-2 px-4 py-2 text-black bg-gray-100  rounded-lg transition-all">
+              <Heart />
             </button>
           </Link>
         </div>
