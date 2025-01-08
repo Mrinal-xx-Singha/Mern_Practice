@@ -2,7 +2,7 @@ import React from "react";
 
 const SortFeature = ({ sortProducts }) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 px-4 py-2">
       <label htmlFor="sort" className="text-gray-700 font-medium">
         Sort By:
       </label>

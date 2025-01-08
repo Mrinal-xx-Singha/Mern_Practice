@@ -65,12 +65,49 @@ const productSlice = createSlice({
   // Load initial wishlist from localStorage
   initialState: {
     products: [],
+    cart: [],
+    totalCost: 0,
     wishlist: loadFromLocalStorage("wishlist"),
     loading: false,
     error: null,
   },
 
   reducers: {
+    addToCart: (state, action) => {
+      const product = action.payload;
+      const existingItem = state.cart.find((item) => item._id === product._id);
+
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        state.cart.push({ ...product, quantity: 1 });
+      }
+      state.totalCost = state.cart.reduce(
+        (item, total) => total + item.price * item.quantity,
+        0
+      );
+    },
+    removeFromCart: (state, action) => {
+      state.cart = state.cart.filter((item) => item._id !== action.payload);
+
+      state.totalCost = state.cart.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
+    },
+    updateQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const existingItem = state.cart.find((item) => item._id === id);
+
+      if (existingItem && quantity > 0) {
+        existingItem.quantity = quantity;
+      }
+      state.totalCost = state.cart.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
+    },
+
     addToWishlist: (state, action) => {
       const product = action.payload;
       const isAlreadyInWishlist = state.wishlist.some(
@@ -85,7 +122,7 @@ const productSlice = createSlice({
       state.wishlist = state.wishlist.filter(
         (item) => item._id !== action.payload
       );
-      saveToLocalStorage('wishlist',state.wishlist) //Save updated wishlist to localStorage
+      saveToLocalStorage("wishlist", state.wishlist); //Save updated wishlist to localStorage
     },
   },
   extraReducers: (builder) => {
@@ -148,6 +185,12 @@ const productSlice = createSlice({
   },
 });
 
-export const { addToWishlist, removeFromWishlist } = productSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  updateQuantity,
+  addToWishlist,
+  removeFromWishlist,
+} = productSlice.actions;
 
 export default productSlice.reducer;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Plus, Heart } from "lucide-react";
+import { Plus, Heart, ShoppingBagIcon } from "lucide-react";
 
 const Header = () => {
   return (
@@ -8,7 +8,7 @@ const Header = () => {
       <div className="flex items-center justify-between">
         {/* Logo Section */}
         <Link to="/">
-          <h1 className="text-3xl font-extrabold tracking-wide text-[#18568f] dark:text-[#0b3963] uppercase">
+          <h1 className="sm:text-xl  md:text-3xl font-extrabold tracking-wide text-[#18568f] dark:text-[#0b3963] uppercase">
             Swift Cart
           </h1>
         </Link>
@@ -26,6 +26,17 @@ const Header = () => {
           <Link to="/wishlist">
             <button className="flex items-center gap-2 px-4 py-2 text-black bg-gray-100  rounded-lg transition-all">
               <Heart />
+            </button>
+          </Link>
+
+          {/* Cart */}
+          <Link to="/cart">
+            <button
+              className="flex items-center gap-2 px-4 py-2
+           text-white bg-gray-700 rounded-lg transition-all"
+            >
+              <ShoppingBagIcon />
+              <span className="hidden sm:inline">Cart</span>
             </button>
           </Link>
         </div>

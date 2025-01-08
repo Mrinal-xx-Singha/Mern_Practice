@@ -9,7 +9,7 @@ const SearchBar = ({ searchProduct }) => {
   };
 
   return (
-    <div className="flex justify-center items-center mb-2 gap-2">
+    <div className="flex justify-center items-center mb-2 gap-2 px-4 py-2">
       <input
         type="text"
         placeholder="Search Product.."

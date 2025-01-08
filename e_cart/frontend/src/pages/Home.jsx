@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addToCart,
   deleteProduct,
   fetchProducts,
 } from "../features/products/productSlice";
@@ -8,7 +9,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import SortFeature from "../components/SortFeature";
-import { Trash, SquarePen, Heart } from "lucide-react";
+import { Trash, SquarePen, Heart, ShoppingCart } from "lucide-react";
 
 import { addToWishlist } from "../features/products/productSlice";
 
@@ -64,8 +65,13 @@ const Home = () => {
     toast.success(`${product.name}  added to wishlist!`);
   };
 
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+    toast.success(`${product.name} added to cart!`);
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-2">
       <h2 className="text-2xl font-bold mb-6 text-center uppercase text-gray-800">
         All Products
       </h2>
@@ -96,7 +102,7 @@ const Home = () => {
         {filteredProduct.map((product) => (
           <div
             key={product._id}
-            className="p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-white"
+            className="p-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white m-4"
           >
             {/* Product image */}
             <div className="w-full h-44 overflow-hidden rounded-md mb-4">
@@ -108,11 +114,21 @@ const Home = () => {
             </div>
 
             {/* Product Details */}
-            <div className="flex flex-col w-full flex-1 justify-center gap-2 mb-4">
-              <h3 className="text-lg font-bold text-gray-800">
-                Name: {product.name}
-              </h3>
-              <p className="text-gray-700 font-semibold">
+            <div className="flex flex-col justify-center gap-3 mb-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {product.name}
+                </h3>
+                {/* Wishlist */}
+                <button
+                  onClick={() => handleAddToWishList(product)}
+                  className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700"
+                >
+                  <Heart />
+                </button>
+              </div>
+
+              <p className="text-gray-700 font-medium">
                 <span className="text-orange-500 font-bold">Price:</span> ₹
                 {product.price}
               </p>
@@ -122,24 +138,25 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="flex justify-between items-center">
+            <div
+              className="flex justify-between items-center gap-2
+            "
+            >
+              <button
+                onClick={() => handleAddToCart(product)}
+                className="px-4 py-2  bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700 transition-all"
+              >
+                <ShoppingCart />
+              </button>
               <Link to={`/update/${product._id}`}>
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#386868] text-white font-bold rounded-md hover:bg-[#315c5c] transition-colors duration-200">
+                <button className="flex items-center gap-2 px-4 py-2 bg-[#386868] text-white text-sm font-medium rounded-md hover:bg-[#315c5c] transition-colors duration-200">
                   Update
                   <SquarePen />
                 </button>
               </Link>
-              {/* Wishlist */}
-              <button
-                onClick={() => handleAddToWishList(product)}
-                className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-              >
-                <Heart />
-              </button>
-
               <button
                 onClick={() => handleDeleteProduct(product._id)}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 transition-colors duration-200"
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors duration-200"
               >
                 <Trash />
               </button>
