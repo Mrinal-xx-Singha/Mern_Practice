@@ -10,7 +10,7 @@ import Cart from "./pages/Cart";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+    <div className="min-h-screen bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
       <Header />
       <main className="container mx-auto">
         <Routes>
