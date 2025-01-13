@@ -1,29 +1,27 @@
 const express = require("express");
 const app = express();
+const { adminAuth, loginAuth,userAuth } = require("./middlewares/auth");
 
-// only handle get calll to /user
-// app.get("/user", (req, res) => {
-//   res.send({ firstName: "Mrinal", lastName: "Singha" });
-// });
+// Handle auth middle ware for all request's
+app.use("/admin", adminAuth);
 
-app.get("/user",(req,res)=>{
-  console.log(req.query)
-  res.send({firstName:"Mrinal", lastName:"Singha"})
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All data sent");
+});
+
+app.get("/user",userAuth, (req, res) => {
+  res.send("User Data Saved");
+});
+app.get("/user/signup", userAuth,(req,res)=>{
+  res.send("User SignedUp successfully!!")
 })
 
-app.post("/user",(req,res)=>{
-  console.log('Save data to the database')
-  res.send("Data successfully saved to the database")
-})
+app.get("/login", loginAuth, (req, res) => {
+  res.send("User Logged in !!");
+});
 
-app.delete("/user",(req,res)=>{
-  res.send("Deleted Successfully")
-
-})
-
-// this will match all the http method api calls to /test
-app.use("/test", (req, res) => {
-  res.send("Hello from the server");
+app.get("/admin/deletUser", (req, res) => {
+  res.send("Deleted a user");
 });
 
 app.listen(5000, () => {
