@@ -14,6 +14,7 @@ app.post("/signup", async (req, res) => {
   //* creating a new user with the userObj data
   //* creating a new instance of the userModel
   const { firstName, lastName, emailId, password } = req.body;
+
   const user = new userModel({
     firstName,
     lastName,
@@ -61,17 +62,33 @@ app.delete("/user", async (req, res) => {
 });
 
 // Update data of the user
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
   const data = req.body;
 
   try {
-    await userModel.findByIdAndUpdate({ _id: userId }, data, {
+    const allowedUpdates = ["photoUrl", "about", "gender", "skills", "age"];
+
+    // Pure js
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      allowedUpdates.includes(k)
+    );
+
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed");
+    }
+
+    if (data.skills.length > 10) {
+      throw new Error("Skills cannot be more than 10 ");
+    }
+
+    const user = await userModel.findByIdAndUpdate({ _id: userId }, data, {
       runValidators: true,
     });
+    console.log(user);
     res.send("User updated successfully");
   } catch (error) {
-    res.status(400).send("Update Failed" + error.message);
+    res.status(400).send("Update Failed: " + error.message);
   }
 });
 
