@@ -27,7 +27,7 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.send("User Added Successfully!!");
   } catch (error) {
-    res.statusCode(400).send("Error saving the user: ", error.message);
+    res.status(400).send("Error saving the user: " + error.message);
   }
 });
 // Get all the users from the database API
@@ -63,13 +63,20 @@ app.delete("/user", async (req, res) => {
 
 // Update data of the user
 app.patch("/user/:userId", async (req, res) => {
-  const userId = req.params?.userId;
-  const data = req.body;
+  const userId = req.params?.userId; //Extract userId from params
+  const data = req.body; // Extract data from the request body
 
   try {
-    const allowedUpdates = ["photoUrl", "about", "gender", "skills", "age"];
+    const allowedUpdates = [
+      "photoUrl",
+      "about",
+      "gender",
+      "skill",
+      "age",
+    ];
 
     // Pure js
+    // Validate the all keys in `data` are allowed updates
     const isUpdateAllowed = Object.keys(data).every((k) =>
       allowedUpdates.includes(k)
     );
@@ -78,13 +85,18 @@ app.patch("/user/:userId", async (req, res) => {
       throw new Error("Update not allowed");
     }
 
-    if (data.skills.length > 10) {
+    if (data.skill && data.skill.length > 10) {
       throw new Error("Skills cannot be more than 10 ");
     }
 
-    const user = await userModel.findByIdAndUpdate({ _id: userId }, data, {
+    const user = await userModel.findByIdAndUpdate(userId, data, {
+      new: true,
       runValidators: true,
     });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
     console.log(user);
     res.send("User updated successfully");
   } catch (error) {
