@@ -1,7 +1,14 @@
 const express = require("express");
 require("dotenv").config();
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+
 const connectDB = require("./config/db");
+
 const userModel = require("./models/userModel");
+
+const { validateSignUpData } = require("./utils/validation");
+
 const app = express();
 
 // middleware
@@ -11,32 +18,72 @@ app.use(express.json());
 
 // Signup API
 app.post("/signup", async (req, res) => {
-  //* creating a new user with the userObj data
-  //* creating a new instance of the userModel
-  const { firstName, lastName, emailId, password } = req.body;
-
-  const user = new userModel({
-    firstName,
-    lastName,
-    emailId,
-    password,
-  });
-
+  // *creating a new instance of the userModel
+  // *validation of data
+  /**
+   * * encrypt password
+   * * then store password in the database
+   *
+   */
   //* always do try catch for async operation
   try {
+    // validatate the request
+    validateSignUpData(req);
+
+    const { firstName, lastName, emailId, password } = req.body;
+
+    // Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+    // console.log(passwordHash); // *$2b$10$tqSV3epZ1RTI64sE2jpmM.guOXx5.aaFiTV1BD9NyK/R6QJ8SqoMW
+
+    //* creating a new user with the userObj data
+    const user = new userModel({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
     await user.save();
     res.send("User Added Successfully!!");
   } catch (error) {
-    res.status(400).send("Error saving the user: " + error.message);
+    res.status(400).send("Error :" + error.message);
   }
 });
+
+// Login API
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+    if (!validator.isEmail(emailId)) {
+      throw new Error("Email not valid");
+    }
+    // find the user
+    const user = await userModel.findOne({ emailId: emailId });
+
+    // if user not present in the database
+
+    if (!user) {
+      throw new Error("Invalid Credentials");
+    }
+
+    const isPasswordValid = bcrypt.compare(password, user.password);
+
+    if (isPasswordValid) {
+      res.send("User Login Successfull !");
+    } else {
+      throw new Error("Invalid Credentials");
+    }
+  } catch (error) {
+    res.status(400).send("Error :" + error.message);
+  }
+});
+
 // Get all the users from the database API
 app.get("/feed", async (req, res) => {
   const singleEmail = req.body.emailId;
   try {
-    console.log(singleEmail);
     // const user = await userModel.find({});
-    const user = await userModel.findOne({ emailId: singleEmail });
+    const user = await userModel.findOne({});
     // if the length of user is zero handled error
     if (user.length === 0) {
       res.status(404).send("User not found");
@@ -67,13 +114,7 @@ app.patch("/user/:userId", async (req, res) => {
   const data = req.body; // Extract data from the request body
 
   try {
-    const allowedUpdates = [
-      "photoUrl",
-      "about",
-      "gender",
-      "skill",
-      "age",
-    ];
+    const allowedUpdates = ["photoUrl", "about", "gender", "skill", "age"];
 
     // Pure js
     // Validate the all keys in `data` are allowed updates
