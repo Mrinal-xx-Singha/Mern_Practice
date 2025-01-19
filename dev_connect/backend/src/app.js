@@ -2,14 +2,18 @@ const express = require("express");
 require("dotenv").config();
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const connectDB = require("./config/db");
 
 const userModel = require("./models/userModel");
+const { userAuth } = require("./middlewares/auth");
 
 const { validateSignUpData } = require("./utils/validation");
 
 const app = express();
+app.use(cookieParser());
 
 // middleware
 app.use(express.json());
@@ -69,10 +73,53 @@ app.post("/login", async (req, res) => {
     const isPasswordValid = bcrypt.compare(password, user.password);
 
     if (isPasswordValid) {
+      // * Create a jwt token
+
+      // * hide the user id and send a secretkey
+      const token = await jwt.sign({ _id: user._id }, "secret");
+      console.log(token);
+
+      // * Add the token to cookie and send the response back to the user
+
+      res.cookie("token", token);
       res.send("User Login Successfull !");
     } else {
       throw new Error("Invalid Credentials");
     }
+  } catch (error) {
+    res.status(400).send("Error :" + error.message);
+  }
+});
+
+//Profile Api
+app.get("/profile", userAuth, async (req, res) => {
+  try {
+    // const cookies = req.cookies;
+
+    // const { token } = cookies;
+
+    // if (!token) {
+    //   throw new Error("Invalid Token!");
+    // }
+
+    // * Validate my token
+
+    // const decodedMsg = await jwt.verify(token, "secret");
+    // console.log(decodedMsg);
+    // const { _id } = decodedMsg;
+
+    // console.log("Logged in user is :" + _id);
+
+    // const user = await userModel.findById(_id);
+    const user = req.user;
+    // if(!user){
+    //   throw new Error("Please log in!")
+    // }
+
+    // else please login redirect to login page
+
+    //! console.log(cookies);
+    res.send(user);
   } catch (error) {
     res.status(400).send("Error :" + error.message);
   }

@@ -1,41 +1,34 @@
-const adminAuth = (req, res, next) => {
-  // Auth method
-  // Logic for fetching all data
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/userModel");
 
-  const token = "xyz";
-  const isAdminAutorized = token === "xyz";
+const userAuth = async (req, res, next) => {
+  // * Read the token from the request cookies
+  // * validate the token
+  //  * Find the user
 
-  if (!isAdminAutorized) {
-    res.status(401).send("Unauthorized request");
-  } else {
+  try {
+    const { token } = req.cookies;
+
+    if (!token) {
+      throw new Error("Token is not valid!!!");
+    }
+
+    // Decode the the data
+    const decodedObj = await jwt.verify(token, "secret");
+
+    const { _id } = decodedObj;
+
+    const user = await userModel.findById(_id);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    req.user = user;
     next();
+  } catch (error) {
+    res.status(404).send("Error:" + error.message);
   }
 };
 
-const userAuth = (req, res, next) => {
-  // Auth method
-  // Logic for fetching all data
-
-  const token = "xyz";
-  const isAdminAutorized = token === "xyz";
-
-  if (!isAdminAutorized) {
-    res.status(401).send("Unauthorized request");
-  } else {
-    next();
-  }
-};
-
-const loginAuth = (req, res, next) => {
-  //
-  const token = "login";
-  const isLogin = token === "login";
-
-  if (!isLogin) {
-    res.status(401).send("Not logged in please login");
-  } else {
-    next();
-  }
-};
-
-module.exports = { adminAuth, loginAuth, userAuth };
+module.exports = { userAuth };
