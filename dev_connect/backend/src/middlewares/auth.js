@@ -14,7 +14,7 @@ const userAuth = async (req, res, next) => {
     }
 
     // Decode the the data
-    const decodedObj = await jwt.verify(token, "secret");
+    const decodedObj = await jwt.verify(token, "secret", { expiresIn: "7d" });
 
     const { _id } = decodedObj;
 

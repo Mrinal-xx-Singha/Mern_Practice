@@ -125,71 +125,9 @@ app.get("/profile", userAuth, async (req, res) => {
   }
 });
 
-// Get all the users from the database API
-app.get("/feed", async (req, res) => {
-  const singleEmail = req.body.emailId;
-  try {
-    // const user = await userModel.find({});
-    const user = await userModel.findOne({});
-    // if the length of user is zero handled error
-    if (user.length === 0) {
-      res.status(404).send("User not found");
-    } else {
-      // send all  the users back
-      res.status(200).send(user);
-    }
-  } catch (err) {
-    res.status(400).send("Something went wrong");
-  }
-});
-
-// Delete a user
-app.delete("/user", async (req, res) => {
-  const userId = req.body.UserId;
-  try {
-    await userModel.findByIdAndDelete(userId);
-    res.status(200).json({ message: "User deleted successfully!!" });
-  } catch (error) {
-    console.log("Error occured on deleting the user", error.message);
-    res.status(400).send("Something went wrong ");
-  }
-});
-
-// Update data of the user
-app.patch("/user/:userId", async (req, res) => {
-  const userId = req.params?.userId; //Extract userId from params
-  const data = req.body; // Extract data from the request body
-
-  try {
-    const allowedUpdates = ["photoUrl", "about", "gender", "skill", "age"];
-
-    // Pure js
-    // Validate the all keys in `data` are allowed updates
-    const isUpdateAllowed = Object.keys(data).every((k) =>
-      allowedUpdates.includes(k)
-    );
-
-    if (!isUpdateAllowed) {
-      throw new Error("Update not allowed");
-    }
-
-    if (data.skill && data.skill.length > 10) {
-      throw new Error("Skills cannot be more than 10 ");
-    }
-
-    const user = await userModel.findByIdAndUpdate(userId, data, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-    console.log(user);
-    res.send("User updated successfully");
-  } catch (error) {
-    res.status(400).send("Update Failed: " + error.message);
-  }
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+  const user = req.user;
+  res.status(200).send(user.firstName + "Sent the connection request");
 });
 
 connectDB()
