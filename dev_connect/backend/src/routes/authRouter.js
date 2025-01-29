@@ -1,11 +1,11 @@
 const express = require("express");
 const authRouter = express.Router();
 const userModel = require("../models/userModel");
-const validator = require("validator")
+const validator = require("validator");
 const { validateSignUpData } = require("../utils/validation");
 const bcrypt = require("bcrypt");
 
-//SIGNUP API
+//* SIGNUP API
 authRouter.post("/signup", async (req, res) => {
   // *creating a new instance of the userModel
   // *validation of data
@@ -39,7 +39,7 @@ authRouter.post("/signup", async (req, res) => {
   }
 });
 
-// LOGIN API 
+//* LOGIN API
 authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
@@ -67,8 +67,9 @@ authRouter.post("/login", async (req, res) => {
 
       // * Add the token to cookie and send the response back to the user
 
-      res.cookie("token", token);
-      res.send("User Login Successfull !");
+      res.cookie("token", token, { expires: new Date(Date.now() + 900000) });
+
+      res.status(200).send("User Login Successfull !");
     } else {
       throw new Error("Invalid Credentials");
     }
@@ -76,4 +77,5 @@ authRouter.post("/login", async (req, res) => {
     res.status(400).send("Error :" + error.message);
   }
 });
-module.exports = authRouter;
+
+module.exports = { authRouter };

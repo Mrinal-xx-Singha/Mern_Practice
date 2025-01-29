@@ -5,11 +5,28 @@ const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    emailId: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    age: { type: Number },
+    firstName: { type: String, required: true, minLength: 4, maxLength: 50 },
+    lastName: { type: String },
+    emailId: {
+      type: String,
+      lowercase: true,
+      required: true,
+      unique: true,
+      validate(value){
+        if(!validator.isEmail(value)){
+          throw new Error("Invalid Email address")
+        }
+      }
+    },
+    password: { type: String, required: true,
+
+      validate(value){
+        if(!validator.isStrongPassword(value)){
+          throw new Error("Your password is not strong")
+        }
+      }
+     },
+    age: { type: Number, min: 15 },
     gender: {
       type: String,
       validate(value) {
@@ -28,7 +45,7 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    about: { type: String, default: "This is a default aabout of the user" },
+    about: { type: String, default: "This is a default about of the user" },
     skill: { type: [String] },
   },
   {
@@ -49,17 +66,20 @@ userSchema.methods.getJWT = async function () {
   const token = await jwt.sign({ _id: user._id }, "secret", {
     expiresIn: "7d",
   });
-  console.log(token);
   return token;
 };
 
 userSchema.methods.validatePassword = async function (passwordInputByUser) {
+  //  * user is the instance of userModel
   const user = this;
+  // * the password is already hashed and saved in mondodb
   const passWordHash = user.password;
 
   // * dont interchange the order
   const isPasswordValid = await bcrypt.compare(
+    // * password input given by user
     passwordInputByUser,
+    // * hashedpassword to be compared
     passWordHash
   );
   return isPasswordValid;
