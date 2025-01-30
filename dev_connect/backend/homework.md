@@ -81,3 +81,17 @@
 - Set the expiry of jwt token and cookies to 7 days
 - Create user schema mthod to get jwt
 - Create user schema method to compare password(passwordInputByUser)
+
+### ROUTER AND REFACTORING
+
+- Explore the tinder APIS
+- Create a list of all apis you can think of in Dev connect
+- Group multiple routes under respective routers
+- Read documentation for express.Router()
+- Create Routes folder for managing auth,profile,requestRouter
+- Create authRouter, profileRouter, requestRouter
+- Import these routers in app.js
+- Create POST/logout api and test it
+- Create PATCH /profile/edit api and test it
+- Create PATCH /profile/password api and test it (Forgot password api )
+- Make sure you validate all data in every POST, PATCH, Apis

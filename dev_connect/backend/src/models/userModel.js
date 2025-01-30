@@ -12,20 +12,22 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       required: true,
       unique: true,
-      validate(value){
-        if(!validator.isEmail(value)){
-          throw new Error("Invalid Email address")
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid Email address");
         }
-      }
+      },
     },
-    password: { type: String, required: true,
+    password: {
+      type: String,
+      required: true,
 
-      validate(value){
-        if(!validator.isStrongPassword(value)){
-          throw new Error("Your password is not strong")
+      validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("Your password is not strong");
         }
-      }
-     },
+      },
+    },
     age: { type: Number, min: 15 },
     gender: {
       type: String,
@@ -46,7 +48,7 @@ const userSchema = new mongoose.Schema(
       },
     },
     about: { type: String, default: "This is a default about of the user" },
-    skill: { type: [String] },
+    skills: { type: [String] },
   },
   {
     timestamps: true,

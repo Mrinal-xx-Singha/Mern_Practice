@@ -1,6 +1,7 @@
 const express = require("express");
 const profileRouter = express.Router();
 const { userAuth } = require("../middlewares/auth");
+const { validateProfileEditData } = require("../utils/validation");
 //Profile Api
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
@@ -34,5 +35,30 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     res.status(400).send("Error :" + error.message);
   }
 });
+
+// Profile edit API
+profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
+  try {
+    if (!validateProfileEditData(req)) {
+      throw new Error("Invalid edit request");
+    }
+
+    //* auth middleware has attached user
+    const loggedInUser = req.user;
+
+    Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
+
+    await loggedInUser.save();
+
+    res
+      .status(200)
+      .send(`${loggedInUser.firstName}, your Profile Updated Successfully !!!`);
+  } catch (error) {
+    res.status(400).send("Error : " + error.message);
+  }
+});
+
+// FORGOT PASSWORD API
+
 
 module.exports = { profileRouter };

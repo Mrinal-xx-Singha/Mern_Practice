@@ -43,6 +43,7 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
+
     if (!validator.isEmail(emailId)) {
       throw new Error("Email not valid");
     }
@@ -52,10 +53,12 @@ authRouter.post("/login", async (req, res) => {
     // if user not present in the database
 
     if (!user) {
-      throw new Error("Invalid Credentials");
+      throw new Error("Email id is not present in db");
     }
 
-    const isPasswordValid = user.validatePassword(password);
+    const isPasswordValid = await user.validatePassword(password);
+    const token = await user.getJWT();
+    res.cookie("token", token, { expires: new Date(Date.now() + 900000) });
 
     if (isPasswordValid) {
       // * Create a jwt token
@@ -63,11 +66,7 @@ authRouter.post("/login", async (req, res) => {
       // * hide the user id and send a secretkey
       // * offloaded the logic to schema method
 
-      const token = await user.getJWT();
-
       // * Add the token to cookie and send the response back to the user
-
-      res.cookie("token", token, { expires: new Date(Date.now() + 900000) });
 
       res.status(200).send("User Login Successfull !");
     } else {
@@ -75,6 +74,21 @@ authRouter.post("/login", async (req, res) => {
     }
   } catch (error) {
     res.status(400).send("Error :" + error.message);
+  }
+});
+
+//* LOGOUT APIS
+authRouter.post("/logout", async (req, res) => {
+  try {
+    // set the  jwt token to null
+    res.cookie("token", null, {
+      // expire it then and there
+      expires: new Date(Date.now()),
+    });
+
+    res.status(200).send("User Logged out successfully !!");
+  } catch (error) {
+    res.status(400).send("Error:" + error.message);
   }
 });
 
