@@ -95,3 +95,19 @@
 - Create PATCH /profile/edit api and test it
 - Create PATCH /profile/password api and test it (Forgot password api )
 - Make sure you validate all data in every POST, PATCH, Apis
+
+
+### COMPOUND INDEX AND LOGICAL DB QUERING
+
+- Create a connection request schema 
+- Add proper validation
+- Send connetion request api
+- proper validation of data
+- Think about corner cases and handle them 
+- $or query and $and query
+- Read the article [URL](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-compound/)
+- schema.pre
+- schema.index 
+- Read more about indexes in mongodb
+- Why do we need index in DB ? 
+- Advantages and disadvantages of creating index

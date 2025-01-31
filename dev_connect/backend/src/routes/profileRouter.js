@@ -59,6 +59,8 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 });
 
 // FORGOT PASSWORD API
+// profileRouter.patch("/profile/password",userAuth, async(req,res)=>{
 
+// })
 
 module.exports = { profileRouter };

@@ -5,12 +5,18 @@ const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: { type: String, required: true, minLength: 4, maxLength: 50 },
+    firstName: {
+      type: String,
+      required: true,
+      minLength: 4,
+      maxLength: 50,
+    },
     lastName: { type: String },
     emailId: {
       type: String,
       lowercase: true,
       required: true,
+      //? unique -> automatically create index
       unique: true,
       validate(value) {
         if (!validator.isEmail(value)) {
@@ -31,6 +37,10 @@ const userSchema = new mongoose.Schema(
     age: { type: Number, min: 15 },
     gender: {
       type: String,
+      enum: {
+        values: ["male", "female", "others"],
+        message: `{VALUE} is not a valid gender type`,
+      },
       validate(value) {
         if (!["male", "female", "others"].includes(value)) {
           throw new Error("Gender not valid!");
@@ -54,6 +64,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
 /**
  * * Mongoose Schema Methods
  * * Helper function
