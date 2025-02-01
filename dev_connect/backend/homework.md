@@ -111,3 +111,10 @@
 - Read more about indexes in mongodb
 - Why do we need index in DB ? 
 - Advantages and disadvantages of creating index
+
+### MORE APIS LOGIC BUILDING
+- Write code with proper validation with connection accept or reject 
+- Thought Process -> POST VS GET APIS 
+- POST -> Can put something inside my database i will verify what needs to be put inside my database
+- GET -> Database should be safe we need to be sure we are sending whats requested nothing extra
+

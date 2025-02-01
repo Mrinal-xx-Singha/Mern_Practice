@@ -14,7 +14,7 @@ const validateSignUpData = async (req) => {
     throw new Error("Password is not strong!");
   }
 };
-const validateProfileEditData =  (req) => {
+const validateProfileEditData = (req) => {
   const allowedEditFields = [
     "firstName",
     "lastName",
@@ -30,7 +30,7 @@ const validateProfileEditData =  (req) => {
   const isEditAllowed = Object.keys(req.body).every((field) =>
     allowedEditFields.includes(field)
   );
-  console.log("ISEDITALLOWED:->"+isEditAllowed)
+  console.log("ISEDITALLOWED:->" + isEditAllowed);
 
   return isEditAllowed;
 };

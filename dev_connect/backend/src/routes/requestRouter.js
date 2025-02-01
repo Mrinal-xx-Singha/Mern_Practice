@@ -13,8 +13,10 @@ requestRouter.post(
     try {
       //* userAuth
       const fromUserId = req.user._id;
+      //* from the parameters 
       const toUserId = req.params.touserId;
 
+      //* again get the status entered from the req.params parameter
       const status = req.params.status;
 
       const allowedStatus = ["ignored", "interested"];
@@ -65,6 +67,48 @@ requestRouter.post(
         .json({ message: "Connection Request sent successfully", data });
     } catch (error) {
       res.status(400).send("Error:" + error.message);
+    }
+  }
+);
+
+// accept or reject the connection request
+requestRouter.post(
+  "/request/review/:status/:requestId",
+  userAuth,
+  async (req, res) => {
+    const loggedInUser = req.user;
+    const { status, requestId } = req.params;
+    //? Elon => Dhoni
+    //? logged in user id => toUserId
+    //? status => interested
+    //? status [accepted,rejected] only allowed
+    //? validate status
+    //? request Id should be validated
+
+    //* Validating the status
+    const allowedStatus = ["accepted", "rejected"];
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).json({ message: "Status is  not allowed" });
+    }
+
+    const connectionRequest = await ConnectionRequest.findOne({
+      _id: requestId,
+      toUserId: loggedInUser._id,
+      status: "interested",
+    });
+
+    if (!connectionRequest) {
+      return res.status(404).json({ message: "Connection Request not found!" });
+    }
+
+    connectionRequest.status = status;
+
+    const data = await connectionRequest.save();
+    res.status(200).json({ message: "Connection request :" + status, data });
+
+    try {
+    } catch (error) {
+      res.status(400).json({ message: "Error : " + error.message });
     }
   }
 );
