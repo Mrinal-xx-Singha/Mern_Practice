@@ -118,3 +118,7 @@
 - POST -> Can put something inside my database i will verify what needs to be put inside my database
 - GET -> Database should be safe we need to be sure we are sending whats requested nothing extra
 
+- Ref (replacement for join in sql ) in the schema 
+- Populate (read about ref and populate )
+- Create GET-> API request received with all the checks
+- Create GET -> API Users connection or query   

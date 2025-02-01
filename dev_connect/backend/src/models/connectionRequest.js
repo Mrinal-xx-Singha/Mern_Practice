@@ -4,10 +4,13 @@ const connectionSchema = new mongoose.Schema(
   {
     fromUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      //* Creates a link with the userModel Schema
+      ref: "User",
       required: true,
     },
     toUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref:"User",
       required: true,
     },
     status: {
