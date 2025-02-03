@@ -1,6 +1,7 @@
 const express = require("express");
 const { userAuth } = require("../middlewares/auth");
 const { ConnectionRequest } = require("../models/connectionRequest");
+const userModel = require("../models/userModel");
 const userRouter = express.Router();
 
 //* Send specific data to the client
@@ -59,6 +60,45 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
     });
 
     res.status(200).json({ data: data });
+  } catch (error) {
+    res.status(400).json({ message: "Error:" + error.message });
+  }
+});
+
+// Feed API
+userRouter.get("/user/feed", userAuth, async (req, res) => {
+  try {
+    //? user should see all the userCards expect himself
+    //? not see card of his connection which is already connected
+    //? not see the card of ignored profile
+    //? not see already send the connection request
+
+    //? Example -> Rahul = [Ms,virat,ELon,ELon1] all the profiles expect himself
+    const loggedInUser = req.user;
+
+    //* Find all connection requests (sent + received)
+    const connectionRequests = await ConnectionRequest.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    }).select("fromUserId toUserId");
+
+    //* Peoples whom i want to hide from my feed [data structure]
+    const blockedUsersFromFeed = new Set();
+    connectionRequests.forEach((req) => {
+      blockedUsersFromFeed.add(req.fromUserId.toString());
+      blockedUsersFromFeed.add(req.toUserId.toString());
+    });
+
+    //* reverse query
+    const users = await userModel
+      .find({
+        $and: [
+          { _id: { $nin: Array.from(blockedUsersFromFeed) } },
+          { _id: { $ne: loggedInUser._id } },
+        ],
+      })
+      .select(userArray);
+
+    res.send(users);
   } catch (error) {
     res.status(400).json({ message: "Error:" + error.message });
   }

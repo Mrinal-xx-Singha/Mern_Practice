@@ -122,3 +122,9 @@
 - Populate (read about ref and populate )
 - Create GET-> API request received with all the checks
 - Create GET -> API Users connection or query   
+
+
+### FEED API && PAGINATION 
+
+- GET /user/feed api write the logic
+- Explore the $nin, $and, $ne, other query operators 
