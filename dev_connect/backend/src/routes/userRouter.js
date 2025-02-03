@@ -76,6 +76,17 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
     //? Example -> Rahul = [Ms,virat,ELon,ELon1] all the profiles expect himself
     const loggedInUser = req.user;
 
+    //* string needs to comvert to integer
+
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+
+    //* limit sanitization
+    limit = limit > 50 ? 50 : limit;
+
+    // calculate skip
+    let skip = (page - 1) * limit;
+
     //* Find all connection requests (sent + received)
     const connectionRequests = await ConnectionRequest.find({
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
@@ -96,7 +107,10 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
           { _id: { $ne: loggedInUser._id } },
         ],
       })
-      .select(userArray);
+      .select(userArray)
+      //* built in functions for pagination
+      .skip(skip)
+      .limit(limit);
 
     res.send(users);
   } catch (error) {

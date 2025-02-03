@@ -96,35 +96,48 @@
 - Create PATCH /profile/password api and test it (Forgot password api )
 - Make sure you validate all data in every POST, PATCH, Apis
 
-
 ### COMPOUND INDEX AND LOGICAL DB QUERING
 
-- Create a connection request schema 
+- Create a connection request schema
 - Add proper validation
 - Send connetion request api
 - proper validation of data
-- Think about corner cases and handle them 
+- Think about corner cases and handle them
 - $or query and $and query
 - Read the article [URL](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-compound/)
 - schema.pre
-- schema.index 
+- schema.index
 - Read more about indexes in mongodb
-- Why do we need index in DB ? 
+- Why do we need index in DB ?
 - Advantages and disadvantages of creating index
 
 ### MORE APIS LOGIC BUILDING
-- Write code with proper validation with connection accept or reject 
-- Thought Process -> POST VS GET APIS 
+
+- Write code with proper validation with connection accept or reject
+- Thought Process -> POST VS GET APIS
 - POST -> Can put something inside my database i will verify what needs to be put inside my database
 - GET -> Database should be safe we need to be sure we are sending whats requested nothing extra
 
-- Ref (replacement for join in sql ) in the schema 
+- Ref (replacement for join in sql ) in the schema
 - Populate (read about ref and populate )
 - Create GET-> API request received with all the checks
-- Create GET -> API Users connection or query   
+- Create GET -> API Users connection or query
 
-
-### FEED API && PAGINATION 
+### FEED API && PAGINATION
 
 - GET /user/feed api write the logic
-- Explore the $nin, $and, $ne, other query operators 
+- Explore the $nin, $and, $ne, other query operators
+
+### NOTES
+
+- ## Theory of pagination
+
+- /user/feed?page=1&limit=10 => First 10 users
+- / user/feed?page=2&limit=10 => 11-20 users
+- / user/feed?page=3&limit=10 => 21-30 users
+- .skip() & .limit() => mongodb built in functions
+
+**Example**
+- .skip(0) & .limit(10) => first 10 users
+
+- Skip formulae => (page-1) * limit
