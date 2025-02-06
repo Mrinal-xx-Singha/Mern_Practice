@@ -86,7 +86,7 @@ authRouter.post("/logout", async (req, res) => {
       expires: new Date(Date.now()),
     });
 
-    res.status(200).send("User Logged out successfully !!");
+    res.status(200).json({message:"User Logged out successfully !!"});
   } catch (error) {
     res.status(400).send("Error:" + error.message);
   }

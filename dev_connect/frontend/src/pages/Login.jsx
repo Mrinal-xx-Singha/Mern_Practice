@@ -4,11 +4,12 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../store/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("mrinal12@email.com");
   const [password, setPassword] = useState("Mrinal123@");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   // Add data to redux store by dispatching an action
   const dispatch = useDispatch();
@@ -26,11 +27,12 @@ const Login = () => {
         }
       );
       // console.log(res.data.user);
-      dispatch(addUser(res.data.user));
-      toast.success("Login Successfull 🎉")
+      dispatch(addUser(res?.data?.user));
+      toast.success("Login Successfull 🎉");
       navigate("/");
     } catch (error) {
-      toast.error(error?.response?.data + "❌")
+      toast.error(error?.response?.data + "❌");
+      setError(error?.response?.data || "Something went wrong !");
     }
   };
 
@@ -67,6 +69,7 @@ const Login = () => {
               />
             </label>
           </div>
+          <p className="text-red-500">{error}</p>
           <div className="card-actions justify-center m-2 ">
             <button className="btn btn-primary px-4" onClick={handleLogin}>
               Login

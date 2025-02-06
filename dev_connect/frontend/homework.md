@@ -17,12 +17,17 @@
 - Add redux devtool in chrome
 - Login and see if your data is coming from the backend properly
 - Navbar should update as soon as user logs in
-  -add a constants file and create a base url
+- add a constants file and create a base url
+- Should not be able to access other routes without login
+- if token is not present redirec to login page
+- Built the logout feature
+- Get the feed and add the feed in the store
+- Create a user card
 
-Body
+  Body
 
-    Navbar
-    Routes=/ =>   Feed
-    Routes=/login =>   Login
-    Routes=/connections => Connections
-    Routes=/profiles => Profiles
+      Navbar
+      Routes=/ =>   Feed
+      Routes=/login =>   Login
+      Routes=/connections => Connections
+      Routes=/profiles => Profiles
