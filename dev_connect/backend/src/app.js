@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const connectDB = require("./config/db");
 
@@ -10,6 +11,13 @@ const { requestRouter } = require("./routes/requestRouter");
 const { userRouter } = require("./routes/userRouter");
 
 const app = express();
+app.use(
+  cors({
+    //* add the origin of frontend
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 // middleware
