@@ -58,7 +58,7 @@ authRouter.post("/login", async (req, res) => {
 
     const isPasswordValid = await user.validatePassword(password);
     const token = await user.getJWT();
-    res.cookie("token", token, { expires: new Date(Date.now() + 900000) });
+    res.cookie("token", token, { expires: new Date(Date.now() + 86400e3) });
 
     if (isPasswordValid) {
       // * Create a jwt token
@@ -68,7 +68,7 @@ authRouter.post("/login", async (req, res) => {
 
       // * Add the token to cookie and send the response back to the user
 
-      res.status(200).json({message:"User Login Successfull !",user});
+      res.status(200).json({ message: "User Login Successfull !", user });
     } else {
       throw new Error("Invalid Credentials");
     }
@@ -86,7 +86,7 @@ authRouter.post("/logout", async (req, res) => {
       expires: new Date(Date.now()),
     });
 
-    res.status(200).json({message:"User Logged out successfully !!"});
+    res.status(200).json({ message: "User Logged out successfully !!" });
   } catch (error) {
     res.status(400).send("Error:" + error.message);
   }

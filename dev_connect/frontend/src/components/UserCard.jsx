@@ -14,8 +14,13 @@ const UserCard = ({ user }) => {
         {age && gender && <p>{age + ", " + gender}</p>}
 
         <p>{about}</p>
+        <p>
+          {skills}
+        </p>
         <div className="card-actions justify-between my-4">
-          <button className="btn btn-error text-primary-content">Ignore ❌</button>
+          <button className="btn btn-error text-primary-content">
+            Ignore ❌
+          </button>
           <button className="btn btn-primary text-primary-content ">
             Interested 💚
           </button>

@@ -23,6 +23,10 @@
 - Built the logout feature
 - Get the feed and add the feed in the store
 - Create a user card
+- Edit profile feature 
+- Show toast message on save of profile 
+- See all my connections 
+
 
   Body
 

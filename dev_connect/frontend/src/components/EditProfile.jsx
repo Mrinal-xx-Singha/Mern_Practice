@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import UserCard from "./UserCard";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addUser } from "../store/userSlice";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user?.firstName || "");
@@ -8,7 +13,37 @@ const EditProfile = ({ user }) => {
   const [age, setAge] = useState(user?.age || "");
   const [gender, setGender] = useState(user?.gender || "");
   const [about, setAbout] = useState(user?.about || "");
+  const [skills, setSkills] = useState(user?.skills || "");
   const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = async () => {
+    // Clear errors
+    setError("");
+    try {
+      const res = await axios.patch(
+        BASE_URL + "/profile/edit",
+        {
+          firstName,
+          lastName,
+          photoUrl,
+          age,
+          gender,
+          about,
+          skills,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(addUser(res?.data?.data));
+      toast.success(res?.data?.message);
+    } catch (error) {
+      setError(error?.response?.data);
+      toast.error(error?.response?.data);
+    }
+  };
 
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen p-6 bg-base-100">
@@ -84,10 +119,22 @@ const EditProfile = ({ user }) => {
                 <option value="" disabled>
                   Select gender
                 </option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="others">Other</option>
               </select>
+            </div>
+            {/* Skills */}
+            <div>
+              <label className="block font-semibold">Skills</label>
+              <input
+                type="text"
+                value={skills}
+                onChange={(e) => setSkills(e.target.value)}
+                placeholder="Add your skills.."
+                className="textarea textarea-primary w-full mt-1 text-start"
+                required
+              />
             </div>
 
             {/* About */}
@@ -108,14 +155,21 @@ const EditProfile = ({ user }) => {
 
           {/* Save Button */}
           <div className="text-center mt-5">
-            <button className="btn btn-primary w-full py-2">Save Profile</button>
+            <button
+              className="btn btn-primary w-full py-2"
+              onClick={handleSubmit}
+            >
+              Save Profile
+            </button>
           </div>
         </div>
       </div>
 
       {/* UserCard Section */}
       <div className="mt-6 lg:mt-0 lg:ml-10 w-full lg:w-[35%] flex justify-center items-center">
-        <UserCard user={{ firstName, lastName, photoUrl, age, gender, about }} />
+        <UserCard
+          user={{ firstName, lastName, photoUrl, age, gender, about, skills }}
+        />
       </div>
     </div>
   );
