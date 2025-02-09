@@ -51,13 +51,21 @@ const Connections = () => {
 
       <div className="container mx-auto grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 px-4">
         {connections.map((connection) => {
-          const { _id, firstName, lastName, photoUrl, age, gender, about } = connection;
+          const { _id, firstName, lastName, photoUrl, age, gender, about } =
+            connection;
 
           return (
-            <div key={_id} className="card bg-base-200 shadow-xl border border-secondary rounded-lg p-4 flex flex-row items-center gap-6 hover:shadow-2xl transition-shadow duration-300">
+            <div
+              key={_id}
+              className="card bg-base-200 shadow-xl border border-secondary rounded-lg p-4 flex flex-row items-center gap-6 hover:shadow-2xl transition-shadow duration-300"
+            >
               {/* Profile Image */}
               <figure className="w-24 h-24">
-                <img src={photoUrl} alt={`${firstName} ${lastName}`} className="rounded-full border-2 border-primary object-cover w-full h-full" />
+                <img
+                  src={photoUrl}
+                  alt={`${firstName} ${lastName}`}
+                  className="rounded-full border-2 border-primary object-cover w-full h-full"
+                />
               </figure>
 
               {/* User Details */}
@@ -67,7 +75,9 @@ const Connections = () => {
                 </h2>
                 <p className="text-neutral-content text-sm">{about}</p>
                 <p className="text-sm text-neutral-content">Age: {age}</p>
-                <p className="text-sm text-neutral-content capitalize">Gender: {gender}</p>
+                <p className="text-sm text-neutral-content capitalize">
+                  Gender: {gender}
+                </p>
               </div>
             </div>
           );

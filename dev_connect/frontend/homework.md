@@ -26,6 +26,8 @@
 - Edit profile feature 
 - Show toast message on save of profile 
 - See all my connections 
+- Created a conneciton page
+- Crated a new page to see all my connectionRequest
 
 
   Body

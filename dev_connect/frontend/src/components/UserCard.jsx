@@ -1,7 +1,6 @@
 import React from "react";
 
 const UserCard = ({ user }) => {
-  console.log(user);
   const { firstName, lastName, photoUrl, age, gender, skills, about } = user;
 
   return (
@@ -18,10 +17,10 @@ const UserCard = ({ user }) => {
           {skills}
         </p>
         <div className="card-actions justify-between my-4">
-          <button className="btn btn-error text-primary-content">
+          <button className="btn btn-error text-neutral-content font-bold">
             Ignore ❌
           </button>
-          <button className="btn btn-primary text-primary-content ">
+          <button className="btn btn-primary text-neutral-content font-bold">
             Interested 💚
           </button>
         </div>

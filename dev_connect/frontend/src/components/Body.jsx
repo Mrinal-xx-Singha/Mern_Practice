@@ -35,7 +35,6 @@ const Body = () => {
   return (
     <div>
       {/* check the token is present or not */}
-
       <Navbar />
       {/* Any children route will render here */}
       <Outlet />

@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../store/feedSlice";
 import UserCard from "./userCard";
 const Feed = () => {
+  const [loading, setLoading] = useState(false);
   const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
 
   const getFeed = async () => {
     if (feed) return;
     try {
+      setLoading(true);
       const res = await axios.get(BASE_URL + "/user/feed", {
         withCredentials: true,
       });
@@ -19,12 +21,22 @@ const Feed = () => {
       dispatch(addFeed(res.data));
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     getFeed();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="h-screen flex justify-center items-center bg-base-200">
+        <span className="loading loading-spinner text-primary w-16 h-16"></span>
+      </div>
+    );
+  }
 
   return (
     feed && (
