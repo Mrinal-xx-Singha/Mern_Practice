@@ -28,7 +28,10 @@
 - See all my connections 
 - Created a conneciton page
 - Crated a new page to see all my connectionRequest
-
+- TODO:
+       Creating a Signup Page 
+       Creating the accepting and rejecting functionality on click of buttons.  
+       Fixing bugs on page load on the navbar
 
   Body
 
