@@ -73,11 +73,12 @@ const Connections = () => {
                 <h2 className="text-primary font-bold text-lg">
                   {firstName} {lastName}
                 </h2>
-                <p className="text-neutral-content text-sm">{about}</p>
-                <p className="text-sm text-neutral-content">Age: {age}</p>
-                <p className="text-sm text-neutral-content capitalize">
-                  Gender: {gender}
-                </p>
+                <div className="w-full h-1/4">
+                  <p className="text-neutral-content text-sm pt-2">{about}</p>
+                  <p className="text-sm text-neutral-content pt-2">
+                    Age: {age} | <span className="capitalize"> {gender}</span>
+                  </p>
+                </div>
               </div>
             </div>
           );

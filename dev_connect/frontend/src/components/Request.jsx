@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants.js";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequest } from "../store/requestSlice";
+import { addRequest, removeRequest } from "../store/requestSlice";
 import toast from "react-hot-toast";
 
 const Request = () => {
@@ -32,11 +32,29 @@ const Request = () => {
   if (requests.length === 0)
     return (
       <div className="h-screen flex flex-col justify-center items-center bg-base-100">
-        <h1 className="text-gray-600 font-semibold text-2xl">
+        <h1 className="text-neutral-content font-semibold text-2xl">
           No Requests Found
         </h1>
       </div>
     );
+
+  const handleRequest = async (status, _id) => {
+    try {
+      // Empty object in the api response is the data its important because we are not sending any data
+
+      const res = await axios.post(
+        BASE_URL + "/request/review/" + status + "/" + _id,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success(res.data?.data?.message);
+      dispatch(removeRequest(_id));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-bas-100 py-10 bg-base-100">
@@ -78,10 +96,16 @@ const Request = () => {
 
               {/* Action Buttons */}
               <div className="flex justify-between gap-2 px-4 pb-4">
-                <button className="btn btn-error text-neutral-content px-4 py-1 rounded-lg hover:bg-red-600 transition font-bold">
+                <button
+                  onClick={() => handleRequest("rejected", request._id)}
+                  className="btn btn-error text-neutral-content px-4 py-1 rounded-lg hover:bg-red-600 transition font-bold"
+                >
                   Ignore ❌
                 </button>
-                <button className="btn btn-primary text-neutral-content px-4 py-1 rounded-lg hover:bg-green-600 transition font-bold">
+                <button
+                  onClick={() => handleRequest("accepted", request._id)}
+                  className="btn btn-primary text-neutral-content px-4 py-1 rounded-lg hover:bg-green-600 transition font-bold"
+                >
                   Interested 💚
                 </button>
               </div>

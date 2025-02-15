@@ -23,9 +23,9 @@ const Navbar = () => {
       );
       // clear the redux store
       dispatch(removeUser());
-      navigate("/login");
-
       toast.success(res.data.message);
+      return navigate("/login");
+
     } catch (error) {
       console.log(error);
     }
@@ -61,10 +61,9 @@ const Navbar = () => {
           >
             <div className="w-10 rounded-full ">
               <img
-                alt="Tailwind CSS Navbar component"
+                alt="user photo"
                 src={
-                  user?.photoUrl ||
-                  "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  user?.photoUrl || "https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f" 
                 }
               />
             </div>

@@ -38,6 +38,10 @@ const Feed = () => {
     );
   }
 
+  if (!feed) return;
+  if (feed.length <= 0)
+    return <h1 className="flex justify-center my-10">No users found </h1>;
+
   return (
     feed && (
       <div className="min-h-screen bg-base-100 flex items-center justify-center py-10 pb-4">
