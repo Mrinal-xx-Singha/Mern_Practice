@@ -1,13 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const storedUser = JSON.parse(localStorage.getItem("user")) || null
+
 const userSlice = createSlice({
   name: "user",
-  initialState: null,
+  initialState: storedUser,
   reducers: {
     addUser: (state, action) => {
-      return action.payload;
+      localStorage.setItem("user",JSON.stringify(action.payload));
+      return action.payload
     },
     removeUser: (state, aciton) => {
+      localStorage.removeItem("user")
       return null;
     },
   },

@@ -17,7 +17,10 @@ authRouter.post("/signup", async (req, res) => {
   //* always do try catch for async operation
   try {
     // validatate the request
-    validateSignUpData(req);
+    const validateionResponse = await validateSignUpData(req);
+    if(!validateionResponse){
+      return res.status(400).json(validateionResponse)
+    }
 
     const { firstName, lastName, emailId, password } = req.body;
 

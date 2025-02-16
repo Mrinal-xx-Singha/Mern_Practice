@@ -14,12 +14,11 @@ const Request = () => {
       const res = await axios.get(BASE_URL + "/user/requests", {
         withCredentials: true,
       });
+
       dispatch(addRequest(res.data?.data));
-      if (res.status !== 200) {
-        toast.error(res.data.data.message);
-      }
     } catch (error) {
       console.log(error.message);
+      toast.error("Failed to fetch requests. Please try again.");
     }
   };
 
@@ -53,6 +52,7 @@ const Request = () => {
       dispatch(removeRequest(_id));
     } catch (error) {
       console.log(error.message);
+      toast.error("Failed to update request status.");
     }
   };
 
@@ -69,7 +69,7 @@ const Request = () => {
 
           return (
             <div
-              key={_id}
+              key={request?._id}
               className="card bg-bg-base-200 shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300"
             >
               <div className="flex items-center gap-4 p-4">

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import toast from "react-hot-toast";
 
@@ -75,6 +75,9 @@ const Login = () => {
               Login
             </button>
           </div>
+            <Link to="/signup">
+            <p className="text-primary pt-2 underline hover:text-secondary font-bold text-md text-center">Dont have an account ? </p>
+            </Link>
         </div>
       </div>
     </div>

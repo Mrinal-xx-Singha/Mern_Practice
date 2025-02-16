@@ -20,12 +20,11 @@ const App = () => {
             <Route path="/" element={<Body />}>
               <Route path="/" element={<Feed />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/connections" element={<Connections />} />
               <Route path="/requests" element={<Request />} />
-
               <Route path="/requests" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
             </Route>
           </Routes>
         </BrowserRouter>

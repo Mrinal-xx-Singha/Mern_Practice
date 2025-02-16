@@ -5,14 +5,15 @@ const validator = require("validator");
 const validateSignUpData = async (req) => {
   const { firstName, lastName, emailId, password } = req.body;
   if (!firstName || !lastName) {
-    throw new Error("Name is not valid!");
-  } else if (firstName.length < 4 && firstName.length > 50) {
-    throw new Error("First name should ne 4-50 characters");
+    return { success: false, message: "Name is not valid!" };
+  } else if (firstName.length < 4 || firstName.length > 50) {
+    return { success: false, message: "First name should ne 4-50 characters" };
   } else if (!validator.isEmail(emailId)) {
-    throw new Error("Email is not valid!");
+    return { success: false, message: "Email is not valid!" };
   } else if (!validator.isStrongPassword(password)) {
-    throw new Error("Password is not strong!");
+    return { success: false, message: "Password is not strong!" };
   }
+  return { success: true }; // if everything is fine
 };
 const validateProfileEditData = (req) => {
   const allowedEditFields = [

@@ -20,7 +20,7 @@ const UserCard = ({ user }) => {
       );
       dispatch(removeUserFromFeed(userId));
     } catch (err) {
-      console.log("Error:" + err.message);
+      console.error("Error sending request:", err.response?.data?.message || err.message);
     }
   };
 
@@ -34,7 +34,7 @@ const UserCard = ({ user }) => {
         {age && gender && <p>{age + ", " + gender}</p>}
 
         <p>{about}</p>
-        <p>{skills}</p>
+        {skills.length > 0 && <p>Skills:{skills.join(", ")}</p>}
         <div className="card-actions justify-between my-4">
           <button
             onClick={() => handleSendRequest("ignored", _id)}

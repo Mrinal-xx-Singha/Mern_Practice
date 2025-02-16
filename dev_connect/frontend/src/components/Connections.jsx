@@ -45,11 +45,11 @@ const Connections = () => {
 
   return (
     <div className="min-h-screen bg-base-100 py-10">
-      <h1 className="text-primary font-bold text-center text-3xl mb-6">
-        Connections
+      <h1 className="text-primary font-bold text-center text-4xl mb-6">
+        Your Connections
       </h1>
 
-      <div className="container mx-auto grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 px-4">
+      <div className="container mx-auto grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 px-6">
         {connections.map((connection) => {
           const { _id, firstName, lastName, photoUrl, age, gender, about } =
             connection;
@@ -60,25 +60,24 @@ const Connections = () => {
               className="card bg-base-200 shadow-xl border border-secondary rounded-lg p-4 flex flex-row items-center gap-6 hover:shadow-2xl transition-shadow duration-300"
             >
               {/* Profile Image */}
-              <figure className="w-24 h-24">
+              <figure className="w-full h-48  overflow-hidden">
                 <img
                   src={photoUrl}
                   alt={`${firstName} ${lastName}`}
-                  className="rounded-full border-2 border-primary object-cover w-full h-full"
+                  className="object-cover"
                 />
               </figure>
 
               {/* User Details */}
-              <div className="flex flex-col">
-                <h2 className="text-primary font-bold text-lg">
+              <div className="mt-4">
+                <h2 className="text-primary font-semibold text-xl">
                   {firstName} {lastName}
                 </h2>
-                <div className="w-full h-1/4">
-                  <p className="text-neutral-content text-sm pt-2">{about}</p>
-                  <p className="text-sm text-neutral-content pt-2">
-                    Age: {age} | <span className="capitalize"> {gender}</span>
-                  </p>
-                </div>
+
+                <p className="text-neutral-content text-sm mt-1">{about}</p>
+                <p className="text-sm text-neutral-content mt-2">
+                  Age: {age} | <span className="capitalize"> {gender}</span>
+                </p>
               </div>
             </div>
           );

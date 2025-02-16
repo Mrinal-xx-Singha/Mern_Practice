@@ -3,10 +3,11 @@ import UserCard from "./UserCard";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../store/userSlice";
 
 const EditProfile = ({ user }) => {
+  // const user = useSelector((state)=>state.user)
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
   const [photoUrl, setPhotoUrl] = useState(user?.photoUrl || "");

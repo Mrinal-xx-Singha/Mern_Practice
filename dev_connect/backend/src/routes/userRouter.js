@@ -59,7 +59,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       return row.fromUserId;
     });
 
-    res.status(200).json({ data: data });
+    res.status(200).json({  data });
   } catch (error) {
     res.status(400).json({ message: "Error:" + error.message });
   }

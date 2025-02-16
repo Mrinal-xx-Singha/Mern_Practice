@@ -10,7 +10,7 @@ const connectionSchema = new mongoose.Schema(
     },
     toUserId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref:"User",
+      ref: "User",
       required: true,
     },
     status: {
@@ -28,14 +28,14 @@ const connectionSchema = new mongoose.Schema(
 );
 
 //* Compound index
-connectionSchema.index({ fromUserId: 1, toUserId: 1 });
+connectionSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
 
-connectionSchema.pre("save", function (next) {
+connectionSchema.pre("save",async function (next) {
   const connectionRequest = this;
 
   //* Check if fromUserId is same as toUserId
   if (connectionRequest.fromUserId.equals(connectionRequest.toUserId)) {
-    throw new Error("Cannot send connetion request to yourself");
+    throw new Error("Cannot send connection request to yourself");
   }
   next();
 });
