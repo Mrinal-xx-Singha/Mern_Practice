@@ -3,11 +3,11 @@ import EditProfile from "../components/EditProfile";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
-  const User = useSelector((store) => store.user);
+  const user = useSelector((store) => store.user);
   return (
-    User && (
+    user && (
       <div className="bg-base-100 min-h-screen">
-        <EditProfile user={User} />
+        <EditProfile user={user} />
       </div>
     )
   );

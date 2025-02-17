@@ -3,6 +3,7 @@ import React from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../store/feedSlice";
+
 const UserCard = ({ user }) => {
   const { _id, firstName, lastName, photoUrl, age, gender, skills, about } =
     user;
@@ -20,7 +21,10 @@ const UserCard = ({ user }) => {
       );
       dispatch(removeUserFromFeed(userId));
     } catch (err) {
-      console.error("Error sending request:", err.response?.data?.message || err.message);
+      console.error(
+        "Error sending request:",
+        err.response?.data?.message || err.message
+      );
     }
   };
 
@@ -31,10 +35,27 @@ const UserCard = ({ user }) => {
       </figure>
       <div className="card-body">
         <h2 className="card-title">{firstName + " " + lastName}</h2>
-        {age && gender && <p>{age + ", " + gender}</p>}
+        {age && gender && <p>{age + " | " + gender}</p>}
 
         <p>{about}</p>
-        {skills.length > 0 && <p>Skills:{skills.join(", ")}</p>}
+
+        {/* skills */}
+
+        <div className="flex flex-wrap gap-2 mt-2">
+          {Array.isArray(skills) && skills.length > 0 ? (
+            skills.map((skill, index) => (
+              <span
+                key={index}
+                className="bg-warning text-white px-2 py-1 rounded-md text-sm"
+              >
+                {skill}
+              </span>
+            ))
+          ) : (
+            <p>No skills added</p>
+          )}
+        </div>
+
         <div className="card-actions justify-between my-4">
           <button
             onClick={() => handleSendRequest("ignored", _id)}

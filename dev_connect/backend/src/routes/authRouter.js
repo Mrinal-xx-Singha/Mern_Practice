@@ -18,8 +18,8 @@ authRouter.post("/signup", async (req, res) => {
   try {
     // validatate the request
     const validateionResponse = await validateSignUpData(req);
-    if(!validateionResponse){
-      return res.status(400).json(validateionResponse)
+    if (!validateionResponse) {
+      return res.status(400).json(validateionResponse);
     }
 
     const { firstName, lastName, emailId, password } = req.body;
@@ -35,8 +35,8 @@ authRouter.post("/signup", async (req, res) => {
       emailId,
       password: passwordHash,
     });
-    await user.save();
-    res.send("User Added Successfully!!");
+    const savedUser = await user.save();
+    res.json({ message: "User Added Successfully!!", data: savedUser });
   } catch (error) {
     res.status(400).send("Error :" + error.message);
   }

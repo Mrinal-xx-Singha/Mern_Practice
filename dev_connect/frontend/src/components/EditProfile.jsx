@@ -7,14 +7,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../store/userSlice";
 
 const EditProfile = ({ user }) => {
-  // const user = useSelector((state)=>state.user)
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
   const [photoUrl, setPhotoUrl] = useState(user?.photoUrl || "");
   const [age, setAge] = useState(user?.age || "");
   const [gender, setGender] = useState(user?.gender || "");
   const [about, setAbout] = useState(user?.about || "");
-  const [skills, setSkills] = useState(user?.skills || "");
+  const [skills, setSkills] = useState(
+    Array.isArray(user?.skills) ? user?.skills : []
+  );
   const [error, setError] = useState("");
 
   const dispatch = useDispatch();
@@ -22,6 +23,11 @@ const EditProfile = ({ user }) => {
   const handleSubmit = async () => {
     // Clear errors
     setError("");
+    const skillsArray = Array.isArray(skills)
+      ? skills
+      : typeof skills === "string"
+      ? skills.split(",").map((skill) => skill.trim())
+      : []; // convert coma separated  string to array
     try {
       const res = await axios.patch(
         BASE_URL + "/profile/edit",
@@ -32,7 +38,7 @@ const EditProfile = ({ user }) => {
           age,
           gender,
           about,
-          skills,
+          skills: skillsArray, //send skills as an array
         },
         {
           withCredentials: true,
@@ -128,10 +134,14 @@ const EditProfile = ({ user }) => {
             {/* Skills */}
             <div>
               <label className="block font-semibold">Skills</label>
-              <input
+              <textarea
                 type="text"
                 value={skills}
-                onChange={(e) => setSkills(e.target.value)}
+                onChange={(e) =>
+                  setSkills(
+                    e.target.value.split(",").map((skill) => skill.trim())
+                  )
+                }
                 placeholder="Add your skills.."
                 className="textarea textarea-primary w-full mt-1 text-start"
                 required

@@ -28,8 +28,8 @@ const Signup = () => {
         },
         { withCredentials: true }
       );
-      dispatch(addUser(res.data));
-      toast.success(res?.data);
+      dispatch(addUser(res.data.data));
+      toast.success(res?.data?.data);
       navigate("/profile");
     } catch (error) {
       console.log(error.response.data);
