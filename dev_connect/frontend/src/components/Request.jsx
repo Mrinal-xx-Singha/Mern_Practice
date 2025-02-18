@@ -17,8 +17,10 @@ const Request = () => {
 
       dispatch(addRequest(res.data?.data));
     } catch (error) {
-      console.log(error.message);
-      toast.error("Failed to fetch requests. Please try again.");
+      if(error.status === 401){
+        
+        toast.error("Login First");
+      }
     }
   };
 

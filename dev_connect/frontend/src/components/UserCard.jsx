@@ -4,7 +4,7 @@ import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../store/feedSlice";
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user,onAction }) => {
   const { _id, firstName, lastName, photoUrl, age, gender, skills, about } =
     user;
 
@@ -20,6 +20,7 @@ const UserCard = ({ user }) => {
         }
       );
       dispatch(removeUserFromFeed(userId));
+      onAction(0)
     } catch (err) {
       console.error(
         "Error sending request:",

@@ -28,8 +28,9 @@ const Signup = () => {
         },
         { withCredentials: true }
       );
+      console.log(res.data)
       dispatch(addUser(res.data.data));
-      toast.success(res?.data?.data);
+      toast.success(res?.data?.message);
       navigate("/profile");
     } catch (error) {
       console.log(error.response.data);

@@ -17,7 +17,9 @@ const Connections = () => {
       });
       dispatch(addConnections(res.data?.data));
     } catch (error) {
-      toast.error(error.message);
+      if (error.status === 401) {
+        return toast.error("Login First");
+      }
     } finally {
       setLoading(false);
     }
