@@ -6,21 +6,25 @@ import { addRequest, removeRequest } from "../store/requestSlice";
 import toast from "react-hot-toast";
 
 const Request = () => {
+  const [loading, setLoading] = useState(true);
+
   const dispatch = useDispatch();
   const requests = useSelector((store) => store.requests);
 
   const fetchRequests = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(BASE_URL + "/user/requests", {
         withCredentials: true,
       });
 
       dispatch(addRequest(res.data?.data));
     } catch (error) {
-      if(error.status === 401){
-        
+      if (error.status === 401) {
         toast.error("Login First");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,6 +42,13 @@ const Request = () => {
         </h1>
       </div>
     );
+  if (loading) {
+    return (
+      <div className="h-screen flex justify-center items-center bg-base-200">
+        <span className="loading loading-spinner text-primary w-16 h-16"></span>
+      </div>
+    );
+  }
 
   const handleRequest = async (status, _id) => {
     try {

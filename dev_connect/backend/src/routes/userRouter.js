@@ -59,7 +59,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       return row.fromUserId;
     });
 
-    res.status(200).json({  data });
+    res.status(200).json({ data });
   } catch (error) {
     res.status(400).json({ message: "Error:" + error.message });
   }
@@ -112,7 +112,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    res.send(users);
+    res.json({data:users});
   } catch (error) {
     res.status(400).json({ message: "Error:" + error.message });
   }

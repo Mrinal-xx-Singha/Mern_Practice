@@ -59,24 +59,24 @@ const Connections = () => {
           return (
             <div
               key={_id}
-              className="card bg-base-200 shadow-xl border border-secondary rounded-lg p-4 flex flex-row items-center gap-6 hover:shadow-2xl transition-shadow duration-300"
+              className="card bg-base-200 shadow-xl border border-gray-200 rounded-lg p-4 flex flex-row items-center gap-6 hover:shadow-2xl transition-shadow duration-300"
             >
               {/* Profile Image */}
-              <figure className="w-full h-48  overflow-hidden">
+              <figure className="w-24 h-24 rounded-full  overflow-hidden border-2 border-primary">
                 <img
                   src={photoUrl}
                   alt={`${firstName} ${lastName}`}
-                  className="object-cover"
+                  className="w-full h-full object-cover"
                 />
               </figure>
 
               {/* User Details */}
-              <div className="mt-4">
+              <div className="text-center mt-4">
                 <h2 className="text-primary font-semibold text-xl">
                   {firstName} {lastName}
                 </h2>
 
-                <p className="text-neutral-content text-sm mt-1">{about}</p>
+                <p className="text-neutral-content text-sm mt-1">{about.length > 30 ? `${about.slice(0,30)} ...` : about}</p>
                 <p className="text-sm text-neutral-content mt-2">
                   Age: {age} | <span className="capitalize"> {gender}</span>
                 </p>
