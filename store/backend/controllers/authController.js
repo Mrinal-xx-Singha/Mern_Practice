@@ -159,10 +159,9 @@ export const refreshToken = async (req, res) => {
   }
 };
 
-export const getProfile =async(req,res) =>{
+export const getProfile = async (req, res) => {
   try {
-    
   } catch (error) {
-    return res.status(500).json({message:"Error occured "})
+    return res.status(500).json({ message: "Error occured " });
   }
-}
+};
