@@ -26,3 +26,13 @@
 - created routes to fetch all the products
 - Admin only features
 - created two middleware one to make the route protected and the other to check for the role (Admin only )
+- Created createProduct controller function to create a product
+- Cloudinary for image upload 
+- Save the image in cloudinary 
+- Delete a product 
+    - delete image from cloudinary
+    - delete and update the database
+- Created a getRecomendedProducts api to get recommended products this route is accessable by everyone
+- Created a getProductsByCategory api to get all the products by category like shoes clothes etc.. (Dynamic route for getting individual products)
+- Created a toggleFeaturedProduct this is a flag which can be used by admin to make any product featured or unfeature a product from the store
+- Update the cache in redis because we have saved it in redis 
