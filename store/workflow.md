@@ -37,3 +37,8 @@
 - Created a toggleFeaturedProduct this is a flag which can be used by admin to make any product featured or unfeature a product from the store
 - Update the cache in redis because we have saved it in redis 
 - Created a cart route where we can add products to cart ,Remove products from cart , update quantity , get all the details of the products 
+
+## Coupon Routes
+
+- Created a coupon route where we can get discount coupons
+- Created a validateCoupon to check if the coupon is expired or not .
