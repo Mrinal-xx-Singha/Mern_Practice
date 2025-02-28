@@ -6,6 +6,8 @@ import cartRoutes from "./routes/cartRoutes.js"
 import { connectDB } from "./utils/db.js";
 import cookieParser from "cookie-parser";
 import couponRoutes from "./routes/couponRoutes.js"
+import paymentRoutes from "./routes/paymentRoutes.js"
+
 const app = express();
 dotenv.config();
 app.use(express.json());
@@ -15,6 +17,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/coupons",couponRoutes)
+app.use("/api/payments",paymentRoutes)
 
 const PORT = process.env.PORT || 5000;
 
