@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 
 const authRoutes = require("./routes/authRoutes");
-const blogRoutes = require("./routes/authRoutes");
+const blogRoutes = require("./routes/blogRoutes");
 
 const app = express();
 

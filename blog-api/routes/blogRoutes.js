@@ -1,7 +1,16 @@
-const express = require("express")
+const express = require("express");
+const {
+  getBlogs,
+  createBlog,
+  updateBlog,
+  deleteBlog,
+} = require("../controllers/blogController");
+const { protect } = require("../middleware/authMiddleware");
 
+const router = express.Router();
 
-const router = express.Router()
+router.route("/").get(getBlogs).post(protect, createBlog);
 
+router.route("/:id").put(protect, updateBlog).delete(protect, deleteBlog);
 
-module.exports = router
+module.exports = router;
