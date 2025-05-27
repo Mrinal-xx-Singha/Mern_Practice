@@ -1,0 +1,97 @@
+/* Import Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap");
+
+/* Tailwind Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Theme Variables */
+@layer base {
+  :root {
+    --font-display: "Roboto", sans-serif;
+    --breakpoint-3xl: 1920px;
+    --color-primary: #ff9324;
+  }
+
+  html {
+    font-family: var(--font-display);
+  }
+
+  body {
+    background-color: #fcfbfc;
+    overflow-x: hidden;
+  }
+}
+
+/* -----------------------------------
+   Custom Scrollbar Styling
+----------------------------------- */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.4);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* -----------------------------------
+   Utility Animations
+----------------------------------- */
+@layer utilities {
+  /* Shiny text animation */
+  @keyframes text-shine {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-text-shine {
+    animation: text-shine 3s ease-in-out infinite alternate;
+    background: linear-gradient(90deg, #ff9324, #ffbd59, #ffe8c6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-size: 200% auto;
+  }
+
+  /* Organic blob animations */
+  @keyframes blob1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -60px) scale(1.1); }
+    66% { transform: translate(-20px, -20px) scale(0.9); }
+  }
+
+  @keyframes blob2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-40px, -60px) scale(1.05); }
+    66% { transform: translate(20px, -40px) scale(0.95); }
+  }
+
+  @keyframes blob3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(20px, 140px) scale(1.15); }
+    66% { transform: translate(-30px, -30px) scale(0.85); }
+  }
+
+  .animate-blob1 {
+    animation: blob1 8s ease-in-out infinite;
+  }
+
+  .animate-blob2 {
+    animation: blob2 10s ease-in-out infinite;
+  }
+
+  .animate-blob3 {
+    animation: blob3 12s ease-in-out infinite;
+  }
+}
