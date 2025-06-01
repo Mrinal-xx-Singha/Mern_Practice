@@ -3,6 +3,7 @@ const connectDB = require("./utils/db");
 require("dotenv").config();
 const userRouter= require("./routes/userRoute")
 const postRoutes = require("./routes/postRoutes")
+const cookieParser = require("cookie-parser")
 
 /**
  * *Collections instead of tables
@@ -21,6 +22,9 @@ const postRoutes = require("./routes/postRoutes")
 
 const app = express();
 app.use(express.json())
+app.use(cookieParser())
+
+
 
 app.use("/api",userRouter );
 app.use("/api/posts",postRoutes)

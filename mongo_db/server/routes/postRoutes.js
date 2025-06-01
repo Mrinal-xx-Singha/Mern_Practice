@@ -1,11 +1,12 @@
 const express = require("express");
 const Post = require("../models/Post");
+const protect = require("../middleware/auth");
 const router = express.Router();
 
 // CREATE A POST
-router.post("/", async (req, res) => {
+router.post("/", protect, async (req, res) => {
   try {
-    const { title, content,user } = req.body;
+    const { title, content, user } = req.body;
 
     const post = await Post.create({
       title,
@@ -19,7 +20,7 @@ router.post("/", async (req, res) => {
 });
 
 // GET ALL POSTS
-router.get("/", async (req, res) => {
+router.get("/", protect, async (req, res) => {
   try {
     const posts = await Post.find().populate("user", "name email");
     res.json(posts);
