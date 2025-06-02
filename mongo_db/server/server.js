@@ -1,9 +1,10 @@
 const express = require("express");
 const connectDB = require("./utils/db");
 require("dotenv").config();
-const userRouter= require("./routes/userRoute")
-const postRoutes = require("./routes/postRoutes")
-const cookieParser = require("cookie-parser")
+const userRouter = require("./routes/userRoute");
+const postRoutes = require("./routes/postRoutes");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 /**
  * *Collections instead of tables
@@ -15,19 +16,23 @@ const cookieParser = require("cookie-parser")
  * 'skills':['React','Node','MongoDB]
  * 'active':true
  * }
-*/
+ */
 
 // MongoDB is a NoSql document database that stores data in json like bson documents
 // mongoose is a ODM (Object Data Modeling) library for mongoDB and Node.js
 
 const app = express();
-app.use(express.json())
-app.use(cookieParser())
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-
-
-app.use("/api",userRouter );
-app.use("/api/posts",postRoutes)
+app.use("/api", userRouter);
+app.use("/api/posts", postRoutes);
 app.listen(3000, () => {
   connectDB();
   console.log("Server is running 🟢");
