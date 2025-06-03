@@ -1,9 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import axios from "../axios";
 import { useState } from "react";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", passowrd: "" });
-
+  const navigate = useNavigate();
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -13,6 +14,12 @@ const Login = () => {
     try {
       const res = await axios.post("/login", form);
       console.log(res.data);
+      localStorage.setItem("isAuthenticated", "true");
+
+      if (res.data.success) {
+        localStorage.setItem("isAuthenticated", "true");
+        navigate("/home");
+      }
       alert(res.data.msg);
     } catch (error) {
       alert(error.response.data.message);
