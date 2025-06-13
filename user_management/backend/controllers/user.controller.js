@@ -17,3 +17,7 @@ exports.login = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.profile = async(req,res) =>{
+  res.json(req.user) // comes from auth middleware
+}
