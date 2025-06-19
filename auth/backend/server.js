@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/auth");
+const postRoutes = require("./routes/posts")
 const auth = require("./middleware/auth");
 const User = require("./models/User");
 
@@ -20,6 +21,7 @@ mongoose
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/posts",postRoutes)
 
 // Protected Routes
 app.get("/api/protected", auth, async (req, res) => {
