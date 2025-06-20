@@ -6,6 +6,7 @@ const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts")
 const auth = require("./middleware/auth");
 const User = require("./models/User");
+const commentRoutes = require("./routes/comments");
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ mongoose
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts",postRoutes)
+app.use("/api/comments",commentRoutes)
 
 // Protected Routes
 app.get("/api/protected", auth, async (req, res) => {
