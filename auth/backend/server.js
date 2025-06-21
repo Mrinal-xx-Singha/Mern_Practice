@@ -18,7 +18,7 @@ app.use(cookieParser());
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MONGO DB Connected ✅"))
-  .catch((err) => console.err(err));
+  .catch((err) => console.error(err.message));
 
 // Routes
 app.use("/api/auth", authRoutes);
