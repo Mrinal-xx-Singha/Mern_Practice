@@ -6,11 +6,12 @@ const router = express.Router();
 
 // Register
 router.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
   try {
     const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({
       username,
+      email,
       password: hashed,
     });
     await user.save();
@@ -42,7 +43,7 @@ router.post("/login", async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    res.cookie("token", token, {
+    res.cookie("token", accessToken, {
       httpOnly: true,
       sameSite: "strict",
       secure: false,

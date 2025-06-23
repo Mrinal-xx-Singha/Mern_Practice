@@ -3,17 +3,24 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/auth");
-const postRoutes = require("./routes/posts")
+const postRoutes = require("./routes/posts");
 const auth = require("./middleware/auth");
 const User = require("./models/User");
 const commentRoutes = require("./routes/comments");
-
+const cors = require("cors");
 dotenv.config();
 
 const app = express();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials:true
+    
+  })
+);
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -22,8 +29,8 @@ mongoose
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/posts",postRoutes)
-app.use("/api/comments",commentRoutes)
+app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
 
 // Protected Routes
 app.get("/api/protected", auth, async (req, res) => {
@@ -32,9 +39,8 @@ app.get("/api/protected", auth, async (req, res) => {
     const user = await User.findById(id);
     res.json({ message: `Welcome,  ${user.username}` });
   } catch (error) {
-    res.status(400).json({messsage:"Error occured"})
+    res.status(400).json({ messsage: "Error occured" });
   }
-
 });
 
 const PORT = process.env.PORT || 5000;

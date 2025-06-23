@@ -56,7 +56,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update Post (Author only)
-router.put(":id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const updatedPost = await Post.findByIdAndUpdate(
