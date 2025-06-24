@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/authSlice";
 
 const Login = () => {
-  const [username, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(loginUser({ username, password }));
+    dispatch(loginUser({ email, password }));
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 ">
@@ -22,9 +22,9 @@ const Login = () => {
         {error && <p className="text-red-500 text-sm mb-4">{error.error}</p>}
         <input
           type="text"
-          value={username}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="Username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
           className="w-full px-4 py-2 mb-4 border rounded"
         />
         <input
