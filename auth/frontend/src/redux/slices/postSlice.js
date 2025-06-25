@@ -25,3 +25,40 @@ export const createPost = createAsyncThunk(
     }
   }
 );
+
+export const deletePost = createAsyncThunk(
+  "posts/delete",
+  async (id, thunkAPI) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/posts/${id}`);
+      return id;
+    } catch (error) {
+      thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+const postSlice = createSlice({
+  name: "posts",
+  initialState: { posts: [], loading: false, error: null },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchPosts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = action.payload;
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.posts = state.posts.filter((p) => p._id !== action.payload);
+      });
+  },
+});
+
+export default postSlice.reducer;
