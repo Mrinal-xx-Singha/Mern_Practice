@@ -1,17 +1,30 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts, deletePost } from "../../redux/slices/postSlice";
+import { logoutUser } from "../../redux/slices/authSlice";
 import { Link } from "react-router-dom";
 const PostList = () => {
   const dispatch = useDispatch();
   const { posts, loading } = useSelector((state) => state.posts);
+  console.log(posts);
 
   useEffect(() => {
     dispatch(fetchPosts());
   }, [dispatch]);
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-6">Recent Posts</h1>
+      <h1 className="text-2xl font-bold mb-6 uppercase tracking-widest">Recent Posts</h1>
+      <div className=" flex justify-between items-center m-2">
+        <button className=" px-4 py-2 bg-green-600 text-white rounded  hover:bg-green-700">
+          <Link to="/create">Create +</Link>
+        </button>
+        <button
+          onClick={() => dispatch(logoutUser())}
+          className="px-4 py-2 bg-red-600 text-white rounded  hover:bg-red-700"
+        >
+          Logout
+        </button>
+      </div>
       {loading ? (
         <p>Loading...</p>
       ) : (

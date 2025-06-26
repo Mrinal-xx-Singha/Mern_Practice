@@ -8,6 +8,7 @@ import CreatePost from "./components/posts/CreatePost";
 import PostList from "./components/posts/PostList";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
+import PostDetails from "./components/posts/PostDetails";
 const App = () => {
   const { user, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const App = () => {
           </PrivateRoute>
         }
       />
+      <Route path="/posts/:id" element={<PostDetails />} />
       <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
       <Route
         path="/register"
