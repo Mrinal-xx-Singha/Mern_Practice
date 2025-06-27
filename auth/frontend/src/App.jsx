@@ -9,6 +9,7 @@ import PostList from "./components/posts/PostList";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
 import PostDetails from "./components/posts/PostDetails";
+import EditPost from "./components/posts/EditPost";
 const App = () => {
   const { user, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -44,6 +45,12 @@ const App = () => {
         }
       />
       <Route path="/posts/:id" element={<PostDetails />} />
+      <Route 
+      path="/edit/:id"
+      element={<PrivateRoute>
+        <EditPost />
+      </PrivateRoute>}
+      />
       <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
       <Route
         path="/register"

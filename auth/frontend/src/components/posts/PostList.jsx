@@ -13,7 +13,9 @@ const PostList = () => {
   }, [dispatch]);
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-6 uppercase tracking-widest">Recent Posts</h1>
+      <h1 className="text-2xl font-bold mb-6 uppercase tracking-widest">
+        Recent Posts
+      </h1>
       <div className=" flex justify-between items-center m-2">
         <button className=" px-4 py-2 bg-green-600 text-white rounded  hover:bg-green-700">
           <Link to="/create">Create +</Link>
@@ -32,7 +34,7 @@ const PostList = () => {
           <div key={post._id} className="bg-white shadow p-4 mb-4 rounded">
             <Link
               to={`/posts/${post._id}`}
-              className="text-xl font-semibold hover:underline"
+              className="text-xl text-blue-400 font-semibold hover:underline"
             >
               {post.title}
             </Link>

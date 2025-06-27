@@ -29,6 +29,15 @@ const PostDetails = () => {
     hour12:true
   })
 
+  const handleDelete =async() =>{
+    try {
+      await axios.delete(`http://localhost:5000/api/posts/${id}`)
+      navigate('/')
+    } catch (error) {
+      console.error("Delete failed")
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 h-screen">
       <h1 className="text-3xl font-bold mb-2 text-center tracking-wide uppercase">
@@ -38,16 +47,20 @@ const PostDetails = () => {
       <div className="text-gray-800 mb-4 text-justify tracking-wide">
         {post.content}
         <p className="text-sm text-gray-600 pt-4">
-          <span className="bg-yellow-400 px-2 py-1">
+          <span className="bg-yellow-300 px-2 py-1">
             Tags:{post.tags.join(", ")}
           </span>
           |Category:<b>{post.category}</b>
         </p>
         {isAuthor && (
           <div className="flex gap-4 mt-4">
-            <button className="text-blue-600 hover:underline">Edit</button>
+            <Link 
+            to={`/edit/${id}`}
+            className="text-blue-600 hover:underline">Edit</Link>
 
-            <button className="text-red-600 hover:underline">Delete</button>
+            <button className="text-red-600 hover:underline"
+            onClick={handleDelete}
+            >Delete</button>
           </div>
         )}
       </div>
