@@ -14,6 +14,7 @@ const commentSchema = new mongoose.Schema(
       ref: "Comment",
       default: null, // top-level comment
     },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     replies: [
       {
         type: mongoose.Schema.Types.ObjectId,

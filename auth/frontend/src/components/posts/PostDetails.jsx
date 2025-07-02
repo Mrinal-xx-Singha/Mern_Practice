@@ -5,6 +5,21 @@ import { useSelector } from "react-redux";
 
 // 🧩 Recursive Comment Component
 const CommonItem = ({ comment, onReply, onDelete, user }) => {
+  const [likes, setLikes] = useState(comment?.likes?.length);
+  const [liked, setLiked] = useState(comment?.likes?.includes(user?.id));
+
+  const toggleLike = async () => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:5000/api/comments/like/${comment._id}`
+      );
+      setLikes(res.data.likes);
+      setLiked(res.data.liked);
+    } catch (err) {
+      console.error("Failed to toggle like");
+    }
+  };
+
   console.log(comment);
   const isAuthor = user?.id === comment.author?._id || user?.role === "admin";
 
@@ -15,6 +30,14 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
           <span className="font-semibold">{comment.author?.username}</span>:{" "}
           {comment.content}
         </p>
+        <div className="flex gap-2 items-center">
+          <button
+            onClick={toggleLike}
+            className={`text-sm ${liked ? "text-red-600" : "text-gray-500"}`}
+          >
+            👍{likes}
+          </button>
+        </div>
         {isAuthor && (
           <button
             onClick={() => onDelete(comment._id)}
