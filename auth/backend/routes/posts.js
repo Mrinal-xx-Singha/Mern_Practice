@@ -75,9 +75,14 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", auth, checkAuthorOrAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    await Post.findByIdAndDelete(id);
+
+    const deletedPost = await Post.findByIdAndDelete(id);
+    if(!deletedPost){
+      return res.status(404).json({error:"Post not found "})
+    }
     res.json({ message: "Post deleted successfully" });
   } catch (error) {
+    console.error(error)
     res.status(500).json({ eror: "Failed to delete post" });
   }
 });

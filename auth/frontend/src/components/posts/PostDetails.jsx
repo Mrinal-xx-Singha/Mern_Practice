@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 // 🧩 Recursive Comment Component
 const CommonItem = ({ comment, onReply, onDelete, user }) => {
-  const [likes, setLikes] = useState(comment?.likes?.length);
+  const [likes, setLikes] = useState(comment?.likes?.length || 0);
   const [liked, setLiked] = useState(comment?.likes?.includes(user?.id));
 
   const toggleLike = async () => {
@@ -20,42 +20,44 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
     }
   };
 
-  console.log(comment);
   const isAuthor = user?.id === comment.author?._id || user?.role === "admin";
 
   return (
-    <div className="ml-4 mt-4 border-l pl-4">
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-gray-700">
-          <span className="font-semibold">{comment.author?.username}</span>:{" "}
-          {comment.content}
-        </p>
-        <div className="flex gap-2 items-center">
-          <button
-            onClick={toggleLike}
-            className={`text-sm ${liked ? "text-red-600" : "text-gray-500"}`}
-          >
-            👍{likes}
-          </button>
+    <div className="ml-6 mt-4 border-l-2 pl-4 border-gray-200">
+      <div className="flex justify-between items-start">
+        <div>
+          <p className="text-sm text-gray-800">
+            <span className="font-semibold">{comment.author?.username}</span>:{" "}
+            {comment.content}
+          </p>
+          <div className="flex gap-3 mt-1 text-sm text-gray-600">
+            <button
+              onClick={toggleLike}
+              className={`hover:text-red-600 transition ${
+                liked ? "text-red-600" : ""
+              }`}
+            >
+              👍 {likes}
+            </button>
+            {user && (
+              <button
+                onClick={() => onReply(comment._id)}
+                className="text-blue-600 hover:underline"
+              >
+                Reply
+              </button>
+            )}
+            {isAuthor && (
+              <button
+                onClick={() => onDelete(comment._id)}
+                className="text-red-600 hover:underline"
+              >
+                Delete
+              </button>
+            )}
+          </div>
         </div>
-        {isAuthor && (
-          <button
-            onClick={() => onDelete(comment._id)}
-            className="text-red-500 text-sm"
-          >
-            Delete
-          </button>
-        )}
       </div>
-
-      {user && (
-        <button
-          onClick={() => onReply(comment._id)}
-          className="text-blue-500 text-sm mt-1"
-        >
-          Reply
-        </button>
-      )}
 
       {/* Recursively render replies */}
       {comment.replies?.length > 0 &&
@@ -81,7 +83,6 @@ const PostDetails = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  // 🔄 Fetch post & comments
   useEffect(() => {
     const fetchPostAndComments = async () => {
       try {
@@ -102,7 +103,16 @@ const PostDetails = () => {
     fetchPostAndComments();
   }, [id]);
 
+  const refreshComments = async () => {
+    const updated = await axios.get(
+      `http://localhost:5000/api/comments/post/${id}`
+    );
+    setComments(updated.data);
+  };
+
   const handleSubmitComment = async () => {
+    if (!commentInput.trim()) return;
+
     try {
       await axios.post(`http://localhost:5000/api/comments/${id}`, {
         content: commentInput,
@@ -110,80 +120,78 @@ const PostDetails = () => {
       });
       setCommentInput("");
       setReplyTo(null);
-      const updated = await axios.get(
-        `http://localhost:5000/api/comments/post/${id}`
-      );
-      setComments(updated.data);
+      refreshComments();
     } catch (error) {
       console.error("Failed to post comment", error);
     }
   };
 
-  const handleReply = (parentId) => {
-    setReplyTo(parentId);
-  };
+  const handleReply = (parentId) => setReplyTo(parentId);
 
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:5000/api/posts/${id}`);
       navigate("/");
     } catch (error) {
-      console.error("Delete failed");
+      console.error("Delete failed",error);
     }
   };
 
   const handleCommentDelete = async (commentId) => {
     try {
       await axios.delete(`http://localhost:5000/api/comments/${commentId}`);
-      const updated = await axios.get(
-        `http://localhost:5000/api/comments/post/${id}`
-      );
-      setComments(updated.data);
+      refreshComments();
     } catch (error) {
       console.error("Failed to delete comment", error);
     }
   };
 
-  if (!post)
-    return <div className="text-center py-8">Post not found or loading...</div>;
+  if (!post) {
+    return (
+      <div className="text-center py-8 text-gray-500">Loading post...</div>
+    );
+  }
 
   const isAuthor = user && post.author._id === user._id;
-  const PostCreatedAt = new Date(post.createdAt).toLocaleString("en-us", {
+  const postDate = new Date(post.createdAt).toLocaleString("en-us", {
     month: "long",
     day: "numeric",
     year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-2 text-center tracking-wide uppercase">
+      <h1 className="text-3xl font-bold text-center mb-2 uppercase tracking-wide">
         {post.title}
       </h1>
-      <p className="text-gray-500 mb-4 text-lg text-center">
-        By {post.author.username} — {PostCreatedAt}
+      <p className="text-gray-500 text-center text-sm mb-4">
+        By <span className="font-medium">{post.author.username}</span> on{" "}
+        {postDate}
       </p>
-      <div className="text-gray-800 mb-4 text-justify tracking-wide">
+      <div className="text-gray-800 leading-relaxed mb-4 text-justify">
         {post.content}
       </div>
 
-      <p className="text-sm text-gray-600 pt-4">
-        <span className="bg-yellow-300 px-2 py-1 rounded">
+      <p className="text-sm text-gray-600 mb-6">
+        <span className="bg-yellow-200 px-2 py-1 rounded">
           Tags: {post.tags.join(", ")}
         </span>{" "}
-        | Category: <b>{post.category}</b>
+        | <strong>Category:</strong> {post.category}
       </p>
 
       {isAuthor && (
-        <div className="flex gap-4 mt-4">
-          <Link to={`/edit/${id}`} className="text-blue-600 hover:underline">
+        <div className="flex gap-4 mb-6">
+          <Link
+            to={`/edit/${id}`}
+            className="text-blue-600 font-medium hover:underline"
+          >
             Edit
           </Link>
           <button
-            className="text-red-600 hover:underline"
             onClick={handleDelete}
+            className="text-red-600 font-medium hover:underline"
           >
             Delete
           </button>
@@ -191,23 +199,23 @@ const PostDetails = () => {
       )}
 
       <hr className="my-6" />
-      <h2 className="text-xl font-semibold mb-2">Comments</h2>
+      <h2 className="text-xl font-semibold mb-4">Comments</h2>
 
       {user ? (
-        <div className="mb-4">
+        <div className="mb-6">
           <textarea
-            className="w-full border rounded p-2 mb-2"
+            className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:ring-blue-200"
             rows="3"
             placeholder={
-              replyTo ? "Replying to a comment..." : "Add a comment..."
+              replyTo ? "Replying to a comment..." : "Write a comment..."
             }
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
           />
-          <div className="flex gap-2">
+          <div className="flex gap-3 mt-2">
             <button
               onClick={handleSubmitComment}
-              className="bg-blue-600 text-white px-4 py-1 rounded"
+              className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition"
             >
               {replyTo ? "Reply" : "Comment"}
             </button>
@@ -216,7 +224,7 @@ const PostDetails = () => {
                 onClick={() => setReplyTo(null)}
                 className="text-gray-600 underline"
               >
-                Cancel
+                Cancel Reply
               </button>
             )}
           </div>
