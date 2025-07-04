@@ -48,46 +48,42 @@ const PostList = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold uppercase tracking-wide text-gray-800">
+    <div className="max-w-6xl mx-auto py-10 px-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+        <h1 className="text-3xl sm:text-4xl font-bold  text-gray-900 tracking-wide">
           Recent Posts
         </h1>
-        <div className="flex gap-4">
+        <div className="flex gap-3">
           <Link
             to="/create"
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition focus:ring-2 focus:ring-green-400"
           >
             + Create
           </Link>
-          <button
-            onClick={() => dispatch(logoutUser())}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-          >
-            Logout
-          </button>
+        
         </div>
       </div>
 
       {/* Filters */}
-      <div className="mb-6 flex flex-wrap gap-3 items-center">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-8">
         <input
           type="text"
           placeholder="Filter by Tag"
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
-          className="border px-3 py-2 rounded w-full sm:w-auto focus:outline-none focus:ring focus:ring-blue-300"
+          className="border px-3 py-2 rounded w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
         />
         <input
           type="text"
           placeholder="Filter by Category"
           value={categoryInput}
           onChange={(e) => setCategoryInput(e.target.value)}
-          className="border px-3 py-2 rounded w-full sm:w-auto focus:outline-none focus:ring focus:ring-blue-300"
+          className="border px-3 py-2 rounded w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
         />
         <button
           onClick={handleFilter}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-400"
         >
           Apply Filters
         </button>
@@ -95,43 +91,48 @@ const PostList = () => {
 
       {/* Posts */}
       {loading ? (
-        <p className="text-center text-gray-500">Loading...</p>
+        <p className="text-center text-gray-500 animate-pulse">Loading...</p>
       ) : posts.length > 0 ? (
-        posts.map((post) => (
-          <div
-            key={post._id}
-            className="bg-white shadow-md hover:shadow-lg transition p-6 mb-5 rounded-lg"
-          >
-            <Link
-              to={`/posts/${post._id}`}
-              className="text-2xl text-blue-600 font-semibold hover:underline"
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <div
+              key={post._id}
+              className="bg-white rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 p-5 flex flex-col justify-between"
             >
-              {post.title}
-            </Link>
-            <p className="text-sm text-gray-600 mt-1">
-              by <span className="font-medium">{post.author.username}</span>
-            </p>
-            <div className="text-gray-800 mt-3 text-sm leading-relaxed">
-              {post.content.slice(0, 150)}...
+              <div>
+                <Link
+                  to={`/posts/${post._id}`}
+                  className="text-xl font-semibold text-blue-600 hover:underline"
+                >
+                  {post.title}
+                </Link>
+                <p className="text-xs text-gray-500 mt-1">
+                  by{" "}
+                  <span className="font-medium">{post.author.username}</span>
+                </p>
+                <p className="text-sm text-gray-700 mt-3 line-clamp-3">
+                  {post.content}
+                </p>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2 text-xs text-gray-600">
+                <span className="bg-yellow-100 text-gray-800 px-2 py-1 rounded">
+                  Tags: {post.tags?.join(", ") || "None"}
+                </span>
+                <span className="text-gray-500">|</span>
+                <span className="font-medium">Category:</span> {post.category}
+              </div>
             </div>
-            <div className="mt-4 text-xs text-gray-600 flex flex-wrap items-center gap-2">
-              <span className="bg-yellow-200 px-2 py-1 rounded text-gray-800">
-                Tags: {post.tags?.join(", ") || "None"}
-              </span>
-              <span className="text-gray-500">|</span>
-              <span className="font-medium">Category:</span> {post.category}
-            </div>
-          </div>
-        ))
+          ))}
+        </div>
       ) : (
         <p className="text-center text-gray-500 mt-8">No posts found.</p>
       )}
 
       {/* Pagination */}
-      <div className="flex justify-center gap-4 mt-8">
+      <div className="flex justify-center gap-4 mt-10">
         <button
           onClick={handlePrev}
-          className="px-4 py-2 border rounded disabled:opacity-40"
+          className="px-4 py-2 border rounded disabled:opacity-40 hover:bg-gray-50 transition"
           disabled={currentPage === 1}
         >
           ← Prev
@@ -141,7 +142,7 @@ const PostList = () => {
         </span>
         <button
           onClick={handleNext}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded hover:bg-gray-50 transition"
         >
           Next →
         </button>
