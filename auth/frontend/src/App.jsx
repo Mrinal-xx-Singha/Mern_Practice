@@ -11,6 +11,7 @@ import PostDetails from "./components/posts/PostDetails";
 import EditPost from "./components/posts/EditPost";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
+import Profile from "./components/Profile";
 
 const App = () => {
   const { user, loading } = useSelector((state) => state.auth);
@@ -52,6 +53,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <CreatePost />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
               </PrivateRoute>
             }
           />

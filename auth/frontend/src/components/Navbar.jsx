@@ -17,7 +17,10 @@ const Navbar = () => {
   return (
     <nav className="bg-white border-b shadow-sm py-4 px-6 mb-6">
       <div className="flex justify-between items-center max-w-6xl mx-auto">
-        <Link to="/" className="text-xl font-bold text-gray-600 uppercase tracking-wider">
+        <Link
+          to="/"
+          className="text-xl font-bold text-gray-600 uppercase tracking-wider"
+        >
           Mrinals Journal
         </Link>
         <div className="flex items-center gap-4 text-sm">
@@ -30,6 +33,9 @@ const Navbar = () => {
                 New Post
               </Link>
               <span className="text-gray-600">|</span>
+              <Link to="/profile" className="hover:underline">
+                Profile
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-red-500 hover:underline"

@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
 const commentRoutes = require("./routes/comments");
+const profileRoutes = require("./routes/profile")
 const User = require("./models/User");
 const auth = require("./middleware/auth");
 const cors = require("cors");
@@ -29,6 +30,7 @@ mongoose
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/users",profileRoutes)
 app.use("/api/comments", commentRoutes);
 
 app.get("/api/protected", auth, async (req, res) => {
