@@ -11,6 +11,17 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    reactions:[
+      {
+        user:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
+        emoji:String
+      }
+    ],
+    views:{
+      type:Number,
+      default:0
+
+    },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   },
