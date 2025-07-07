@@ -83,6 +83,40 @@ const PostDetails = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
+  const emojiOptions = ["👍", "❤️", "😂", "😢"];
+  const [reactionCounts, setReactionCounts] = useState({});
+  const [userReaction, setUserReaction] = useState("");
+
+  console.log(post?.views)
+
+  useEffect(() => {
+    if (post && post.reactions) {
+      const counts = { "👍": 0, "❤️": 0, "😂": 0, "😢": 0 };
+      post.reactions.forEach((r) => {
+        counts[r.emoji] = (counts[r.emoji] || 0) + 1;
+        if (r.user === user?.id) {
+          setUserReaction(r.emoji);
+        }
+      });
+      setReactionCounts(counts);
+    }
+  }, [post]);
+
+  const handleReact = async (emoji) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:5000/api/posts/react/${post._id}`,
+        { emoji },
+        { withCredentials: true }
+      );
+
+      const updatedPost = { ...post, reactions: res.data.reactions };
+      setPost(updatedPost);
+    } catch (error) {
+      console.error("Failed to react:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchPostAndComments = async () => {
       try {
@@ -133,7 +167,7 @@ const PostDetails = () => {
       await axios.delete(`http://localhost:5000/api/posts/${id}`);
       navigate("/");
     } catch (error) {
-      console.error("Delete failed",error);
+      console.error("Delete failed", error);
     }
   };
 
@@ -170,8 +204,20 @@ const PostDetails = () => {
         By <span className="font-medium">{post.author.username}</span> on{" "}
         {postDate}
       </p>
+      <p className="text-sm text-gray-500 mb-2">Views: {post.views || 0}</p>
       <div className="text-gray-800 leading-relaxed mb-4 text-justify">
         {post.content}
+      </div>
+      <div className="flex gap-3 mb-4">
+        {emojiOptions.map((emoji) => (
+          <button
+            onClick={() => handleReact(emoji)}
+            key={emoji}
+            className={`text-2xl ${userReaction === emoji ? "scale-125" : ""}`}
+          >
+            {emoji} {reactionCounts[emoji] || 0}
+          </button>
+        ))}
       </div>
 
       <p className="text-sm text-gray-600 mb-6">

@@ -94,41 +94,23 @@ router.delete("/:id", auth, checkAuthorOrAdmin, async (req, res) => {
 // Patch /api/posts/react/:postId
 router.patch("/react/:postId", auth, async (req, res) => {
   const { emoji } = req.body;
-  const validEmojis = ["👍", "❤️", "😂", "😢"];
-  if (!validEmojis.includes(emoji)) {
+  const post = await Post.findById(req.params.postId);
+
+  if (!["👍", "❤️", "😂", "😢"].includes(emoji)) {
     return res.status(400).json({ error: "Invalid emoji" });
   }
-
-  const post = await Post.findById(req.params.postId);
-  if (!post) return res.status(404).json({ error: "Post not found" });
 
   const existing = post.reactions.find(
     (r) => r.user.toString() === req.user.id
   );
-
   if (existing) {
-    if (existing.emoji === emoji) {
-      // Same emoji → remove reaction (toggle off)
-      post.reactions = post.reactions.filter(
-        (r) => r.user.toString() !== req.user.id
-      );
-    } else {
-      // Update reaction
-      existing.emoji = emoji;
-    }
+    existing.emoji = emoji; // update
   } else {
-    // New reaction
     post.reactions.push({ user: req.user.id, emoji });
   }
 
   await post.save();
-
-  const emojiCount = {};
-  validEmojis.forEach((e) => {
-    emojiCount[e] = post.reactions.filter((r) => r.emoji === e).length;
-  });
-
-  res.json({ message: "Reaction updated", reactions: emojiCount });
+  res.json({ message: "Reaction updated", reactions: post.reactions });
 });
 
 module.exports = router;
