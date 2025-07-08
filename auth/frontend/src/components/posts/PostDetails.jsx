@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import { ThumbsUp, MessageCircle, Trash2, Edit, Eye } from "lucide-react";
 
 // 🧩 Recursive Comment Component
 const CommonItem = ({ comment, onReply, onDelete, user }) => {
@@ -15,8 +17,10 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
       );
       setLikes(res.data.likes);
       setLiked(res.data.liked);
+      toast.success(res.data.liked ? "👍 Liked!" : "👍 Unliked!");
     } catch (err) {
-      console.error("Failed to toggle like");
+      console.error("Failed to toggle like", err);
+      toast.error("🚫 Failed to like comment.");
     }
   };
 
@@ -30,29 +34,29 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
             <span className="font-semibold">{comment.author?.username}</span>:{" "}
             {comment.content}
           </p>
-          <div className="flex gap-3 mt-1 text-sm text-gray-600">
+          <div className="flex gap-4 mt-1 text-sm text-gray-600 items-center">
             <button
               onClick={toggleLike}
-              className={`hover:text-red-600 transition ${
+              className={`flex items-center gap-1 hover:text-red-600 transition ${
                 liked ? "text-red-600" : ""
               }`}
             >
-              👍 {likes}
+              <ThumbsUp size={16} /> {likes}
             </button>
             {user && (
               <button
                 onClick={() => onReply(comment._id)}
-                className="text-blue-600 hover:underline"
+                className="flex items-center gap-1 text-blue-600 hover:underline"
               >
-                Reply
+                <MessageCircle size={16} /> Reply
               </button>
             )}
             {isAuthor && (
               <button
                 onClick={() => onDelete(comment._id)}
-                className="text-red-600 hover:underline"
+                className="flex items-center gap-1 text-red-600 hover:underline"
               >
-                Delete
+                <Trash2 size={16} /> Delete
               </button>
             )}
           </div>
@@ -87,8 +91,6 @@ const PostDetails = () => {
   const [reactionCounts, setReactionCounts] = useState({});
   const [userReaction, setUserReaction] = useState("");
 
-  console.log(post?.views)
-
   useEffect(() => {
     if (post && post.reactions) {
       const counts = { "👍": 0, "❤️": 0, "😂": 0, "😢": 0 };
@@ -109,11 +111,12 @@ const PostDetails = () => {
         { emoji },
         { withCredentials: true }
       );
-
       const updatedPost = { ...post, reactions: res.data.reactions };
       setPost(updatedPost);
+      toast.success(`Reacted with ${emoji}`);
     } catch (error) {
       console.error("Failed to react:", error);
+      toast.error("🚫 Failed to react.");
     }
   };
 
@@ -131,6 +134,7 @@ const PostDetails = () => {
         setComments(commentsRes.data);
       } catch (err) {
         console.error(err);
+        toast.error("🚫 Failed to load post.");
         setPost(null);
       }
     };
@@ -146,7 +150,6 @@ const PostDetails = () => {
 
   const handleSubmitComment = async () => {
     if (!commentInput.trim()) return;
-
     try {
       await axios.post(`http://localhost:5000/api/comments/${id}`, {
         content: commentInput,
@@ -155,8 +158,10 @@ const PostDetails = () => {
       setCommentInput("");
       setReplyTo(null);
       refreshComments();
+      toast.success("💬 Comment posted!");
     } catch (error) {
       console.error("Failed to post comment", error);
+      toast.error("🚫 Failed to post comment.");
     }
   };
 
@@ -165,9 +170,11 @@ const PostDetails = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:5000/api/posts/${id}`);
+      toast.success("🗑️ Post deleted!");
       navigate("/");
     } catch (error) {
       console.error("Delete failed", error);
+      toast.error("🚫 Failed to delete post.");
     }
   };
 
@@ -175,14 +182,18 @@ const PostDetails = () => {
     try {
       await axios.delete(`http://localhost:5000/api/comments/${commentId}`);
       refreshComments();
+      toast.success("🗑️ Comment deleted!");
     } catch (error) {
       console.error("Failed to delete comment", error);
+      toast.error("🚫 Failed to delete comment.");
     }
   };
 
   if (!post) {
     return (
-      <div className="text-center py-8 text-gray-500">Loading post...</div>
+      <div className="text-center py-8 text-gray-500 animate-pulse">
+        Loading post...
+      </div>
     );
   }
 
@@ -204,7 +215,9 @@ const PostDetails = () => {
         By <span className="font-medium">{post.author.username}</span> on{" "}
         {postDate}
       </p>
-      <p className="text-sm text-gray-500 mb-2">Views: {post.views || 0}</p>
+      <p className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+        <Eye size={16} /> Views: {post.views || 0}
+      </p>
       <div className="text-gray-800 leading-relaxed mb-4 text-justify">
         {post.content}
       </div>
@@ -213,7 +226,9 @@ const PostDetails = () => {
           <button
             onClick={() => handleReact(emoji)}
             key={emoji}
-            className={`text-2xl ${userReaction === emoji ? "scale-125" : ""}`}
+            className={`text-2xl transition-transform hover:scale-110 ${
+              userReaction === emoji ? "scale-125" : ""
+            }`}
           >
             {emoji} {reactionCounts[emoji] || 0}
           </button>
@@ -222,30 +237,30 @@ const PostDetails = () => {
 
       <p className="text-sm text-gray-600 mb-6">
         <span className="bg-yellow-200 px-2 py-1 rounded">
-          Tags: {post.tags.join(", ")}
+          🏷️ Tags: {post.tags.join(", ")}
         </span>{" "}
-        | <strong>Category:</strong> {post.category}
+        | <strong>📂 Category:</strong> {post.category}
       </p>
 
       {isAuthor && (
         <div className="flex gap-4 mb-6">
           <Link
             to={`/edit/${id}`}
-            className="text-blue-600 font-medium hover:underline"
+            className="flex items-center gap-1 text-blue-600 font-medium hover:underline"
           >
-            Edit
+            <Edit size={16} /> Edit
           </Link>
           <button
             onClick={handleDelete}
-            className="text-red-600 font-medium hover:underline"
+            className="flex items-center gap-1 text-red-600 font-medium hover:underline"
           >
-            Delete
+            <Trash2 size={16} /> Delete
           </button>
         </div>
       )}
 
       <hr className="my-6" />
-      <h2 className="text-xl font-semibold mb-4">Comments</h2>
+      <h2 className="text-xl font-semibold mb-4">💬 Comments</h2>
 
       {user ? (
         <div className="mb-6">
@@ -253,7 +268,7 @@ const PostDetails = () => {
             className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:ring-blue-200"
             rows="3"
             placeholder={
-              replyTo ? "Replying to a comment..." : "Write a comment..."
+              replyTo ? "↩️ Replying to a comment..." : "Write a comment..."
             }
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
@@ -263,7 +278,7 @@ const PostDetails = () => {
               onClick={handleSubmitComment}
               className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition"
             >
-              {replyTo ? "Reply" : "Comment"}
+              {replyTo ? "↩️ Reply" : "💬 Comment"}
             </button>
             {replyTo && (
               <button

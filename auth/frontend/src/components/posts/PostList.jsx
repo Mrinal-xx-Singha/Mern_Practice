@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts } from "../../redux/slices/postSlice";
-import { logoutUser } from "../../redux/slices/authSlice";
 import { Link, useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const PostList = () => {
   const dispatch = useDispatch();
-  const { posts, loading } = useSelector((state) => state.posts);
+  const { posts, loading, error } = useSelector((state) => state.posts);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = parseInt(searchParams.get("page")) || 1;
@@ -21,12 +21,19 @@ const PostList = () => {
     dispatch(fetchPosts(query));
   }, [dispatch, currentPage, currentTag, currentCategory]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(`🚫 ${error}`);
+    }
+  }, [error]);
+
   const handleFilter = () => {
     const params = {};
     if (tagInput) params.tag = tagInput;
     if (categoryInput) params.category = categoryInput;
     params.page = 1;
     setSearchParams(params);
+    toast.success("✅ Filters applied!");
   };
 
   const handlePrev = () => {
@@ -51,32 +58,29 @@ const PostList = () => {
     <div className="max-w-6xl mx-auto py-10 px-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-        <h1 className="text-3xl sm:text-4xl font-bold  text-gray-900 tracking-wide">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-wide flex items-center gap-2 uppercase">
           Recent Posts
         </h1>
-        <div className="flex gap-3">
-          <Link
-            to="/create"
-            className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition focus:ring-2 focus:ring-green-400"
-          >
-            + Create
-          </Link>
-        
-        </div>
+        <Link
+          to="/create"
+          className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition focus:ring-2 focus:ring-green-400"
+        >
+          ➕ Create
+        </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-8">
+      <div className="flex px-5 flex-col sm:flex-row flex-wrap gap-3 mb-8">
         <input
           type="text"
-          placeholder="Filter by Tag"
+          placeholder="🔍 Filter by Tag"
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           className="border px-3 py-2 rounded w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
         />
         <input
           type="text"
-          placeholder="Filter by Category"
+          placeholder="📂 Filter by Category"
           value={categoryInput}
           onChange={(e) => setCategoryInput(e.target.value)}
           className="border px-3 py-2 rounded w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
@@ -85,13 +89,13 @@ const PostList = () => {
           onClick={handleFilter}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-400"
         >
-          Apply Filters
+          ✅ Apply Filters
         </button>
       </div>
 
       {/* Posts */}
       {loading ? (
-        <p className="text-center text-gray-500 animate-pulse">Loading...</p>
+        <p className="text-center text-gray-500 animate-pulse">⏳ Loading posts...</p>
       ) : posts.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
@@ -107,8 +111,7 @@ const PostList = () => {
                   {post.title}
                 </Link>
                 <p className="text-xs text-gray-500 mt-1">
-                  by{" "}
-                  <span className="font-medium">{post.author.username}</span>
+                  ✍️ by <span className="font-medium">{post.author.username}</span>
                 </p>
                 <p className="text-sm text-gray-700 mt-3 line-clamp-3">
                   {post.content}
@@ -116,16 +119,16 @@ const PostList = () => {
               </div>
               <div className="mt-4 flex flex-wrap gap-2 text-xs text-gray-600">
                 <span className="bg-yellow-100 text-gray-800 px-2 py-1 rounded">
-                  Tags: {post.tags?.join(", ") || "None"}
+                  🏷️ {post.tags?.join(", ") || "No tags"}
                 </span>
                 <span className="text-gray-500">|</span>
-                <span className="font-medium">Category:</span> {post.category}
+                <span className="font-medium">📂 {post.category || "Uncategorized"}</span>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500 mt-8">No posts found.</p>
+        <p className="text-center text-gray-500 mt-8">⚠️ No posts found.</p>
       )}
 
       {/* Pagination */}
@@ -138,7 +141,7 @@ const PostList = () => {
           ← Prev
         </button>
         <span className="px-4 py-2 font-medium text-gray-700 bg-gray-100 rounded">
-          Page {currentPage}
+          📄 Page {currentPage}
         </span>
         <button
           onClick={handleNext}
