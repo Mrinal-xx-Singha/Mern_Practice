@@ -11,17 +11,17 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    reactions:[
+    reactions: [
       {
-        user:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
-        emoji:String
-      }
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        emoji: String,
+      },
     ],
-    views:{
-      type:Number,
-      default:0
-
+    views: {
+      type: Number,
+      default: 0,
     },
+    avatar: { type: String, default: "/assets/avatar1.png" }, // avatar for the post, if any
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   },
