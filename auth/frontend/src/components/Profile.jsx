@@ -38,6 +38,10 @@ const Profile = () => {
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
+    if (!file?.type.startsWith("image/")) {
+      alert("Please select a valid image file");
+      return;
+    }
     setFormData({ ...formData, avatar: file });
     setAvatarPreview(URL.createObjectURL(file));
   };
@@ -67,7 +71,7 @@ const Profile = () => {
     <div className="max-w-3xl mx-auto py-8 px-4">
       <div className="flex items-center gap-4 mb-6">
         <img
-          src={avatarPreview || "/default-avatar.png"}
+          src={avatarPreview || "https://ui-avatars.com/api/?name=User "}
           alt="Avatar"
           className="w-20 h-20 rounded-full object-cover border"
         />

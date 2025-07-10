@@ -52,9 +52,13 @@ const Navbar = () => {
 
               <Link
                 to="/profile"
-                className="flex items-center gap-1 hover:text-blue-600 transition"
+                className="flex items-center gap-2 hover:text-blue-600 transition"
               >
-                <User size={18} />
+                <img
+                  src={user?.avatar || "https://ui-avatars.com/api/?name=Userg"}
+                  alt="avatar"
+                  className="w-6 h-6 rounded-full object-cover border"
+                />
                 <span>Profile</span>
               </Link>
 
@@ -105,7 +109,11 @@ const Navbar = () => {
                 className="flex items-center gap-2 hover:text-blue-600 transition"
                 onClick={() => setMenuOpen(false)}
               >
-                <User size={18} />
+                <img
+                  src={user?.avatar || "https://ui-avatars.com/api/?name=User"}
+                  alt="avatar"
+                  className="w-6 h-6 rounded-full object-cover border"
+                />
                 <span>Profile</span>
               </Link>
               <button
