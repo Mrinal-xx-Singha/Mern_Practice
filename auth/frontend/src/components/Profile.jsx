@@ -12,6 +12,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({
     username: "",
     avatar: null,
+    bio: "",
   });
 
   useEffect(() => {
@@ -29,7 +30,11 @@ const Profile = () => {
       setUser(res.data.user);
       setPosts(res.data.posts);
       setTotalPage(res.data.totalPage);
-      setFormData({ username: res.data.user.username, avatar: null });
+      setFormData({
+        username: res.data.user.username,
+        avatar: null,
+        bio: res.data.bio || "",
+      });
       setAvatarPreview(res.data.user.avatar || "");
     } catch (error) {
       console.error("Profile load failed", error);
@@ -49,6 +54,7 @@ const Profile = () => {
   const handleUpdateProfile = async () => {
     const form = new FormData();
     form.append("username", formData.username);
+    form.append("bio",formData.bio)
     if (formData.avatar) {
       form.append("avatar", formData.avatar);
     }
@@ -78,9 +84,16 @@ const Profile = () => {
         <div>
           <h1 className="text-2xl font-bold">{user.username}</h1>
           <p className="text-gray-600">{user.email}</p>
+          {
+            user.bio &&(
+              <p className="text-gray-600 mb-1">
+                {user.bio}
+              </p>
+            )}
           <p className="text-sm text-gray-400">
             Joined on {new Date(user.createdAt).toLocaleDateString()}
           </p>
+
         </div>
       </div>
 
@@ -104,11 +117,20 @@ const Profile = () => {
               className="w-full border rounded px-3 py-2"
               placeholder="Username"
             />
+            <textarea
+              rows="4"
+              value={formData.bio}
+              onChange={(e) =>
+                setFormData({ ...formData, bio: e.target.value })
+              }
+              className="w-full border rounded px-3 py-2"
+              placeholder="Write something about yourself..."
+            />
             <input
               type="file"
               accept="image/*"
               onChange={handleAvatarChange}
-              className="w-full"
+              className="w-full border"
             />
             <div className="flex gap-3">
               <button

@@ -2,7 +2,7 @@ const express = require("express");
 const auth = require("../middleware/auth");
 const User = require("../models/User");
 const Post = require("../models/Post");
-require("dotenv").config()
+require("dotenv").config();
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
@@ -72,12 +72,13 @@ router.get("/profile", auth, async (req, res) => {
 // ✅ Add `upload.single("avatar")` as middleware here:
 router.put("/profile", auth, upload.single("avatar"), async (req, res) => {
   try {
-    const { username } = req.body;
+    const { username, bio } = req.body;
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     if (username) user.username = username;
+    if (bio) user.bio = bio;
 
     if (req.file && req.file.path) {
       user.avatar = req.file.path; // ✅ This is the Cloudinary image URL
@@ -91,6 +92,7 @@ router.put("/profile", auth, upload.single("avatar"), async (req, res) => {
         username: user.username,
         avatar: user.avatar,
         email: user.email,
+        bio: user.bio,
       },
     });
   } catch (error) {
@@ -98,6 +100,5 @@ router.put("/profile", auth, upload.single("avatar"), async (req, res) => {
     res.status(500).json({ error: "Failed to update profile" });
   }
 });
-
 
 module.exports = router;
