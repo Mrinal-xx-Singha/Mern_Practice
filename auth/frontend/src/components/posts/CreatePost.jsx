@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createPost } from "../../redux/slices/postSlice";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CreatePost = () => {
   const [form, setForm] = useState({
@@ -22,6 +23,7 @@ const CreatePost = () => {
     };
     dispatch(createPost(data));
     navigate("/");
+    toast.success("Post Created!");
   };
 
   return (

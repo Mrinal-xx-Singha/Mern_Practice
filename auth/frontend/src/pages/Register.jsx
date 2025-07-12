@@ -6,6 +6,7 @@ import {
   clearRegistered,
 } from "../redux/slices/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -21,6 +22,7 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(registerUser(form));
+    toast.success("User Registered!")
   };
 
   useEffect(() => {

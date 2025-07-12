@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const EditPost = () => {
   const { id } = useParams();
@@ -27,8 +28,10 @@ const EditPost = () => {
         tags:form.tags.split(",").map(t=>t.trim())
       })
       navigate(`/posts/${id}`)
+      toast.success("Post Updated Successfully!")
     } catch (error) {
       console.error("Update failed")
+      toast.error("Update failed")
     }
   }
   return (

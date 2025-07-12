@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -49,12 +50,13 @@ const Profile = () => {
     }
     setFormData({ ...formData, avatar: file });
     setAvatarPreview(URL.createObjectURL(file));
+    toast.success("profile pic updated");
   };
 
   const handleUpdateProfile = async () => {
     const form = new FormData();
     form.append("username", formData.username);
-    form.append("bio",formData.bio)
+    form.append("bio", formData.bio);
     if (formData.avatar) {
       form.append("avatar", formData.avatar);
     }
@@ -66,8 +68,10 @@ const Profile = () => {
       });
       setEditing(false);
       fetchProfile();
+      toast.success("Profile updated");
     } catch (err) {
       console.error("Profile update failed", err);
+      toast.error("Profile update failed", err);
     }
   };
 
@@ -84,16 +88,10 @@ const Profile = () => {
         <div>
           <h1 className="text-2xl font-bold">{user.username}</h1>
           <p className="text-gray-600">{user.email}</p>
-          {
-            user.bio &&(
-              <p className="text-gray-600 mb-1">
-                {user.bio}
-              </p>
-            )}
+          {user.bio && <p className="text-gray-600 mb-1">{user.bio}</p>}
           <p className="text-sm text-gray-400">
             Joined on {new Date(user.createdAt).toLocaleDateString()}
           </p>
-
         </div>
       </div>
 

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/authSlice";
+import toast from "react-hot-toast";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +13,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(loginUser({ email, password }));
+    toast.success("Login Successfully!")
   };
 
   return (
