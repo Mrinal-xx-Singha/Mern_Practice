@@ -79,6 +79,9 @@ router.put("/profile", auth, upload.single("avatar"), async (req, res) => {
 
     if (username) user.username = username;
     if (bio) user.bio = bio;
+    if (req.body.twitter) user.social.twitter = req.body.twitter;
+    if (req.body.github) user.social.github = req.body.github;
+    if (req.body.website) user.social.website = req.body.website;
 
     if (req.file && req.file.path) {
       user.avatar = req.file.path; // ✅ This is the Cloudinary image URL
