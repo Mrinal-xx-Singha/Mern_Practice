@@ -21,7 +21,7 @@ const postSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    avatar: { type: String, default: "/assets/avatar1.png" }, // avatar for the post, if any
+    avatar: { type: String}, // avatar for the post, if any
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   },

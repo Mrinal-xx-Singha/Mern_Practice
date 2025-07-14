@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { ThumbsUp, MessageCircle, Trash2, Edit, Eye } from "lucide-react";
+import MarkdownRenderer from "../MarkdownRenderer";
 
 // 🧩 Recursive Comment Component
 const CommonItem = ({ comment, onReply, onDelete, user }) => {
@@ -218,10 +219,11 @@ const PostDetails = () => {
       <p className="flex items-center gap-2 text-sm text-gray-500 mb-2">
         <Eye size={16} /> Views: {post.views || 0}
       </p>
-      <div className="text-gray-800 leading-relaxed mb-4 text-justify">
-        {post.content}
+      <div className="mt-2 w-full">
+        <MarkdownRenderer content={post.content} />
       </div>
-      <div className="flex gap-3 mb-4">
+
+      <div className="flex gap-3 mb-4 pt-3">
         {emojiOptions.map((emoji) => (
           <button
             onClick={() => handleReact(emoji)}

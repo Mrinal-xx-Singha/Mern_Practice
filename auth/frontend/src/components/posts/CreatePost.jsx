@@ -53,7 +53,7 @@ const CreatePost = () => {
         {/* Content */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Content
+            Content <span className="text-xs text-gray-400">(Markdown supported)</span>
           </label>
           <textarea
             placeholder="Write your post content here..."
