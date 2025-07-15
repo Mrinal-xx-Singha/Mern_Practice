@@ -25,7 +25,7 @@ const Navbar = () => {
       <div className="flex justify-between items-center max-w-6xl mx-auto px-4 py-3">
         {/* Logo */}
         <Link
-          to="/"
+          to="/feed"
           className="flex items-center gap-2 text-lg sm:text-xl font-semibold text-gray-700 tracking-wide hover:text-blue-600 transition"
         >
           <Clipboard size={24} />
@@ -35,7 +35,7 @@ const Navbar = () => {
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-6 text-gray-700 text-sm">
           <Link
-            to="/"
+            to="/feed"
             className="flex items-center gap-1 hover:text-blue-600 transition"
           >
             <Home size={18} />
@@ -57,7 +57,7 @@ const Navbar = () => {
                 className="flex items-center gap-2 hover:text-blue-600 transition"
               >
                 <img
-                  src={user?.avatar || "https://ui-avatars.com/api/?name=Userg"}
+                  src={user?.avatar || "https://ui-avatars.com/api/?name=User"}
                   alt="avatar"
                   className="w-6 h-6 rounded-full object-cover border"
                 />

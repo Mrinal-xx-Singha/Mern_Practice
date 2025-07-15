@@ -22,7 +22,7 @@ const CreatePost = () => {
       tags: form.tags.split(",").map((t) => t.trim()),
     };
     dispatch(createPost(data));
-    navigate("/");
+    navigate("/feed");
     toast.success("Post Created!");
   };
 
@@ -97,7 +97,7 @@ const CreatePost = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-medium transition"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium transition"
         >
           Publish Post
         </button>

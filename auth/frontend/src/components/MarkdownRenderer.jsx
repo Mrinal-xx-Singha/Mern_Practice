@@ -6,7 +6,7 @@ import "highlight.js/styles/github-dark.css";
 import toast from "react-hot-toast";
 
 const MarkdownRenderer = ({ content = "" }) => {
-    const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false);
   return (
     <div className="prose prose-lg max-w-none dark:prose-invert prose-code:before:hidden prose-code:after:hidden">
       <ReactMarkdown
@@ -19,7 +19,9 @@ const MarkdownRenderer = ({ content = "" }) => {
             const id = useId();
 
             const handleCopy = () => {
-              const text = Array.isArray(children) ? children.join("") : String(children);
+              const text = Array.isArray(children)
+                ? children.join("")
+                : String(children);
               navigator.clipboard.writeText(text);
               setCopied(true);
               toast.success("✅ Copied to clipboard!");

@@ -12,6 +12,7 @@ import EditPost from "./components/posts/EditPost";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 import Profile from "./components/Profile";
+import LandingPage from "./pages/LandingPage";
 
 const App = () => {
   const { user, loading } = useSelector((state) => state.auth);
@@ -33,15 +34,18 @@ const App = () => {
   }
 
   // Pages where you don’t want navbar (like auth)
-  const noNavbarRoutes = ["/login", "/register"];
+  const noNavbarRoutes = ["/login", "/register","/"];
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
       {!noNavbarRoutes.includes(location.pathname) && <Navbar />}
-      <div className="pt-4 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+      <div>
         <Routes>
+          <Route path="/" element={<LandingPage />}/> 
+          
+          {/* protected fee, visible only after login  */}
           <Route
-            path="/"
+            path="/feed"
             element={
               <PrivateRoute>
                 <PostList />

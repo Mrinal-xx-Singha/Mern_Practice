@@ -62,7 +62,7 @@ const PostList = () => {
         </h1>
         <Link
           to="/create"
-          className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 focus:ring-2 focus:ring-green-400 transition"
+          className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:ring-2 focus:ring-green-400 transition"
         >
           <Plus size={18} /> Create
         </Link>
@@ -95,15 +95,20 @@ const PostList = () => {
 
       {/* Posts Grid */}
       {loading ? (
-        <p className="text-center text-gray-500 animate-pulse">
-          ⏳ Loading posts...
-        </p>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="animate-pulse bg-white border rounded p-5 h-40"
+            />
+          ))}
+        </div>
       ) : posts.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <div
               key={post._id}
-              className="bg-white rounded-lg border shadow-sm hover:shadow-md transition transform hover:-translate-y-1 p-5 flex flex-col justify-between"
+              className="bg-white rounded-lg border shadow-sm   p-5 flex flex-col justify-between"
             >
               <div>
                 <Link
