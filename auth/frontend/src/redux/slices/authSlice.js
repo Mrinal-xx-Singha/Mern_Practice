@@ -7,6 +7,7 @@ export const getCurrentUser = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await axios.get("http://localhost:5000/api/protected");
+      console.log(res.data.user)
       return res.data.user;
     } catch (error) {
       return thunkAPI.rejectWithValue(null);

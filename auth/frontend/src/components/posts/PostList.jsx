@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts } from "../../redux/slices/postSlice";
 import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Plus, Funnel, UserRoundPen, Tags, Folder } from "lucide-react";
+import { Plus, Funnel, UserRoundPen, Tags, Folder, X } from "lucide-react";
 
 const PostList = () => {
   const dispatch = useDispatch();
@@ -20,6 +20,7 @@ const PostList = () => {
   useEffect(() => {
     const query = `?page=${currentPage}&tag=${currentTag}&category=${currentCategory}`;
     dispatch(fetchPosts(query));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [dispatch, currentPage, currentTag, currentCategory]);
 
   useEffect(() => {
@@ -33,6 +34,13 @@ const PostList = () => {
     params.page = 1;
     setSearchParams(params);
     toast.success("✅ Filters applied!");
+  };
+
+  const handleClearFilters = () => {
+    setTagInput("");
+    setCategoryInput("");
+    setSearchParams({ page: 1 });
+    toast("🔄 Filters cleared");
   };
 
   const handlePrev = () => {
@@ -53,6 +61,10 @@ const PostList = () => {
     });
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleFilter();
+  };
+
   return (
     <div className="max-w-6xl mx-auto py-10 px-4">
       {/* Header */}
@@ -62,19 +74,20 @@ const PostList = () => {
         </h1>
         <Link
           to="/create"
-          className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:ring-2 focus:ring-green-400 transition"
+          className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 transition"
         >
           <Plus size={18} /> Create
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center mb-8">
+      <div className="bg-gray-50 p-4 rounded-md shadow-sm mb-8 flex flex-col sm:flex-row gap-3 items-center">
         <input
           type="text"
           placeholder="🔍 Filter by Tag"
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="border px-4 py-2 rounded w-full sm:w-64 shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
         />
         <input
@@ -82,24 +95,37 @@ const PostList = () => {
           placeholder="📂 Filter by Category"
           value={categoryInput}
           onChange={(e) => setCategoryInput(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="border px-4 py-2 rounded w-full sm:w-64 shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
         />
-        <button
-          onClick={handleFilter}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-400 flex items-center gap-1"
-        >
-          <Funnel size={16} />
-          Apply
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleFilter}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-400 flex items-center gap-1"
+          >
+            <Funnel size={16} />
+            Apply
+          </button>
+          <button
+            onClick={handleClearFilters}
+            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition flex items-center gap-1"
+          >
+            <X size={16} />
+            Clear
+          </button>
+        </div>
       </div>
 
       {/* Posts Grid */}
       {loading ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          aria-busy="true"
+        >
           {Array.from({ length: 6 }).map((_, idx) => (
             <div
               key={idx}
-              className="animate-pulse bg-white border rounded p-5 h-40"
+              className="animate-pulse bg-white border rounded p-5 h-48"
             />
           ))}
         </div>
@@ -108,12 +134,12 @@ const PostList = () => {
           {posts.map((post) => (
             <div
               key={post._id}
-              className="bg-white rounded-lg border shadow-sm   p-5 flex flex-col justify-between"
+              className="bg-white rounded-lg border shadow hover:shadow-md transition transform hover:-translate-y-1 p-5 flex flex-col justify-between"
             >
               <div>
                 <Link
                   to={`/posts/${post._id}`}
-                  className="text-lg font-semibold text-blue-600 hover:underline"
+                  className="text-lg font-bold text-blue-700 hover:underline"
                 >
                   {post.title}
                 </Link>
@@ -125,7 +151,6 @@ const PostList = () => {
                   {post.content}
                 </p>
               </div>
-
               <div className="mt-4 flex flex-wrap gap-2 text-xs">
                 {post.tags?.length ? (
                   <span className="flex items-center gap-1 bg-blue-50 text-blue-800 px-2 py-1 rounded-full">
@@ -144,7 +169,9 @@ const PostList = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500 mt-8">⚠️ No posts found.</p>
+        <p className="text-center text-gray-500 mt-8">
+          ⚠️ No posts found. Try different filters or create a post!
+        </p>
       )}
 
       {/* Pagination */}
@@ -152,7 +179,11 @@ const PostList = () => {
         <button
           onClick={handlePrev}
           disabled={currentPage === 1}
-          className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-100 disabled:opacity-40 transition"
+          className={`px-4 py-2 rounded transition ${
+            currentPage === 1
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
         >
           ← Prev
         </button>
@@ -161,7 +192,7 @@ const PostList = () => {
         </span>
         <button
           onClick={handleNext}
-          className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-100 transition"
+          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
         >
           Next →
         </button>

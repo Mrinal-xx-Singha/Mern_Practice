@@ -4,9 +4,10 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import toast from "react-hot-toast";
-
+import { Copy, CopyCheck } from "lucide-react";
 const MarkdownRenderer = ({ content = "" }) => {
   const [copied, setCopied] = useState(false);
+
   return (
     <div className="prose prose-lg max-w-none dark:prose-invert prose-code:before:hidden prose-code:after:hidden">
       <ReactMarkdown
@@ -25,13 +26,13 @@ const MarkdownRenderer = ({ content = "" }) => {
               navigator.clipboard.writeText(text);
               setCopied(true);
               toast.success("✅ Copied to clipboard!");
-              setTimeout(() => setCopied(false), 2000);
+              setTimeout(() => setCopied(false), 1500);
             };
 
             if (inline) {
               return (
                 <code
-                  className="bg-gray-100 dark:bg-gray-700 text-sm px-1.5 py-0.5 rounded font-mono"
+                  className="bg-gray-200 dark:bg-gray-700 text-sm px-1.5 py-0.5 rounded font-mono"
                   {...props}
                 >
                   {children}
@@ -40,23 +41,33 @@ const MarkdownRenderer = ({ content = "" }) => {
             }
 
             return (
-              <figure className="relative group my-6 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700">
+              <figure className="relative group my-6 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-sm">
                 {language && (
-                  <figcaption className="absolute top-0 left-0 bg-gray-900 text-white text-xs px-2 py-1 rounded-br-md font-mono">
+                  <figcaption className="absolute top-2 left-2 bg-gray-800 text-white text-xs px-2 py-0.5 rounded-md font-mono opacity-80">
                     {language}
                   </figcaption>
                 )}
-                <pre className="bg-gray-800 text-white p-4 text-sm overflow-x-auto">
-                  <code className={className} aria-labelledby={id} {...props}>
+                <pre className="p-4 text-sm overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
+                  <code
+                    className={`${className} font-mono`}
+                    aria-labelledby={id}
+                    {...props}
+                  >
                     {children}
                   </code>
                 </pre>
                 <button
                   aria-label="Copy code to clipboard"
                   onClick={handleCopy}
-                  className="absolute top-2 right-2 text-xs bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-600 transition opacity-0 group-hover:opacity-100"
+                  className={`absolute top-2 right-2 text-xs px-2 py-1 rounded-md transition-opacity duration-200 ${
+                    copied ? "opacity-100" : "opacity-80 hover:opacity-100"
+                  }`}
                 >
-                  {copied ? "Copied!" : "Copy"}
+                  {copied ? (
+                    <CopyCheck className="w-4 h-4" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                 </button>
               </figure>
             );

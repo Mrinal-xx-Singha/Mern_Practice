@@ -24,8 +24,10 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
       toast.error("🚫 Failed to like comment.");
     }
   };
+  console.log(user)
+  console.log(comment)
 
-  const isAuthor = user?.id === comment.author?._id || user?.role === "admin";
+  const isAuthor = user._id === comment.author._id || user?.role === "admin";
 
   return (
     <div className="ml-6 mt-4 border-l-2 pl-4 border-gray-200">
@@ -181,7 +183,9 @@ const PostDetails = () => {
 
   const handleCommentDelete = async (commentId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/comments/${commentId}`);
+      await axios.delete(`http://localhost:5000/api/comments/${commentId}`,{
+        withCredentials:true
+      });
       refreshComments();
       toast.success("🗑️ Comment deleted!");
     } catch (error) {
@@ -192,7 +196,8 @@ const PostDetails = () => {
 
   if (!post) {
     return (
-      <div className="text-center py-8 text-gray-500 animate-pulse">
+      <div className="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-gray-400 animate-pulse">
+        <div className="w-24 h-24 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mb-4" />
         Loading post...
       </div>
     );
@@ -208,53 +213,54 @@ const PostDetails = () => {
   });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-2 uppercase tracking-wide">
+    <div className="max-w-2xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+      <h1 className="text-3xl sm:text-4xl  font-bold text-center text-gray-900 mb-3 uppercase tracking-wide dark:text-gray-100">
         {post.title}
       </h1>
-      <p className="text-gray-500 text-center text-sm mb-4">
-        By <span className="font-medium">{post.author.username}</span> on{" "}
+      <p className="text-gray-500 text-center text-sm  dark:text-gray-400 mb-2">
+        By <span className="font-semibold">{post.author.username}</span> on{" "}
         {postDate}
       </p>
-      <p className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-        <Eye size={16} /> Views: {post.views || 0}
+      <p className="flex justify-center items-center gap-2 text-xs text-gray-500  dark:text-gray-400 mb-4">
+        <Eye size={16} /> {post.views ?? 0} views
       </p>
-      <div className="mt-2 w-full">
+      <div className="mt-2 prose dark:prose-invert max-w-none my-6">
         <MarkdownRenderer content={post.content} />
       </div>
 
-      <div className="flex gap-3 mb-4 pt-3">
+      <div className="flex justify-center gap-4 my-4 pt-3">
         {emojiOptions.map((emoji) => (
           <button
             onClick={() => handleReact(emoji)}
             key={emoji}
-            className={`text-2xl transition-transform hover:scale-110 ${
+            className={`text-2xl transition-transform hover:scale-110 focus:outline-none  rounded ${
               userReaction === emoji ? "scale-125" : ""
             }`}
           >
-            {emoji} {reactionCounts[emoji] || 0}
+            {emoji}
+            <span className="text-sm">{reactionCounts[emoji] ?? 0}</span>
           </button>
         ))}
       </div>
 
-      <p className="text-sm text-gray-600 mb-6">
-        <span className="bg-yellow-200 px-2 py-1 rounded">
-          🏷️ Tags: {post.tags.join(", ")}
+      <p className="text-sm text-gray-700 dark:text-gray-300 mb-6">
+        <span className="bg-yellow-100 dark:bg-yellow-700/20 text-yellow-800 datk:text-yellow-200 px-2 py-1 rounded">
+          🏷️ {post.tags.join(", ")}
         </span>{" "}
         | <strong>📂 Category:</strong> {post.category}
       </p>
 
       {isAuthor && (
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-6 my-6 justify-center">
           <Link
             to={`/edit/${id}`}
-            className="flex items-center gap-1 text-blue-600 font-medium hover:underline"
+            className="inline-flex items-center gap-1 text-blue-600 font-medium hover:underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300  transtion "
           >
-            <Edit size={16} /> Edit
+            <Edit size={18} /> Edit
           </Link>
           <button
             onClick={handleDelete}
-            className="flex items-center gap-1 text-red-600 font-medium hover:underline"
+            className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium transition"
           >
             <Trash2 size={16} /> Delete
           </button>
@@ -265,27 +271,27 @@ const PostDetails = () => {
       <h2 className="text-xl font-semibold mb-4">💬 Comments</h2>
 
       {user ? (
-        <div className="mb-6">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded p-4 mb-6 shadow-sm">
           <textarea
-            className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:ring-blue-200"
             rows="3"
             placeholder={
-              replyTo ? "↩️ Replying to a comment..." : "Write a comment..."
+              replyTo ? "↩️ Replying to comment..." : "Write a comment..."
             }
+            className="w-full p-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100"
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
           />
           <div className="flex gap-3 mt-2">
             <button
               onClick={handleSubmitComment}
-              className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
             >
               {replyTo ? "↩️ Reply" : "💬 Comment"}
             </button>
             {replyTo && (
               <button
                 onClick={() => setReplyTo(null)}
-                className="text-gray-600 underline"
+                className="text-gray-600 dark:text-gray-300 underline"
               >
                 Cancel Reply
               </button>
@@ -293,8 +299,11 @@ const PostDetails = () => {
           </div>
         </div>
       ) : (
-        <p className="text-sm text-gray-500 mb-4">
-          <Link to="/login" className="text-blue-600 underline">
+        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <Link
+            to="/login"
+            className="text-blue-600 hover:underline dark:text-blue-400"
+          >
             Login
           </Link>{" "}
           to comment.
@@ -305,13 +314,17 @@ const PostDetails = () => {
         <p className="text-gray-500">No comments yet.</p>
       ) : (
         comments.map((comment) => (
-          <CommonItem
-            key={comment._id}
-            comment={comment}
-            onReply={handleReply}
-            onDelete={handleCommentDelete}
-            user={user}
-          />
+          <div 
+          key={comment._id}
+          className="bg-white dark:bg-gray-900 rounded shadow p-3 mb-2">
+            <CommonItem
+              key={comment._id}
+              comment={comment}
+              onReply={handleReply}
+              onDelete={handleCommentDelete}
+              user={user}
+            />
+          </div>
         ))
       )}
     </div>
