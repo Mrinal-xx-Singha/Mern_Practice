@@ -34,15 +34,18 @@ const App = () => {
   }
 
   // Pages where you don’t want navbar (like auth)
-  const noNavbarRoutes = ["/login", "/register","/"];
+  const noNavbarRoutes = ["/login", "/register", "/"];
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
       {!noNavbarRoutes.includes(location.pathname) && <Navbar />}
       <div>
         <Routes>
-          <Route path="/" element={<LandingPage />}/> 
-          
+          <Route
+            path="/"
+            element={user ? <Navigate to="/feed" replace /> : <LandingPage />}
+          />
+
           {/* protected fee, visible only after login  */}
           <Route
             path="/feed"
