@@ -113,4 +113,22 @@ router.patch("/react/:postId", auth, async (req, res) => {
   res.json({ message: "Reaction updated", reactions: post.reactions });
 });
 
+router.get("/author/:authorId", auth, async (req, res) => {
+  const { authorId } = req.params;
+  const { exclude } = req.query;
+
+  try {
+    const posts = await Post.find({
+      author: authorId,
+      _id: { $ne: exclude },
+    })
+      .limit(3)
+      .sort({ createdAt: -1 })
+      .select("title thumbnail createdAt");
+
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;

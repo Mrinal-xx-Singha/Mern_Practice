@@ -26,6 +26,20 @@ export const createPost = createAsyncThunk(
   }
 );
 
+export const fetchMoreFromAuthor = createAsyncThunk(
+  "posts/moreFromAuthor",
+  async ({ authorId, exclude }, thunkAPI) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/posts/author/${authorId}?exclude=${exclude}`
+      );
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const deletePost = createAsyncThunk(
   "posts/delete",
   async (id, thunkAPI) => {
