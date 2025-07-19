@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { ThumbsUp, MessageCircle, Trash2, Edit, Eye } from "lucide-react";
 import MarkdownRenderer from "../MarkdownRenderer";
+import MoreFromAuthor from "../MoreFromAuthor";
 
 // 🧩 Recursive Comment Component
 const CommonItem = ({ comment, onReply, onDelete, user }) => {
@@ -93,6 +94,7 @@ const PostDetails = () => {
   const emojiOptions = ["👍", "❤️", "😂", "😢"];
   const [reactionCounts, setReactionCounts] = useState({});
   const [userReaction, setUserReaction] = useState("");
+
 
   useEffect(() => {
     if (post && post.reactions) {
@@ -327,6 +329,7 @@ const PostDetails = () => {
           </div>
         ))
       )}
+      <MoreFromAuthor authorId={post.author._id} currentPostId={post._id}/>
     </div>
   );
 };

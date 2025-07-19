@@ -54,7 +54,8 @@ export const deletePost = createAsyncThunk(
 
 const postSlice = createSlice({
   name: "posts",
-  initialState: { posts: [], loading: false, error: null },
+  initialState: { posts: [], loading: false, error: null, moreFromAuthor: [] },
+
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -66,6 +67,17 @@ const postSlice = createSlice({
         state.posts = action.payload;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchMoreFromAuthor.fulfilled, (state, action) => {
+        state.loading = false;
+        state.moreFromAuthor = action.payload;
+      })
+      .addCase(fetchMoreFromAuthor.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchMoreFromAuthor.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
