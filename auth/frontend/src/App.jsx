@@ -46,7 +46,7 @@ const App = () => {
             element={user ? <Navigate to="/feed" replace /> : <LandingPage />}
           />
 
-          {/* protected fee, visible only after login  */}
+          {/* protected feed, visible only after login  */}
           <Route
             path="/feed"
             element={

@@ -3,16 +3,19 @@ const router = express.Router();
 const Post = require("../models/Post");
 const auth = require("../middleware/auth");
 const checkAuthorOrAdmin = require("../middleware/checkAuthorOrAdmin");
+const upload = require("../middleware/upload");
 
-// Create Post (Auth required)
-router.post("/", auth, async (req, res) => {
+// Create Post (Auth required) Image support
+router.post("/", auth,upload.array("images",2), async (req, res) => {
   try {
     const { title, content, tags, category } = req.body;
+const imageUrls = req.files.map((file)=>file.path) //Cloudinary returns `file.path
     const newPost = new Post({
       title,
       content,
       tags,
       category,
+      images:imageUrls,
       author: req.user.id,
     });
     const savedPost = await newPost.save();
