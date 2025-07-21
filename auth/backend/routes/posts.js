@@ -6,16 +6,17 @@ const checkAuthorOrAdmin = require("../middleware/checkAuthorOrAdmin");
 const upload = require("../middleware/upload");
 
 // Create Post (Auth required) Image support
-router.post("/", auth,upload.array("images",2), async (req, res) => {
+router.post("/", auth, upload.array("images", 2), async (req, res) => {
   try {
     const { title, content, tags, category } = req.body;
-const imageUrls = req.files.map((file)=>file.path) //Cloudinary returns `file.path
+    const imageUrls = req.files.map((file) => file.path); //Cloudinary returns `file.path
+    console.log(imageUrls)
     const newPost = new Post({
       title,
       content,
       tags,
       category,
-      images:imageUrls,
+      images: imageUrls,
       author: req.user.id,
     });
     const savedPost = await newPost.save();

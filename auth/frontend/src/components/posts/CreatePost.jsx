@@ -12,18 +12,52 @@ const CreatePost = () => {
     category: "",
   });
 
+  const [images, setImages] = useState([]); // for storing image file
+  const [previews, setPreviews] = useState([]); // image preview
+  console.log(images);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+    const previewUrls = files.map((file) => URL.createObjectURL(file));
+    setPreviews(previewUrls);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
-      ...form,
-      tags: form.tags.split(",").map((t) => t.trim()),
-    };
-    dispatch(createPost(data));
-    navigate("/feed");
-    toast.success("Post Created!");
+
+    const formData = new FormData();
+    formData.append("title", form.title);
+    formData.append("content", form.content);
+    formData.append("category", form.category);
+    formData.append(
+      "tags",
+      JSON.stringify(form.tags.split(",").map((tag) => tag.trim()))
+    );
+    images.forEach((img) => {
+      formData.append("images", img);
+    });
+
+    dispatch(createPost(formData))
+      .unwrap()
+      .then(() => {
+        toast.success("Post Created!");
+        navigate("/feed");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to create post.");
+      });
+
+    console.log("Form Data Debug:");
+    console.log(formData.get("title"));
+    console.log(formData.get("content"));
+    console.log(formData.get("tags"));
+    console.log(formData.get("category"));
+    console.log(images.length, "images selected");
+    console.log(formData)
   };
 
   return (
@@ -34,6 +68,7 @@ const CreatePost = () => {
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded-lg p-6 space-y-5"
+        encType="multipart/form-data"
       >
         {/* Title */}
         <div>
@@ -45,7 +80,7 @@ const CreatePost = () => {
             placeholder="Enter post title"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="w-full border rounded px-3 py-2"
             required
           />
         </div>
@@ -53,13 +88,14 @@ const CreatePost = () => {
         {/* Content */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Content <span className="text-xs text-gray-400">(Markdown supported)</span>
+            Content{" "}
+            <span className="text-xs text-gray-400">(Markdown supported)</span>
           </label>
           <textarea
             placeholder="Write your post content here..."
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
-            className="w-full border rounded px-3 py-2 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="w-full border rounded px-3 py-2 h-32 resize-none"
             required
           />
         </div>
@@ -67,15 +103,14 @@ const CreatePost = () => {
         {/* Tags */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Tags{" "}
-            <span className="text-xs text-gray-400">(comma-separated)</span>
+            Tags (comma-separated)
           </label>
           <input
             type="text"
             placeholder="e.g. react, javascript, tailwind"
             value={form.tags}
             onChange={(e) => setForm({ ...form, tags: e.target.value })}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="w-full border rounded px-3 py-2"
           />
         </div>
 
@@ -89,15 +124,45 @@ const CreatePost = () => {
             placeholder="e.g. Web Development"
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="w-full border rounded px-3 py-2"
             required
           />
         </div>
 
-        {/* Submit Button */}
+        {/* Image Upload */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Upload Image
+          </label>
+          <input
+            type="file"
+            multiple
+            onChange={handleImageChange}
+            className="block w-full text-sm text-gray-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded file:border-0
+              file:text-sm file:font-semibold
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100"
+          />
+          {previews.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              {previews.map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt={`preview-${i}`}
+                  className="w-full max-h-60 object-cover rounded shadow"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium transition"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium"
         >
           Publish Post
         </button>

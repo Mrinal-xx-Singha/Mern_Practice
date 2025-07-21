@@ -18,7 +18,11 @@ export const createPost = createAsyncThunk(
   "posts/create",
   async (data, thunkAPI) => {
     try {
-      const res = axios.post("http://localhost:5000/api/posts", data);
+      const res = await axios.post("http://localhost:5000/api/posts", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -59,6 +63,18 @@ const postSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(createPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPost.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts.unshift(action.payload); // Add the new post to the top
+      })
+      .addCase(createPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(fetchPosts.pending, (state) => {
         state.loading = true;
       })

@@ -25,8 +25,8 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
       toast.error("🚫 Failed to like comment.");
     }
   };
-  console.log(user)
-  console.log(comment)
+  console.log(user);
+  console.log(comment);
 
   const isAuthor = user._id === comment.author._id || user?.role === "admin";
 
@@ -94,7 +94,6 @@ const PostDetails = () => {
   const emojiOptions = ["👍", "❤️", "😂", "😢"];
   const [reactionCounts, setReactionCounts] = useState({});
   const [userReaction, setUserReaction] = useState("");
-
 
   useEffect(() => {
     if (post && post.reactions) {
@@ -185,8 +184,8 @@ const PostDetails = () => {
 
   const handleCommentDelete = async (commentId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/comments/${commentId}`,{
-        withCredentials:true
+      await axios.delete(`http://localhost:5000/api/comments/${commentId}`, {
+        withCredentials: true,
       });
       refreshComments();
       toast.success("🗑️ Comment deleted!");
@@ -195,7 +194,6 @@ const PostDetails = () => {
       toast.error("🚫 Failed to delete comment.");
     }
   };
-
   if (!post) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-gray-400 animate-pulse">
@@ -219,6 +217,7 @@ const PostDetails = () => {
       <h1 className="text-3xl sm:text-4xl  font-bold text-center text-gray-900 mb-3 uppercase tracking-wide dark:text-gray-100">
         {post.title}
       </h1>
+
       <p className="text-gray-500 text-center text-sm  dark:text-gray-400 mb-2">
         By <span className="font-semibold">{post.author.username}</span> on{" "}
         {postDate}
@@ -226,10 +225,24 @@ const PostDetails = () => {
       <p className="flex justify-center items-center gap-2 text-xs text-gray-500  dark:text-gray-400 mb-4">
         <Eye size={16} /> {post.views ?? 0} views
       </p>
+      {/* Image  */}
+      {post.images && post.images.length > 0 && (
+        <div className="my-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {post.images.map((url, i) => (
+            <img
+              key={i}
+              src={url}
+              alt={`Post Image ${i + 1}`}
+              className="w-full h-auto object-cover rounded"
+            />
+          ))}
+        </div>
+      )}
+      {/* Markdown  */}
       <div className="mt-2 prose dark:prose-invert max-w-none my-6">
         <MarkdownRenderer content={post.content} />
       </div>
-
+      {/* Emoji */}
       <div className="flex justify-center gap-4 my-4 pt-3">
         {emojiOptions.map((emoji) => (
           <button
@@ -245,6 +258,7 @@ const PostDetails = () => {
         ))}
       </div>
 
+      {/* Tags */}
       <p className="text-sm text-gray-700 dark:text-gray-300 mb-6">
         <span className="bg-yellow-100 dark:bg-yellow-700/20 text-yellow-800 datk:text-yellow-200 px-2 py-1 rounded">
           🏷️ {post.tags.join(", ")}
@@ -316,9 +330,10 @@ const PostDetails = () => {
         <p className="text-gray-500">No comments yet.</p>
       ) : (
         comments.map((comment) => (
-          <div 
-          key={comment._id}
-          className="bg-white dark:bg-gray-900 rounded shadow p-3 mb-2">
+          <div
+            key={comment._id}
+            className="bg-white dark:bg-gray-900 rounded shadow p-3 mb-2"
+          >
             <CommonItem
               key={comment._id}
               comment={comment}
@@ -329,7 +344,7 @@ const PostDetails = () => {
           </div>
         ))
       )}
-      <MoreFromAuthor authorId={post.author._id} currentPostId={post._id}/>
+      <MoreFromAuthor authorId={post.author._id} currentPostId={post._id} />
     </div>
   );
 };
