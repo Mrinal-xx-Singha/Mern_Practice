@@ -214,7 +214,7 @@ const PostDetails = () => {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-3xl sm:text-4xl  font-bold text-center text-gray-900 mb-3 uppercase tracking-wide dark:text-gray-100">
+      <h1 className="text-3xl sm:text-4xl  font-bold text-center text-gray-900 mb-3 uppercase tracking-wide dark:text-gray-800">
         {post.title}
       </h1>
 
@@ -227,7 +227,7 @@ const PostDetails = () => {
       </p>
       {/* Image  */}
       {post.images && post.images.length > 0 && (
-        <div className="my-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="my-6 flex justify-center items-center max-w-lg">
           {post.images.map((url, i) => (
             <img
               key={i}
