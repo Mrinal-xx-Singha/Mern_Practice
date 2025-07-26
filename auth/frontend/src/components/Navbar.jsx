@@ -4,15 +4,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/slices/authSlice";
-import {
-  Clipboard,
-  Home,
-  Pen,
-  User,
-  LogOut,
-  Menu,
-  X,
-} from "lucide-react";
+import { Clipboard, Home, Pen, User, LogOut, Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
@@ -58,7 +50,10 @@ const Navbar = () => {
 
               <Link to="/profile" className={navLinkClass}>
                 <img
-                  src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || "User"}`}
+                  src={
+                    user?.avatar ||
+                    `https://ui-avatars.com/api/?name=${user?.name || "User"}`
+                  }
                   alt="avatar"
                   className="w-6 h-6 rounded-full border object-cover"
                 />
@@ -117,7 +112,10 @@ const Navbar = () => {
               onClick={() => setMenuOpen(false)}
             >
               <img
-                src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || "User"}`}
+                src={
+                  user?.avatar ||
+                  `https://ui-avatars.com/api/?name=${user?.name || "User"}`
+                }
                 alt="avatar"
                 className="w-6 h-6 rounded-full border object-cover"
               />

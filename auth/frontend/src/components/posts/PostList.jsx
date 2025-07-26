@@ -137,16 +137,31 @@ const PostList = () => {
               className="bg-white rounded-lg border shadow hover:shadow-md transition transform hover:-translate-y-1 p-5 flex flex-col justify-between"
             >
               <div>
+                {/* Thumbnail */}
+                <img
+                  src={
+                    post.images.length > 0
+                      ? post.images[0]
+                      : "https://placehold.co/600x400/EEE/31343C?font=poppins&text=BlogPost"
+                  }
+                  alt={post.title}
+                  className="w-full object-cover mb-2 h-48 rounded"
+                />
+                {/* Separation */}
+                <div className="border-4 mb-2 border-gray-700 rounded-lg " />
+                {/* Title */}
                 <Link
                   to={`/posts/${post._id}`}
                   className="text-lg font-bold text-blue-700 hover:underline"
                 >
                   {post.title}
                 </Link>
+                {/* Username */}
                 <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
                   <UserRoundPen size={14} />
                   by <span className="font-medium">{post.author.username}</span>
                 </p>
+                {/* Content */}
                 <p className="text-sm text-gray-700 mt-3 line-clamp-3">
                   {post.content}
                 </p>

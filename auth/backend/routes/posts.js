@@ -127,7 +127,7 @@ router.get("/author/:authorId", auth, async (req, res) => {
     })
       .limit(3)
       .sort({ createdAt: -1 })
-      .select("title thumbnail createdAt");
+      .select("title thumbnail createdAt images");
 
     res.json(posts);
   } catch (error) {
