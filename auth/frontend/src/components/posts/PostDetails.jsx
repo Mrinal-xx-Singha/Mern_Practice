@@ -31,18 +31,18 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
   const isAuthor = user._id === comment.author._id || user?.role === "admin";
 
   return (
-    <div className="ml-6 mt-4 border-l-2 pl-4 border-gray-200">
+    <div className="ml-6 mt-4 border-l-2 pl-4 border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-sm text-gray-800">
+          <p className="text-sm text-gray-800 dark:text-gray-100">
             <span className="font-semibold">{comment.author?.username}</span>:{" "}
             {comment.content}
           </p>
-          <div className="flex gap-4 mt-1 text-sm text-gray-600 items-center">
+          <div className="flex gap-4 mt-1 text-sm text-gray-600 dark:text-gray-400">
             <button
               onClick={toggleLike}
-              className={`flex items-center gap-1 hover:text-red-600 transition ${
-                liked ? "text-red-600" : ""
+              className={`flex items-center gap-1 hover:text-red-600 dark:hover:text-red-400 ${
+                liked ? "text-red-600 dark:text-red-400" : ""
               }`}
             >
               <ThumbsUp size={16} /> {likes}
@@ -214,15 +214,15 @@ const PostDetails = () => {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-3xl sm:text-4xl  font-bold text-center text-gray-900 mb-3 uppercase tracking-wide dark:text-gray-800">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
         {post.title}
       </h1>
 
-      <p className="text-gray-500 text-center text-sm  dark:text-gray-400 mb-2">
+      <p className="text-gray-500 text-center text-sm dark:text-gray-400">
         By <span className="font-semibold">{post.author.username}</span> on{" "}
         {postDate}
       </p>
-      <p className="flex justify-center items-center gap-2 text-xs text-gray-500  dark:text-gray-400 mb-4">
+      <p className="flex justify-center items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
         <Eye size={16} /> {post.views ?? 0} views
       </p>
       {/* Image  */}
@@ -233,7 +233,7 @@ const PostDetails = () => {
               key={i}
               src={url}
               alt={`Post Image ${i + 1}`}
-              className="w-full h-auto object-cover rounded"
+              className="w-full h-auto object-cover rounded shadow-md dark:shadow-lg"
             />
           ))}
         </div>
@@ -260,10 +260,10 @@ const PostDetails = () => {
 
       {/* Tags */}
       <p className="text-sm text-gray-700 dark:text-gray-300 mb-6">
-        <span className="bg-yellow-100 dark:bg-yellow-700/20 text-yellow-800 datk:text-yellow-200 px-2 py-1 rounded">
+        <span className="bg-yellow-100 dark:bg-yellow-800/20 text-yellow-800 dark:text-yellow-300 px-2 py-1 rounded">
           🏷️ {post.tags.join(", ")}
         </span>{" "}
-        | <strong>📂 Category:</strong> {post.category}
+        | <strong>📂</strong> {post.category}
       </p>
 
       {isAuthor && (
@@ -293,21 +293,21 @@ const PostDetails = () => {
             placeholder={
               replyTo ? "↩️ Replying to comment..." : "Write a comment..."
             }
-            className="w-full p-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100"
+            className="w-full p-3 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
           />
           <div className="flex gap-3 mt-2">
             <button
               onClick={handleSubmitComment}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow transition-colors"
             >
               {replyTo ? "↩️ Reply" : "💬 Comment"}
             </button>
             {replyTo && (
               <button
                 onClick={() => setReplyTo(null)}
-                className="text-gray-600 dark:text-gray-300 underline"
+                className="text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200"
               >
                 Cancel Reply
               </button>
@@ -318,7 +318,7 @@ const PostDetails = () => {
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4">
           <Link
             to="/login"
-            className="text-blue-600 hover:underline dark:text-blue-400"
+            className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4"
           >
             Login
           </Link>{" "}
@@ -332,7 +332,7 @@ const PostDetails = () => {
         comments.map((comment) => (
           <div
             key={comment._id}
-            className="bg-white dark:bg-gray-900 rounded shadow p-3 mb-2"
+            className="bg-white dark:bg-gray-900 rounded shadow p-3 mb-2 border border-gray-200 dark:border-gray-700"
           >
             <CommonItem
               key={comment._id}
