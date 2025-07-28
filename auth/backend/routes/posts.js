@@ -49,11 +49,15 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Safely increment view count
+    await Post.findByIdAndUpdate(id, { $inc: { views: 1 } });
+
+    // Fetch updated post
     const post = await Post.findById(id).populate("author", "username");
 
     if (!post) return res.status(404).json({ error: "Post not found" });
 
-    post.views += 1;
     await post.save();
 
     res.json(post);
