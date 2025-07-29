@@ -1,5 +1,5 @@
 // CommonItem.jsx
-import React,{useState} from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { ThumbsUp, MessageCircle, Trash2 } from "lucide-react";
@@ -22,8 +22,6 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
       toast.error("🚫 Failed to like comment.");
     }
   };
-  console.log(user);
-  console.log(comment);
 
   const isAuthor = user._id === comment.author._id || user?.role === "admin";
 

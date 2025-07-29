@@ -31,7 +31,7 @@ const MoreFromAuthor = ({ authorId, currentPostId }) => {
               <img
                 src={post.images?.[0] || fallbackImage}
                 alt="Post thumbnail"
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-contain md:object-cover"
               />
               <div className="p-4">
                 <h4 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white line-clamp-2">

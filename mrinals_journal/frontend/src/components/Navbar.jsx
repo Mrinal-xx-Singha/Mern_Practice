@@ -1,5 +1,3 @@
-// src/components/Navbar.jsx
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,21 +18,21 @@ const Navbar = () => {
   };
 
   const navLinkClass =
-    "flex items-center gap-2 px-3 py-2 rounded-md text-sm hover:bg-gray-100 hover:text-blue-600 transition-all";
+    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 hover:text-blue-600 transition-all";
 
   return (
-    <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <nav className="bg-white border-b shadow-md sticky top-0 z-50 transition-shadow">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link
           to="/feed"
-          className="flex items-center gap-2 text-lg font-semibold text-gray-700 hover:text-blue-600 transition"
+          className="flex items-center gap-2 text-xl font-bold text-gray-800 hover:text-blue-600 transition"
         >
           <Clipboard size={24} />
           <span>Mrinals Journal</span>
         </Link>
 
-        {/* Desktop Links */}
+        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6 text-gray-700">
           <Link to="/feed" className={navLinkClass}>
             <Home size={18} />
@@ -48,21 +46,23 @@ const Navbar = () => {
                 <span>New Post</span>
               </Link>
 
-              <Link to="/profile" className={navLinkClass}>
-                <img
-                  src={
-                    user?.avatar ||
-                    `https://ui-avatars.com/api/?name=${user?.name || "User"}`
-                  }
-                  alt="avatar"
-                  className="w-6 h-6 rounded-full border object-cover"
-                />
-                <span>Profile</span>
+              <Link to="/profile" className={`${navLinkClass} group`}>
+                <div className="relative flex items-center gap-2">
+                  <img
+                    src={
+                      user?.avatar ||
+                      `https://ui-avatars.com/api/?name=${user?.name || "User"}`
+                    }
+                    alt="avatar"
+                    className="w-7 h-7 rounded-full border object-cover"
+                  />
+                  <span>{user?.name?.split(" ")[0]}</span>
+                </div>
               </Link>
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-1 px-3 py-2 text-sm text-red-500 hover:text-red-600 transition"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-500 hover:text-red-600 transition"
               >
                 <LogOut size={18} />
                 <span>Logout</span>
@@ -80,60 +80,62 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Navigation Menu */}
       <div
-        className={`md:hidden px-4 pt-2 pb-4 space-y-2 text-gray-700 text-sm transition-all duration-300 ease-in-out ${
-          menuOpen ? "block" : "hidden"
+        className={`md:hidden overflow-hidden px-4 transition-all duration-300 ease-in-out ${
+          menuOpen ? "max-h-[300px] py-2" : "max-h-0"
         }`}
       >
-        <Link
-          to="/feed"
-          className={navLinkClass}
-          onClick={() => setMenuOpen(false)}
-        >
-          <Home size={18} />
-          <span>Home</span>
-        </Link>
+        <div className="flex flex-col gap-3 text-gray-700 text-sm">
+          <Link
+            to="/feed"
+            className={navLinkClass}
+            onClick={() => setMenuOpen(false)}
+          >
+            <Home size={18} />
+            <span>Home</span>
+          </Link>
 
-        {user && (
-          <>
-            <Link
-              to="/create"
-              className={navLinkClass}
-              onClick={() => setMenuOpen(false)}
-            >
-              <Pen size={18} />
-              <span>New Post</span>
-            </Link>
+          {user && (
+            <>
+              <Link
+                to="/create"
+                className={navLinkClass}
+                onClick={() => setMenuOpen(false)}
+              >
+                <Pen size={18} />
+                <span>New Post</span>
+              </Link>
 
-            <Link
-              to="/profile"
-              className={navLinkClass}
-              onClick={() => setMenuOpen(false)}
-            >
-              <img
-                src={
-                  user?.avatar ||
-                  `https://ui-avatars.com/api/?name=${user?.name || "User"}`
-                }
-                alt="avatar"
-                className="w-6 h-6 rounded-full border object-cover"
-              />
-              <span>Profile</span>
-            </Link>
+              <Link
+                to="/profile"
+                className={navLinkClass}
+                onClick={() => setMenuOpen(false)}
+              >
+                <img
+                  src={
+                    user?.avatar ||
+                    `https://ui-avatars.com/api/?name=${user?.name || "User"}`
+                  }
+                  alt="avatar"
+                  className="w-6 h-6 rounded-full border object-cover"
+                />
+                <span>Profile</span>
+              </Link>
 
-            <button
-              onClick={() => {
-                handleLogout();
-                setMenuOpen(false);
-              }}
-              className="flex items-center gap-2 px-3 py-2 text-red-500 hover:text-red-600 transition"
-            >
-              <LogOut size={18} />
-              <span>Logout</span>
-            </button>
-          </>
-        )}
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+                className="flex items-center gap-2 px-3 py-2 text-red-500 hover:text-red-600 transition"
+              >
+                <LogOut size={18} />
+                <span>Logout</span>
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

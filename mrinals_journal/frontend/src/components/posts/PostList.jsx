@@ -66,7 +66,7 @@ const PostList = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-4">
+    <div className="max-w-6xl mx-auto pt-24 pb-10 py-10 px-4 min-h-screen">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 tracking-tight">
@@ -130,11 +130,11 @@ const PostList = () => {
           ))}
         </div>
       ) : posts.length > 0 ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
             <div
               key={post._id}
-              className="bg-white rounded-lg border shadow hover:shadow-md transition transform hover:-translate-y-1 p-5 flex flex-col justify-between"
+              className="bg-white dark:bg-gray-900 rounded-lg border dark:border-gray-800 shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-1 p-5 flex flex-col justify-between h-full"
             >
               <div>
                 {/* Thumbnail */}
@@ -145,37 +145,43 @@ const PostList = () => {
                       : "https://placehold.co/600x400/EEE/31343C?font=poppins&text=BlogPost"
                   }
                   alt={post.title}
-                  className="w-full object-cover mb-2 h-48 rounded"
+                  className="w-full object-contain md:object-cover mb-3 h-48 rounded"
                 />
-                {/* Separation */}
-                <div className="border-4 mb-2 border-gray-700 rounded-lg " />
+
+                {/* Divider */}
+                <div className="border-t-2 mb-2 border-gray-300 dark:border-gray-700" />
+
                 {/* Title */}
                 <Link
                   to={`/posts/${post._id}`}
-                  className="text-lg font-bold text-blue-700 hover:underline"
+                  className="text-lg font-semibold text-blue-700 dark:text-blue-400 hover:underline"
                 >
                   {post.title}
                 </Link>
-                {/* Username */}
-                <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+
+                {/* Author */}
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
                   <UserRoundPen size={14} />
                   by <span className="font-medium">{post.author.username}</span>
                 </p>
-                {/* Content */}
-                <p className="text-sm text-gray-700 mt-3 line-clamp-3">
+
+                {/* Excerpt */}
+                <p className="text-sm text-gray-700 dark:text-gray-300 mt-3 line-clamp-3">
                   {post.content}
                 </p>
               </div>
+
+              {/* Tags & Category */}
               <div className="mt-4 flex flex-wrap gap-2 text-xs">
                 {post.tags?.length ? (
-                  <span className="flex items-center gap-1 bg-blue-50 text-blue-800 px-2 py-1 rounded-full">
+                  <span className="flex items-center gap-1 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full">
                     <Tags size={14} />
                     {post.tags.join(", ")}
                   </span>
                 ) : (
                   <span className="text-gray-400 italic">No tags</span>
                 )}
-                <span className="flex items-center gap-1 bg-gray-100 text-gray-800 px-2 py-1 rounded-full">
+                <span className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full">
                   <Folder size={14} />
                   {post.category || "Uncategorized"}
                 </span>
