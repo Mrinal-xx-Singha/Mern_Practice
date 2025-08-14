@@ -4,7 +4,10 @@
 ![Tech Stack](https://img.shields.io/badge/stack-MERN-blue)  
 ![Responsive](https://img.shields.io/badge/Responsive-Yes-success)
 
+---
+
 ## 📌 Overview
+
 **Mrinal's Journal** is a modern **MERN stack blogging platform** that allows users to create, edit, delete, and interact with blog posts in real time.  
 It’s built with a focus on **clean UI, secure authentication, and full CRUD functionality** for an engaging reading and writing experience.
 
@@ -51,6 +54,7 @@ It’s built with a focus on **clean UI, secure authentication, and full CRUD fu
 ---
 
 ## 📂 Folder Structure
+
 mrinals_journal/
 │
 ├── backend/ # Express API (routes, models, controllers)
@@ -63,6 +67,7 @@ mrinals_journal/
 ├── package.json # Project metadata and dependencies
 └── README.md
 
+
 ---
 
 ## ⚙️ Installation & Setup
@@ -71,23 +76,27 @@ mrinals_journal/
 ```bash
 git clone https://github.com/Mrinal-xx-Singha/Mern_Practice.git
 cd Mern_Practice/mrinals_journal
+```
 
-2️⃣ Install dependencies
+### 2️⃣ Install dependencies ###
 
-# Install backend dependencies
+## Backend dependencies 
+
+```bash 
 cd backend
 npm install
+```
+## Frontend dependencies
+```bash
+cd frontend
+pnpm dev
+```
+### 3️⃣ Setup environment variables
+## Create .env files in the backend folder.
 
-# Install frontend dependencies
-cd ../frontend
-pnpm install
+Backend **.env** example 
 
-3️⃣ Setup environment variables
-
-Create .env files in  backend a folder
-
-Backend .env example:
-
+```bash
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
@@ -95,26 +104,35 @@ CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
-🚀 Running the Application
-
-Backend
-
 ```
+
+### 🚀 Running the Application
+
+## Backend
+```bash
 cd backend
 npm run dev
 ```
-Frontend
+
+## Frontend
+
+```bash
 cd frontend
 pnpm dev
 
+```
+
 The app will be available at:
+
 Frontend: http://localhost:3000
+
 Backend API: http://localhost:5000
 
 
 📜 License
 
 This project is licensed under the MIT License.
+
 
 🤝 Contributing
 
@@ -124,4 +142,3 @@ If you’d like to add features or fix bugs, please fork the repository and crea
 📬 Contact
 
 Mrinal Singha
-
