@@ -12,7 +12,7 @@ const CommonItem = ({ comment, onReply, onDelete, user }) => {
   const toggleLike = async () => {
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/comments/like/${comment._id}`
+        `https://mern-practice-o3a9.onrender.com/api/comments/like/${comment._id}`
       );
       setLikes(res.data.likes);
       setLiked(res.data.liked);

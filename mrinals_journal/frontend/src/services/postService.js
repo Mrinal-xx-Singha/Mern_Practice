@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/posts";
+const API_URL = "https://mern-practice-o3a9.onrender.com/api/posts";
 export const getPostById = async (id) => {
   const res = await axios.get(`${API_URL}/${id}`);
   return res.data;

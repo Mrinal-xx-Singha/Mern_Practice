@@ -32,7 +32,7 @@ const Profile = () => {
   useEffect(() => {
     fetchProfile();
   }, [page]);
-  const API_PROFILE_URL = "http://localhost:5000/api/users/profile";
+  const API_PROFILE_URL = "https://mern-practice-o3a9.onrender.com/api/users/profile";
   const fetchProfile = async () => {
     try {
       const res = await axios.get(`${API_PROFILE_URL}?page=${page}`, {

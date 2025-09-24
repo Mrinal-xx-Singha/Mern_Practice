@@ -14,7 +14,7 @@ const EditPost = () => {
   });
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/posts/${id}`).then((res) => {
+    axios.get(`https://mern-practice-o3a9.onrender.com/api/posts/${id}`).then((res) => {
       const { tags, title, category, content } = res.data;
       setForm({ title, content, tags: tags.join(", "), category });
     });
@@ -23,7 +23,7 @@ const EditPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/posts/${id}`, {
+      await axios.put(`https://mern-practice-o3a9.onrender.com/api/posts/${id}`, {
         ...form,
         tags: form.tags.split(",").map((t) => t.trim()),
       });

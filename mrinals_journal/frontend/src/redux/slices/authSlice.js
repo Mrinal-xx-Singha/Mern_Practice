@@ -6,7 +6,7 @@ export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get("http://localhost:5000/api/protected");
+      const res = await axios.get("https://mern-practice-o3a9.onrender.com/api/protected");
       return res.data.user;
     } catch (error) {
       console.error(error);
@@ -20,7 +20,7 @@ export const loginUser = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://mern-practice-o3a9.onrender.com/api/auth/login",
         credentials
       );
       return res.data;
@@ -34,7 +34,7 @@ export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, thunkAPI) => {
     try {
-      await axios.post("http://localhost:5000/api/auth/logout");
+      await axios.post("https://mern-practice-o3a9.onrender.com/api/auth/logout");
       return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
@@ -47,7 +47,7 @@ export const registerUser = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://mern-practice-o3a9.onrender.com/api/auth/register",
         credentials
       );
       return res.data;

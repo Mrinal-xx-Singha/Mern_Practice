@@ -6,7 +6,7 @@ export const fetchPosts = createAsyncThunk(
   "posts/fetch",
   async (query = "", thunkAPI) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/posts${query}`);
+      const res = await axios.get(`https://mern-practice-o3a9.onrender.com/api/posts${query}`);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -18,7 +18,7 @@ export const createPost = createAsyncThunk(
   "posts/create",
   async (data, thunkAPI) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/posts", data, {
+      const res = await axios.post("https://mern-practice-o3a9.onrender.com/api/posts", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -35,7 +35,7 @@ export const fetchMoreFromAuthor = createAsyncThunk(
   async ({ authorId, exclude }, thunkAPI) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/posts/author/${authorId}?exclude=${exclude}`
+        `https://mern-practice-o3a9.onrender.com/api/posts/author/${authorId}?exclude=${exclude}`
       );
       return res.data;
     } catch (error) {
@@ -48,7 +48,7 @@ export const deletePost = createAsyncThunk(
   "posts/delete",
   async (id, thunkAPI) => {
     try {
-      await axios.delete(`http://localhost:5000/api/posts/${id}`);
+      await axios.delete(`https://mern-practice-o3a9.onrender.com/api/posts/${id}`);
       return id;
     } catch (error) {
       thunkAPI.rejectWithValue(error.response.data);
