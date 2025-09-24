@@ -3,8 +3,16 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const router = express.Router();
+const isProduction = process.env.NODE_ENV === "production";
 
-// Register
+// Helper for cookie options
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: isProduction ? "none" : "lax", // none for cross-site cookies in prod
+  secure: isProduction, // must be true for HTTPS in prod
+};
+
+// ================== REGISTER ==================
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
   try {
@@ -21,7 +29,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login
+// ================== LOGIN ==================
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -30,30 +38,23 @@ router.post("/login", async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
+
     const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "15m",
     });
     const refreshToken = jwt.sign(
       { id: user._id },
       process.env.REFRESH_SECRET,
-      {
-        expiresIn: "7d",
-      }
+      { expiresIn: "7d" }
     );
 
     user.refreshToken = refreshToken;
     await user.save();
 
-    res.cookie("token", accessToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: false,
-    });
-
+    res.cookie("token", accessToken, cookieOptions);
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      path: "/api/refresh-token",
+      ...cookieOptions,
+      path: "/api/auth/refresh-token",
     });
 
     res.status(200).json({ message: "Logged in successfully" });
@@ -62,6 +63,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// ================== REFRESH TOKEN ==================
 router.post("/refresh-token", async (req, res) => {
   const token = req.cookies.refreshToken;
   if (!token) return res.status(401).json({ error: "No refresh token" });
@@ -76,20 +78,18 @@ router.post("/refresh-token", async (req, res) => {
     const newAccessToken = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "15min",
-      }
+      { expiresIn: "15m" }
     );
-    res.cookie("token", newAccessToken, { httpOnly: true, sameSite: "strict" });
 
-    res.json({ message: "Acess token refreshed" });
+    res.cookie("token", newAccessToken, cookieOptions);
+
+    res.json({ message: "Access token refreshed" });
   } catch (error) {
     res.status(403).json({ error: "Token verification failed" });
   }
 });
 
-// Logout
-
+// ================== LOGOUT ==================
 router.post("/logout", async (req, res) => {
   const token = req.cookies.refreshToken;
   const user = await User.findOne({ refreshToken: token });
@@ -98,8 +98,12 @@ router.post("/logout", async (req, res) => {
     await user.save();
   }
 
-  res.clearCookie("refreshToken");
-  res.clearCookie("token");
+  res.clearCookie("refreshToken", {
+    ...cookieOptions,
+    path: "/api/auth/refresh-token",
+  });
+  res.clearCookie("token", cookieOptions);
+
   res.json({ message: "Logged out successfully" });
 });
 

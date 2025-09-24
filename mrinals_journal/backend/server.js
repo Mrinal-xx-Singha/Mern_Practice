@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
 const commentRoutes = require("./routes/comments");
-const profileRoutes = require("./routes/profile")
+const profileRoutes = require("./routes/profile");
 const User = require("./models/User");
 const auth = require("./middleware/auth");
 const cors = require("cors");
@@ -15,9 +15,22 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://whimsical-conkies-bb435c.netlify.app",
+];
+
 app.use(
   cors({
-    origin: "https://whimsical-conkies-bb435c.netlify.app/",
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -30,7 +43,7 @@ mongoose
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api/users",profileRoutes)
+app.use("/api/users", profileRoutes);
 app.use("/api/comments", commentRoutes);
 
 app.get("/api/protected", auth, async (req, res) => {
