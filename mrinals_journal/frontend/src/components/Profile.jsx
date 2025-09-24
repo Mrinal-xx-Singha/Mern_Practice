@@ -32,13 +32,12 @@ const Profile = () => {
   useEffect(() => {
     fetchProfile();
   }, [page]);
-
+  const API_PROFILE_URL = "http://localhost:5000/api/users/profile";
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/users/profile?page=${page}`,
-        { withCredentials: true }
-      );
+      const res = await axios.get(`${API_PROFILE_URL}?page=${page}`, {
+        withCredentials: true,
+      });
       const u = res.data.user;
       setUser(u);
       setPosts(res.data.posts);
@@ -83,7 +82,7 @@ const Profile = () => {
     form.append("website", formData.social.website);
 
     try {
-      await axios.put("http://localhost:5000/api/users/profile", form, {
+      await axios.put(`${API_PROFILE_URL}`, form, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });

@@ -27,7 +27,7 @@ router.post("/", auth, upload.array("images", 2), async (req, res) => {
 // get all posts (with pagination and filter)
 router.get("/", async (req, res) => {
   try {
-    const { page = 1, limit = 10, tag, category } = req.query;
+    const { page = 1, limit = 9, tag, category } = req.query;
     const filter = {};
     if (tag) filter.tags = tag;
     if (category) filter.category = category;
