@@ -29,4 +29,15 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+router.delete("/:id", protect, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Post.findByIdAndDelete(id);
+    res.status(200).json({ message: "Post deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 module.exports = router;

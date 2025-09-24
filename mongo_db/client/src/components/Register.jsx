@@ -12,7 +12,7 @@ const Register = () => {
     e.preventDefault();
     try {
       const res = await axios.post("/register", form);
-      console.log(res.data)
+      console.log(res.data);
       alert(res.data.message);
     } catch (error) {
       alert(error.response.data.message);
