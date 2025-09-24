@@ -14,7 +14,6 @@ const CreatePost = () => {
 
   const [images, setImages] = useState([]); // for storing image file
   const [previews, setPreviews] = useState([]); // image preview
-  console.log(images);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -57,12 +56,12 @@ const CreatePost = () => {
     console.log(formData.get("tags"));
     console.log(formData.get("category"));
     console.log(images.length, "images selected");
-    console.log(formData)
+    console.log(formData);
   };
 
   return (
     <div className="max-w-2xl mx-auto py-10 px-4">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center uppercase">
         Create New Post
       </h2>
       <form

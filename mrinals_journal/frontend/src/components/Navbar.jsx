@@ -26,7 +26,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link
           to="/feed"
-          className="flex items-center gap-2 text-xl font-bold text-gray-800 hover:text-blue-600 transition"
+          className="flex items-center gap-2 text-xl font-bold text-gray-800 hover:text-blue-600 transition uppercase"
         >
           <Clipboard size={24} />
           <span>Mrinals Journal</span>

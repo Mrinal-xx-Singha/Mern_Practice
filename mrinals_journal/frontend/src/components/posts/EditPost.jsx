@@ -20,26 +20,27 @@ const EditPost = () => {
     });
   }, [id]);
 
-  const handleSubmit =async(e)=>{
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/posts/${id}`,{
+      await axios.put(`http://localhost:5000/api/posts/${id}`, {
         ...form,
-        tags:form.tags.split(",").map(t=>t.trim())
-      })
-      navigate(`/posts/${id}`)
-      toast.success("Post Updated Successfully!")
+        tags: form.tags.split(",").map((t) => t.trim()),
+      });
+      navigate(`/posts/${id}`);
+      toast.success("Post Updated Successfully!");
     } catch (error) {
-      console.error("Update failed")
-      toast.error("Update failed")
+      console.error("Update failed",error.message);
+      toast.error("Update failed",error.message);
     }
-  }
+  };
   return (
     <div className="max-w-2xl mx-auto py-6">
       <h2 className="text-xl font-semibold mb-4 px-2 ">Edit Post</h2>
       <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 rounded shadow space-y-4">
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded shadow space-y-4"
+      >
         <input
           className="w-full border p-2"
           value={form.title}

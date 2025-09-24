@@ -105,16 +105,16 @@ const Profile = () => {
   return (
     <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-0">
       {/* Profile Info */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-10 bg-white p-6 rounded-lg shadow-md">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-10 bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
         <div className="relative group">
           <img
             src={avatarPreview || "https://ui-avatars.com/api/?name=User"}
             alt="Avatar"
-            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-gray-300"
+            className="w-28 h-28 rounded-full object-cover border-4 border-gray-200 shadow-md"
           />
           {editing && (
-            <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-1 rounded-full cursor-pointer group-hover:scale-110 transition transform">
-              <UploadCloud size={16} />
+            <label className="absolute bottom-1 right-1 bg-blue-600 text-white p-2 rounded-full cursor-pointer shadow-md hover:bg-blue-700 transition-all">
+              <UploadCloud size={18} />
               <input
                 type="file"
                 accept="image/*"
@@ -130,25 +130,23 @@ const Profile = () => {
             <h1 className="text-2xl font-bold text-gray-800">
               {user.username}
             </h1>
-            {!editing ? (
+            {!editing && (
               <button
                 onClick={() => setEditing(true)}
-                className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition"
+                className="bg-blue-600 text-white px-4 py-1.5 rounded-lg shadow hover:bg-blue-700 transition-all"
               >
                 Edit Profile
               </button>
-            ) : null}
+            )}
           </div>
 
           <p className="text-gray-500 text-sm mt-1">{user.email}</p>
           <p className="text-gray-600 mt-2">{user.bio}</p>
 
-          <div className="flex gap-4 mt-3 text-gray-500 text-lg">
+          {/* Social Icons */}
+          <div className="flex gap-5 mt-4 text-gray-500 text-xl">
             <a
               href={user.social?.twitter || "#"}
-              title="Twitter"
-              target="_blank"
-              rel="noreferrer"
               className={`hover:text-blue-400 transition ${
                 !user.social?.twitter ? "opacity-40 cursor-not-allowed" : ""
               }`}
@@ -158,10 +156,7 @@ const Profile = () => {
             </a>
             <a
               href={user.social?.github || "#"}
-              title="GitHub"
-              target="_blank"
-              rel="noreferrer"
-              className={`hover:text-black transition ${
+              className={`hover:text-gray-800 transition ${
                 !user.social?.github ? "opacity-40 cursor-not-allowed" : ""
               }`}
               onClick={(e) => !user.social?.github && e.preventDefault()}
@@ -170,9 +165,6 @@ const Profile = () => {
             </a>
             <a
               href={user.social?.website || "#"}
-              title="Website"
-              target="_blank"
-              rel="noreferrer"
               className={`hover:text-green-600 transition ${
                 !user.social?.website ? "opacity-40 cursor-not-allowed" : ""
               }`}
@@ -182,103 +174,107 @@ const Profile = () => {
             </a>
           </div>
 
-          <p className="text-sm text-gray-400 mt-2">
-            Joined on {new Date(user.createdAt).toLocaleDateString()}
+          <p className="text-sm text-gray-400 mt-3">
+            Joined on{" "}
+            <span className="font-medium text-gray-600">
+              {new Date(user.createdAt).toLocaleDateString()}
+            </span>
           </p>
         </div>
       </div>
 
       {/* Editable Fields */}
       {editing && (
-        <div className="bg-white p-6 rounded-lg shadow-md space-y-4 mb-8">
-          <input
-            type="text"
-            value={formData.username}
-            onChange={(e) =>
-              setFormData({ ...formData, username: e.target.value })
-            }
-            className="w-full border px-4 py-2 rounded focus:outline-none focus:ring focus:border-blue-400"
-            placeholder="Username"
-          />
-          <textarea
-            rows="3"
-            value={formData.bio}
-            onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-            className="w-full border px-4 py-2 rounded focus:outline-none focus:ring focus:border-blue-400"
-            placeholder="Bio"
-          />
-          <input
-            type="text"
-            placeholder="Twitter link"
-            value={formData.social.twitter}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                social: { ...formData.social, twitter: e.target.value },
-              })
-            }
-            className="w-full border px-4 py-2 rounded"
-          />
-          <input
-            type="text"
-            placeholder="GitHub link"
-            value={formData.social.github}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                social: { ...formData.social, github: e.target.value },
-              })
-            }
-            className="w-full border px-4 py-2 rounded"
-          />
-          <input
-            type="text"
-            placeholder="Website link"
-            value={formData.social.website}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                social: { ...formData.social, website: e.target.value },
-              })
-            }
-            className="w-full border px-4 py-2 rounded"
-          />
+        <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 space-y-5 mb-10">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Username
+            </label>
+            <input
+              type="text"
+              value={formData.username}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
+              className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
 
-          <div className="flex gap-3 mt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Bio
+            </label>
+            <textarea
+              rows="3"
+              value={formData.bio}
+              onChange={(e) =>
+                setFormData({ ...formData, bio: e.target.value })
+              }
+              className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Tell us about yourself..."
+            />
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            {["twitter", "github", "website"].map((field) => (
+              <div key={field}>
+                <label className="block text-sm font-medium text-gray-600 mb-1 capitalize">
+                  {field}
+                </label>
+                <input
+                  type="text"
+                  placeholder={`${field} link`}
+                  value={formData.social[field]}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      social: { ...formData.social, [field]: e.target.value },
+                    })
+                  }
+                  className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-4 pt-2">
             <button
               onClick={handleUpdateProfile}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2"
+              className="bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 transition flex items-center gap-2"
             >
-              <Save size={16} />
-              Save Changes
+              <Save size={18} />
+              Save
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="text-red-500 underline flex items-center gap-2"
+              className="text-red-500 font-medium hover:text-red-600 flex items-center gap-2"
             >
-              <XCircle size={16} />
+              <XCircle size={18} />
               Cancel
             </button>
           </div>
         </div>
       )}
 
-      {/* Posts Section */}
+      {/* Posts */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Your Posts</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mb-5">Your Posts</h2>
         {posts.length === 0 ? (
-          <p className="text-gray-500">You haven’t written any posts yet.</p>
+          <p className="text-gray-500 italic">
+            You haven’t written any posts yet.
+          </p>
         ) : (
           <div className="space-y-4">
             {posts.map((post) => (
               <div
                 key={post._id}
-                className="bg-white p-4 rounded-lg shadow hover:shadow-md transition"
+                className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer"
               >
                 <h3 className="text-lg font-semibold text-gray-900">
                   {post.title}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1 line-clamp-3">
+                <p className="text-sm text-gray-600 mt-2 line-clamp-3">
                   {post.content.slice(0, 120)}...
                 </p>
               </div>
@@ -288,20 +284,21 @@ const Profile = () => {
       </div>
 
       {/* Pagination */}
-
-      <div className="flex justify-center items-center gap-4 mt-8">
+      <div className="flex justify-center items-center gap-4 mt-10">
         <button
           onClick={() => setPage((prev) => prev - 1)}
           disabled={page === 1}
-          className="px-4 py-1 rounded border text-sm transition hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-1.5 rounded-full border text-sm font-medium transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Prev
         </button>
-        <span className="text-sm text-gray-600">Page {page}</span>
+        <span className="text-sm font-medium text-gray-700">
+          Page {page} of {totalPage}
+        </span>
         <button
           onClick={() => setPage((prev) => prev + 1)}
           disabled={page === totalPage}
-          className="px-4 py-1 rounded border text-sm transition hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-1.5 rounded-full border text-sm font-medium transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
         </button>

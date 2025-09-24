@@ -66,29 +66,29 @@ const PostList = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto pt-24 pb-10 py-10 px-4 min-h-screen">
+    <div className="max-w-6xl mx-auto pt-10 pb-16 px-4 min-h-screen">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 tracking-tight">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white tracking-tight">
           Recent Posts
         </h1>
         <Link
           to="/create"
-          className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 transition"
+          className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 transition-all"
         >
           <Plus size={18} /> Create
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="bg-gray-50 p-4 rounded-md shadow-sm mb-8 flex flex-col sm:flex-row gap-3 items-center">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 rounded-xl shadow-sm mb-10 flex flex-col sm:flex-row gap-3 items-center w-full">
         <input
           type="text"
           placeholder="🔍 Filter by Tag"
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="border px-4 py-2 rounded w-full sm:w-64 shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
+          className="border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-2 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
         />
         <input
           type="text"
@@ -96,19 +96,19 @@ const PostList = () => {
           value={categoryInput}
           onChange={(e) => setCategoryInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="border px-4 py-2 rounded w-full sm:w-64 shadow-sm focus:ring-2 focus:ring-blue-300 outline-none"
+          className="border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-2 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
         />
         <div className="flex gap-2">
           <button
             onClick={handleFilter}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-400 flex items-center gap-1"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-1"
           >
             <Funnel size={16} />
             Apply
           </button>
           <button
             onClick={handleClearFilters}
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition flex items-center gap-1"
+            className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition flex items-center gap-1"
           >
             <X size={16} />
             Clear
@@ -125,7 +125,7 @@ const PostList = () => {
           {Array.from({ length: 6 }).map((_, idx) => (
             <div
               key={idx}
-              className="animate-pulse bg-white border rounded p-5 h-48"
+              className="animate-pulse bg-gray-100 dark:bg-gray-800 rounded-xl h-60"
             />
           ))}
         </div>
@@ -134,23 +134,20 @@ const PostList = () => {
           {posts.map((post) => (
             <div
               key={post._id}
-              className="bg-white dark:bg-gray-900 rounded-lg border dark:border-gray-800 shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-1 p-5 flex flex-col justify-between h-full"
+              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col overflow-hidden"
             >
-              <div>
-                {/* Thumbnail */}
-                <img
-                  src={
-                    post.images.length > 0
-                      ? post.images[0]
-                      : "https://placehold.co/600x400/EEE/31343C?font=poppins&text=BlogPost"
-                  }
-                  alt={post.title}
-                  className="w-full object-contain md:object-cover mb-3 h-48 rounded"
-                />
+              {/* Thumbnail */}
+              <img
+                src={
+                  post.images.length > 0
+                    ? post.images[0]
+                    : "https://placehold.co/600x400/EEE/31343C?font=poppins&text=BlogPost"
+                }
+                alt={post.title}
+                className="w-full h-48 object-cover"
+              />
 
-                {/* Divider */}
-                <div className="border-t-2 mb-2 border-gray-300 dark:border-gray-700" />
-
+              <div className="p-5 flex flex-col flex-1">
                 {/* Title */}
                 <Link
                   to={`/posts/${post._id}`}
@@ -166,54 +163,54 @@ const PostList = () => {
                 </p>
 
                 {/* Excerpt */}
-                <p className="text-sm text-gray-700 dark:text-gray-300 mt-3 line-clamp-3">
+                <p className="text-sm text-gray-700 dark:text-gray-300 mt-3 line-clamp-3 flex-1">
                   {post.content}
                 </p>
-              </div>
 
-              {/* Tags & Category */}
-              <div className="mt-4 flex flex-wrap gap-2 text-xs">
-                {post.tags?.length ? (
-                  <span className="flex items-center gap-1 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full">
-                    <Tags size={14} />
-                    {post.tags.join(", ")}
+                {/* Tags & Category */}
+                <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                  {post.tags?.length ? (
+                    <span className="flex items-center gap-1 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full">
+                      <Tags size={14} />
+                      {post.tags.join(", ")}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 italic">No tags</span>
+                  )}
+                  <span className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full">
+                    <Folder size={14} />
+                    {post.category || "Uncategorized"}
                   </span>
-                ) : (
-                  <span className="text-gray-400 italic">No tags</span>
-                )}
-                <span className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full">
-                  <Folder size={14} />
-                  {post.category || "Uncategorized"}
-                </span>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500 mt-8">
+        <p className="text-center text-gray-500 dark:text-gray-400 mt-10 italic">
           ⚠️ No posts found. Try different filters or create a post!
         </p>
       )}
 
       {/* Pagination */}
-      <div className="flex justify-center items-center gap-4 mt-10">
+      <div className="flex justify-center items-center gap-4 mt-12">
         <button
           onClick={handlePrev}
           disabled={currentPage === 1}
-          className={`px-4 py-2 rounded transition ${
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
             currentPage === 1
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              ? "bg-gray-200 dark:bg-gray-800 text-gray-500 cursor-not-allowed"
               : "bg-blue-600 text-white hover:bg-blue-700"
           }`}
         >
           ← Prev
         </button>
-        <span className="px-4 py-2 font-medium text-gray-700 bg-gray-100 rounded">
+        <span className="px-4 py-2 font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full">
           Page {currentPage}
         </span>
         <button
           onClick={handleNext}
-          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+          className="px-4 py-2 rounded-full text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all"
         >
           Next →
         </button>
