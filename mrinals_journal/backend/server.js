@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://whimsical-conkies-bb435c.netlify.app/login",
+    origin: "https://whimsical-conkies-bb435c.netlify.app/",
     credentials: true,
   })
 );
