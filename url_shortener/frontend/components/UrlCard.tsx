@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
+import { Idata } from "@/app/page";
+import { Button } from "./ui/button";
 
-const UrlCard = ({ urlData }) => {
+const UrlCard = ({ urlData }: { urlData: Idata }) => {
   if (!urlData) return null;
 
-  const { shortUrl, originalUrl, shortCode } = urlData;
+  const { shortUrl, originalUrl } = urlData;
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(shortUrl || "");
@@ -26,13 +28,13 @@ const UrlCard = ({ urlData }) => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
-          <button
+          <Button
             type="button"
             onClick={handleCopy}
             className="rounded-md border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-medium text-slate-100 hover:bg-slate-800 transition-colors"
           >
             Copy
-          </button>
+          </Button>
           {shortUrl && (
             <Link
               href={shortUrl}

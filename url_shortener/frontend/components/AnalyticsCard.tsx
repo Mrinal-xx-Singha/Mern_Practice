@@ -1,12 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import api from "../lib/axios";
+import { Idata } from "../app/page";
+import { Button } from "./ui/button";
 
-const AnalyticsCard = ({ urlData }) => {
+const AnalyticsCard = ({ urlData }: { urlData: Idata }) => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(urlData);
-  const shortCode = stats;
+  const shortCode = stats?.shortCode;
   console.log("Short Code:", shortCode);
+
   const fetchStats = async () => {
     if (!shortCode) {
       return;
@@ -53,13 +56,13 @@ const AnalyticsCard = ({ urlData }) => {
         </span>
       </p>
 
-      <button
+      <Button
         onClick={fetchStats}
         disabled={loading}
         className="mt-3 px-3 py-1 bg-slate-700 rounded-lg"
       >
         {loading ? "Refreshing..." : "Refresh"}
-      </button>
+      </Button>
     </div>
   );
 };

@@ -1,8 +1,9 @@
 "use client";
-import { parse } from "path";
 import React, { useState } from "react";
-import api from "../lib/axios";
-import { Idata } from "../page";
+import { Idata } from "@/app/page";
+import api from "@/lib/axios";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 interface FormProps {
   onSuccess?: (data: Idata) => void;
@@ -57,7 +58,7 @@ const UrlForm = ({ onSuccess, onError }: FormProps) => {
         Long URL
       </label>
       <div className="flex flex-col sm:flex-row gap-3">
-        <input
+        <Input
           type="url"
           className="flex-1 rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder:text-slate-500"
           placeholder="https://example.com/very/long/url"
@@ -65,13 +66,13 @@ const UrlForm = ({ onSuccess, onError }: FormProps) => {
           onChange={(e) => setUrl(e.target.value)}
           disabled={loading}
         />
-        <button
+        <Button
           type="submit"
           disabled={loading}
           className="inline-flex items-center gap-2justify-center rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
         >
           {loading ? "Shortening..." : "Shorten"}
-        </button>
+        </Button>
       </div>
       <p className="text-sx text-slate-500">
         Your Link will expire after 3 days, based on backend TTL settings
