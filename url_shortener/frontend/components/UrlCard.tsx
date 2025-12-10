@@ -1,58 +1,67 @@
 "use client";
+
 import Link from "next/link";
 import { Idata } from "@/app/page";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
 
 const UrlCard = ({ urlData }: { urlData: Idata }) => {
   if (!urlData) return null;
 
   const { shortUrl, originalUrl } = urlData;
+
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(shortUrl || "");
-      alert("URL copied to clipboard");
+      await navigator.clipboard.writeText(shortUrl);
+      // Replace alert(...) with toast if added later:
+      // toast.success("Copied!");
+      toast("Copied to clipboard", {
+        icon: "📋",
+      });
     } catch (err) {
-      console.error("Failed to copy URL", err);
+      console.error("Copy failed", err);
     }
   };
+
   return (
-    <div className="border border-slate-800 bg-slate-900/80 p-4 rounded-lg space-y-2">
+    <div className="border border-slate-800 bg-slate-900/80 p-5 rounded-xl space-y-4 shadow-md hover:bg-slate-800/70 transition">
+      {/* Label */}
       <p className="text-xs font-semibold uppercase text-slate-400 tracking-wide">
         Short URL
       </p>
-      <div className="flex items-center justify-between gap-2">
-        <div>
-          <p className="text-sm md:text-base font-mono text-indigo-300 break-all">
-            {shortUrl}
-          </p>
-        </div>
 
-        <div className="flex flex-col sm:flex-row gap-2">
+      {/* Short URL + Buttons */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        {/* URL */}
+        <p className="text-sm md:text-base font-mono text-indigo-300 break-all">
+          {shortUrl}
+        </p>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2">
           <Button
             type="button"
             onClick={handleCopy}
-            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-medium text-slate-100 hover:bg-slate-800 transition-colors"
+            className="border border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800 px-3 py-1.5 text-xs font-medium rounded-md"
           >
             Copy
           </Button>
-          {shortUrl && (
-            <Link
-              href={shortUrl}
-              target="_blank"
-              className="rounded-md bg-indigo-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-600 transition-colors text-center"
-            >
-              Open
-            </Link>
-          )}
+
+          <Link
+            href={shortUrl}
+            target="_blank"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 text-xs font-medium rounded-md text-center transition"
+          >
+            Open
+          </Link>
         </div>
       </div>
-      {/* Analytics */}
-      <div className="mt-2">
-        <p className="text-xs text-salte-500">
-          Original:{" "}
-          <span className="break-all text-slate-300 font-mono">
-            {originalUrl}
-          </span>
+
+      {/* Original URL */}
+      <div className="pt-2 border-t border-slate-800">
+        <p className="text-xs text-slate-500">Original URL:</p>
+        <p className="text-slate-300 break-all font-mono text-sm mt-1">
+          {originalUrl}
         </p>
       </div>
     </div>

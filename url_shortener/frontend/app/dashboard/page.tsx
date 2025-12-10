@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import Link from "next/link";
+import { Eye, File, ExternalLink } from "lucide-react";
 
 interface ILink {
   _id: string;
@@ -12,18 +13,37 @@ interface ILink {
   createdAt: string;
   expiresAt: string;
 }
-const Page = () => {
+
+const formatDate = (iso?: string) => {
+  if (!iso) return "-";
+  try {
+    return new Date(iso).toLocaleString();
+  } catch {
+    return iso;
+  }
+};
+
+const timeLeft = (iso?: string) => {
+  if (!iso) return "-";
+  const diff = new Date(iso).getTime() - Date.now();
+  if (diff <= 0) return "Expired";
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  if (days > 0) return `${days}d ${hours}h`;
+  const mins = Math.floor((diff / (1000 * 60)) % 60);
+  return `${hours}h ${mins}m`;
+};
+
+const Page: React.FC = () => {
   const [urls, setUrls] = useState<ILink[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchLinks = async () => {
     try {
       const res = await api.get("/shortenedUrls");
-      console.log("Data", res.data);
-
-      setUrls(res.data);
+      setUrls(res.data || []);
     } catch (error) {
-      console.log("Error fetching URLs:", error);
+      console.error("Error fetching URLs:", error);
     } finally {
       setLoading(false);
     }
@@ -33,49 +53,113 @@ const Page = () => {
     fetchLinks();
   }, []);
 
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      // lightweight feedback — replace with toast if available
+      // e.g. toast.success("Copied!");
+      console.debug("Copied to clipboard");
+    } catch {
+      console.debug("Copy failed");
+    }
+  };
+
   if (loading) {
     return (
       <div className="text-slate-400 text-center py-10">Loading URLs...</div>
     );
   }
-  console.log("URLS", urls);
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-6 p-6 bg-slate-900/60 rounded-xl border border-slate-800 shadow-lg">
-      <h2 className="text-xl font-semibold text-slate-100 mb-4">
+    <div className="w-full max-w-4xl mx-auto mt-6 p-6 bg-slate-900/60 rounded-xl border border-slate-800 shadow-lg">
+      <h2 className="text-2xl font-semibold text-slate-100 mb-6">
         All Shortened URLs
       </h2>
 
       {urls.length > 0 ? (
-        <ul className="space-y-3">
+        <ul className="space-y-4">
           {urls.map((url) => (
             <li
               key={url._id}
-              className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 p-4 bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800/80 transition"
+              className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start p-4 bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800/80 transition"
             >
-              <div className="flex flex-col">
+              {/* Left: URL info (spans 8 cols on md) */}
+              <div className="md:col-span-8 flex flex-col gap-3">
                 <div>
-                  <p className="text-slate-400 text-sm">Original URL</p>
-                  <p className="text-slate-300 break-all text-sm">
+                  <p className="text-slate-400 text-xs uppercase tracking-wide">
+                    Original URL
+                  </p>
+                  <p className="text-slate-300 break-words text-sm mt-1">
                     {url.originalUrl}
                   </p>
                 </div>
 
-                <div className="md:text-right">
-                  <p className="text-slate-400 text-sm">Short URL</p>
-                  <Link
-                    href={`${url.shortUrl}`}
-                    target="_blank"
-                    className="text-indigo-400 hover:text-indigo-300 font-medium break-all"
-                  >
-                    {url.shortUrl}
-                  </Link>
+                <div>
+                  <p className="text-slate-400 text-xs uppercase tracking-wide">
+                    Short URL
+                  </p>
+                  <div className="mt-1 flex items-center gap-3">
+                    <Link
+                      href={`${url.shortUrl}`}
+                      target="_blank"
+                      className="text-indigo-400 hover:text-indigo-300 font-medium break-words text-sm"
+                    >
+                      {url.shortUrl}
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(url.shortUrl)}
+                      aria-label="Copy short url"
+                      className="inline-flex items-center gap-2 ml-1 px-2 py-1 rounded-md border border-slate-700 bg-slate-900 text-slate-200 text-sm hover:bg-slate-800 transition"
+                    >
+                      <File size={14} />
+                      <span className="sr-only">Copy</span>
+                      <span className="hidden sm:inline">Copy</span>
+                    </button>
+
+                    <a
+                      href={url.shortUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 ml-1 px-2 py-1 rounded-md bg-indigo-600 text-white text-sm hover:bg-indigo-500 transition"
+                    >
+                      <ExternalLink size={14} />
+                      <span className="hidden sm:inline">Open</span>
+                    </a>
+                  </div>
                 </div>
               </div>
 
-              <div className="md:text-right">
-                <p className="text-slate-400 text-sm">Clicks</p>
-                <p className="text-slate-300 text-sm">{url.clicks}</p>
+              {/* Right: Analytics / meta (spans 4 cols on md) */}
+              <div className="md:col-span-4 flex flex-col gap-3 items-start md:items-end">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center gap-2 bg-slate-800/60 border border-slate-700 rounded-md px-3 py-2">
+                    <Eye size={16} className="text-slate-200" />
+                    <div className="text-right">
+                      <p className="text-slate-400 text-xs">Clicks</p>
+                      <p className="text-slate-200 font-medium">
+                        {url.clicks ?? 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full md:w-auto text-sm text-right">
+                  <p className="text-slate-400 text-xs">Created</p>
+                  <p className="text-slate-300">{formatDate(url.createdAt)}</p>
+
+                  <p className="text-slate-400 text-xs mt-2">Expires</p>
+                  <p
+                    className={`mt-1 font-medium ${
+                      new Date(url.expiresAt).getTime() <= Date.now()
+                        ? "text-red-400"
+                        : "text-amber-300"
+                    }`}
+                  >
+                    {timeLeft(url.expiresAt)}
+                  </p>
+                </div>
               </div>
             </li>
           ))}

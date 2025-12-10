@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import api from "../lib/axios";
 import { Idata } from "../app/page";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
 
 const AnalyticsCard = ({ urlData }: { urlData: Idata }) => {
   const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState(urlData);
+  const [stats, setStats] = useState<Idata>(urlData);
+
   const shortCode = stats?.shortCode;
-  console.log("Short Code:", shortCode);
 
   const fetchStats = async () => {
     if (!shortCode) {
@@ -17,10 +18,11 @@ const AnalyticsCard = ({ urlData }: { urlData: Idata }) => {
     try {
       setLoading(true);
       const res = await api.get(`/shortened/${shortCode}`);
-      console.log("Stats:", res.data);
+
       setStats(res.data);
     } catch (error) {
       console.error("Failed to fetch stats:", error);
+      toast.error("Failed to fetch stats:");
     } finally {
       setLoading(false);
     }
@@ -35,12 +37,14 @@ const AnalyticsCard = ({ urlData }: { urlData: Idata }) => {
   const { clicks, createdAt, expiresAt } = stats;
   console.log(stats);
   return (
-    <div className="border border-slate-700 p-4 rounded-xl bg-slate-900">
-      <h3 className="text-sm font-semibold text-slate-200 mb-2">Analytics</h3>
+    <div className="border border-slate-800 bg-slate-900/80 p-5 rounded-xl shadow-md space-y-5">
+      <h3 className="text-lg font-semibold text-slate-100">Analytics</h3>
 
-      <p className="text-slate-400 text-sm">
-        Clicks: <span className="text-indigo-400">{clicks}</span>
-      </p>
+      {/* Clciks */}
+      <div>
+        <p className="text-slate-400 text-sm">Total Clicks:</p>
+        <p className="text-indigo-400 font-semibold text-xl">{clicks}</p>
+      </div>
 
       <p className="text-slate-400 text-sm">
         Created At:{" "}
@@ -48,18 +52,15 @@ const AnalyticsCard = ({ urlData }: { urlData: Idata }) => {
           {new Date(createdAt).toLocaleString()}
         </span>
       </p>
-
-      <p className="text-slate-400 text-sm">
-        Expires At:{" "}
-        <span className="text-slate-300">
-          {new Date(expiresAt).toLocaleString()}
-        </span>
-      </p>
+      <div>
+        <p className="text-slate-400 text-sm">Expires At: </p>
+        <p className="text-slate-300">{new Date(expiresAt).toLocaleString()}</p>
+      </div>
 
       <Button
         onClick={fetchStats}
         disabled={loading}
-        className="mt-3 px-3 py-1 bg-slate-700 rounded-lg"
+        className="mt-3 px-4 py-2 bg-slate-700 text-slate-100 hover:bg-slate-600 rounded-lg"
       >
         {loading ? "Refreshing..." : "Refresh"}
       </Button>

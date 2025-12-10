@@ -46,7 +46,4 @@ const urlSchema = new mongoose.Schema(
 // Explicit TTL index (production safe)
 urlSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-// Optional: faster lookup for shortCode
-urlSchema.index({ shortCode: 1 });
-
 module.exports = mongoose.model("Url", urlSchema);

@@ -4,6 +4,7 @@ import { Idata } from "@/app/page";
 import api from "@/lib/axios";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
 
 interface FormProps {
   onSuccess?: (data: Idata) => void;
@@ -42,11 +43,14 @@ const UrlForm = ({ onSuccess, onError }: FormProps) => {
       });
       console.log(res.data);
       onSuccess?.(res.data);
+      toast.success("Shortened Your Url", {
+        position: "top-right",
+      });
       setUrl("");
     } catch (err: any) {
       const msg =
         err?.response?.data?.message ||
-        "Something went wrong. Please try again";
+        toast.error("Something went wrong. Please try again");
       onError?.(msg);
     } finally {
       setLoading(false);
@@ -69,13 +73,13 @@ const UrlForm = ({ onSuccess, onError }: FormProps) => {
         <Button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center gap-2justify-center rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex items-center text-center gap-2justify-center rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
         >
           {loading ? "Shortening..." : "Shorten"}
         </Button>
       </div>
       <p className="text-sx text-slate-500">
-        Your Link will expire after 3 days, based on backend TTL settings
+        Your Link will expire after 3 days
       </p>
     </form>
   );
