@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Idata } from "@/app/page";
 import { Button } from "./ui/button";
 import toast from "react-hot-toast";
+import { QRCodeCanvas } from "qrcode.react";
 
 const UrlCard = ({ urlData }: { urlData: Idata }) => {
+  const [showQR, setShowQR] = useState(false);
   if (!urlData) return null;
 
   const { shortUrl, originalUrl } = urlData;
@@ -54,8 +57,36 @@ const UrlCard = ({ urlData }: { urlData: Idata }) => {
           >
             Open
           </Link>
+          <Button onClick={() => setShowQR(!showQR)}>
+            {showQR ? "Hide QR" : "Show QR"}
+          </Button>
         </div>
       </div>
+
+      {/* Show QR */}
+      {showQR && (
+        <div className="flex flex-col items-center space-y-3 mt-4">
+          <QRCodeCanvas
+            value={shortUrl}
+            size={180}
+            bgColor="#0f172a"
+            fgColor="#ffffff"
+          />
+          <Button
+            onClick={() => {
+              const canvas = document.querySelector("canvas");
+              const pngUrl = canvas?.toDataURL("image/png");
+              const link = document.createElement("a");
+              link.href = pngUrl || "";
+              link.download = "qrcode.png";
+              link.click();
+            }}
+            className="bg-slate-700 hover:bg-slate-600"
+          >
+            Download QR
+          </Button>
+        </div>
+      )}
 
       {/* Original URL */}
       <div className="pt-2 border-t border-slate-800">

@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const { shortenId } = require("./controllers/urlController");
 const urlRoutes = require("./routes/urlRoutes");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -14,7 +15,7 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -29,8 +30,11 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 app.use(express.json());
-
-app.use("/", urlRoutes);
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
+app.use("/api", urlRoutes);
+app.get("/short/:id", shortenId);
 
 app.listen(process.env.PORT, () => {
   connectDB();

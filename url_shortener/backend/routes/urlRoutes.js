@@ -12,11 +12,8 @@ const router = express.Router();
 router.post("/shorten", shorten);
 
 // Get Stats (JSON)
-router.get("/shortened/:id", getStats);
-
-// Redirect to Original URL
-router.get("/shorten/:id", shortenId);
+router.get("/stats/:id", getStats);
 
 // Get All URLs
-router.get("/shortenedUrls", getUrls);
+router.get("/urls", getUrls);
 module.exports = router;

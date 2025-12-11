@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import Link from "next/link";
 import { Eye, File, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import QRModal from "@/components/QRModal";
 
 interface ILink {
   _id: string;
@@ -37,19 +40,31 @@ const timeLeft = (iso?: string) => {
 const Page: React.FC = () => {
   const [urls, setUrls] = useState<ILink[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [qrURL, setQRUrl] = useState<string | null>(null);
+  const [openQR, setOpenQR] = useState<boolean>(false);
 
-  const fetchLinks = async () => {
-    try {
-      const res = await api.get("/shortenedUrls");
-      setUrls(res.data || []);
-    } catch (error) {
-      console.error("Error fetching URLs:", error);
-    } finally {
-      setLoading(false);
-    }
+  const openQRModal = (url: string) => {
+    setQRUrl(url);
+    setOpenQR(true);
+  };
+
+  const closeQRModal = () => {
+    setQRUrl(null);
+    setOpenQR(false);
   };
 
   useEffect(() => {
+    const fetchLinks = async () => {
+      try {
+        const res = await api.get("/urls");
+        console.log(res.data);
+        setUrls(res.data || []);
+      } catch (error) {
+        console.error("Error fetching URLs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchLinks();
   }, []);
 
@@ -92,6 +107,12 @@ const Page: React.FC = () => {
                   <p className="text-slate-300 break-words text-sm mt-1">
                     {url.originalUrl}
                   </p>
+                  <Button
+                    onClick={() => openQRModal(url.shortUrl)}
+                    className="px-3 py-1 bg-slate-800 text-slate-100 hover:bg-slate-700 rounded-md"
+                  >
+                    QR
+                  </Button>
                 </div>
 
                 <div>
@@ -107,7 +128,7 @@ const Page: React.FC = () => {
                       {url.shortUrl}
                     </Link>
 
-                    <button
+                    <Button
                       type="button"
                       onClick={() => handleCopy(url.shortUrl)}
                       aria-label="Copy short url"
@@ -116,9 +137,9 @@ const Page: React.FC = () => {
                       <File size={14} />
                       <span className="sr-only">Copy</span>
                       <span className="hidden sm:inline">Copy</span>
-                    </button>
+                    </Button>
 
-                    <a
+                    <Link
                       href={url.shortUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -126,7 +147,7 @@ const Page: React.FC = () => {
                     >
                       <ExternalLink size={14} />
                       <span className="hidden sm:inline">Open</span>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -160,6 +181,11 @@ const Page: React.FC = () => {
                     {timeLeft(url.expiresAt)}
                   </p>
                 </div>
+                <QRModal
+                  open={openQR}
+                  onClose={closeQRModal}
+                  shortUrl={qrURL}
+                />
               </div>
             </li>
           ))}

@@ -17,7 +17,7 @@ const AnalyticsCard = ({ urlData }: { urlData: Idata }) => {
     }
     try {
       setLoading(true);
-      const res = await api.get(`/shortened/${shortCode}`);
+      const res = await api.get(`/stats/${shortCode}`);
 
       setStats(res.data);
     } catch (error) {
