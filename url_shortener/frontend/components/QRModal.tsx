@@ -39,8 +39,8 @@ export default function QRModal({ open, onClose, shortUrl }: QRModalProps) {
             id="qr-canvas"
             value={shortUrl}
             size={220}
-            bgColor="#0f172a"
-            fgColor="#ffffff"
+            bgColor="#ffffff"
+            fgColor="#000000"
           />
 
           <Button

@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import Link from "next/link";
-import { Eye, File, ExternalLink } from "lucide-react";
+import { Eye, File, ExternalLink, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import QRModal from "@/components/QRModal";
+import { Spinner } from "@/components/ui/spinner";
 
 interface ILink {
   _id: string;
@@ -40,6 +40,7 @@ const timeLeft = (iso?: string) => {
 const Page: React.FC = () => {
   const [urls, setUrls] = useState<ILink[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
   const [qrURL, setQRUrl] = useState<string | null>(null);
   const [openQR, setOpenQR] = useState<boolean>(false);
 
@@ -57,7 +58,6 @@ const Page: React.FC = () => {
     const fetchLinks = async () => {
       try {
         const res = await api.get("/urls");
-        console.log(res.data);
         setUrls(res.data || []);
       } catch (error) {
         console.error("Error fetching URLs:", error);
@@ -71,8 +71,6 @@ const Page: React.FC = () => {
   const handleCopy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      // lightweight feedback — replace with toast if available
-      // e.g. toast.success("Copied!");
       console.debug("Copied to clipboard");
     } catch {
       console.debug("Copy failed");
@@ -81,7 +79,9 @@ const Page: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="text-slate-400 text-center py-10">Loading URLs...</div>
+      <div className="text-slate-400 text-center py-10">
+        <Spinner className="size-10 text-indigo-600" />
+      </div>
     );
   }
 
@@ -96,10 +96,11 @@ const Page: React.FC = () => {
           {urls.map((url) => (
             <li
               key={url._id}
-              className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start p-4 bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800/80 transition"
+              className="p-5 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800/70 transition grid grid-cols-1 md:grid-cols-12 gap-6"
             >
-              {/* Left: URL info (spans 8 cols on md) */}
-              <div className="md:col-span-8 flex flex-col gap-3">
+              {/* LEFT SECTION */}
+              <div className="md:col-span-8 space-y-4">
+                {/* Original URL */}
                 <div>
                   <p className="text-slate-400 text-xs uppercase tracking-wide">
                     Original URL
@@ -107,66 +108,70 @@ const Page: React.FC = () => {
                   <p className="text-slate-300 break-words text-sm mt-1">
                     {url.originalUrl}
                   </p>
-                  <Button
-                    onClick={() => openQRModal(url.shortUrl)}
-                    className="px-3 py-1 bg-slate-800 text-slate-100 hover:bg-slate-700 rounded-md"
-                  >
-                    QR
-                  </Button>
                 </div>
 
+                {/* Short URL & Actions */}
                 <div>
                   <p className="text-slate-400 text-xs uppercase tracking-wide">
                     Short URL
                   </p>
-                  <div className="mt-1 flex items-center gap-3">
+
+                  <div className="mt-2 flex flex-wrap items-center gap-3">
+                    {/* Short URL */}
                     <Link
-                      href={`${url.shortUrl}`}
+                      href={url.shortUrl}
                       target="_blank"
                       className="text-indigo-400 hover:text-indigo-300 font-medium break-words text-sm"
                     >
                       {url.shortUrl}
                     </Link>
 
+                    {/* Copy */}
                     <Button
-                      type="button"
+                      size="sm"
                       onClick={() => handleCopy(url.shortUrl)}
-                      aria-label="Copy short url"
-                      className="inline-flex items-center gap-2 ml-1 px-2 py-1 rounded-md border border-slate-700 bg-slate-900 text-slate-200 text-sm hover:bg-slate-800 transition"
+                      className="bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-100 px-2"
                     >
                       <File size={14} />
-                      <span className="sr-only">Copy</span>
-                      <span className="hidden sm:inline">Copy</span>
                     </Button>
 
+                    {/* Open */}
                     <Link
                       href={url.shortUrl}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 ml-1 px-2 py-1 rounded-md bg-indigo-600 text-white text-sm hover:bg-indigo-500 transition"
+                      className="bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-1 rounded-md flex items-center gap-1 text-sm"
                     >
                       <ExternalLink size={14} />
-                      <span className="hidden sm:inline">Open</span>
                     </Link>
+
+                    {/* QR */}
+                    <Button
+                      size="sm"
+                      onClick={() => openQRModal(url.shortUrl)}
+                      className="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded-md flex items-center gap-1"
+                    >
+                      <QrCode size={14} />
+                      <span className="hidden sm:inline text-xs">QR</span>
+                    </Button>
                   </div>
                 </div>
               </div>
 
-              {/* Right: Analytics / meta (spans 4 cols on md) */}
-              <div className="md:col-span-4 flex flex-col gap-3 items-start md:items-end">
-                <div className="flex items-center gap-3">
-                  <div className="inline-flex items-center gap-2 bg-slate-800/60 border border-slate-700 rounded-md px-3 py-2">
-                    <Eye size={16} className="text-slate-200" />
-                    <div className="text-right">
-                      <p className="text-slate-400 text-xs">Clicks</p>
-                      <p className="text-slate-200 font-medium">
-                        {url.clicks ?? 0}
-                      </p>
-                    </div>
+              {/* RIGHT SECTION */}
+              <div className="md:col-span-4 flex flex-col justify-between md:items-end space-y-3">
+                {/* Clicks */}
+                <div className="inline-flex items-center gap-2 bg-slate-800/60 border border-slate-700 rounded-md px-3 py-2">
+                  <Eye size={16} className="text-slate-200" />
+                  <div className="text-right">
+                    <p className="text-slate-400 text-xs">Clicks</p>
+                    <p className="text-slate-200 font-medium">
+                      {url.clicks ?? 0}
+                    </p>
                   </div>
                 </div>
 
-                <div className="w-full md:w-auto text-sm text-right">
+                {/* Meta */}
+                <div className="text-sm text-right">
                   <p className="text-slate-400 text-xs">Created</p>
                   <p className="text-slate-300">{formatDate(url.createdAt)}</p>
 
@@ -181,6 +186,8 @@ const Page: React.FC = () => {
                     {timeLeft(url.expiresAt)}
                   </p>
                 </div>
+
+                {/* QR Modal */}
                 <QRModal
                   open={openQR}
                   onClose={closeQRModal}
