@@ -22,7 +22,7 @@ const Home = () => {
   const [lastCreatedUrl, setLastCreatedUrl] = useState<Idata | null>(null);
 
   return (
-    <main className="w-full max-w-3xl mx-auto px-4 py-8">
+    <main className="w-full max-w-3xl mx-auto px-4 py-8 h-[86vh]">
       <div className="bg-slate-900/60 border border-slate-800 rounded-2xl shadow-xl p-6 md:p-10">
         {/* Top Action Row */}
         <div className="flex justify-between items-center mb-8">

@@ -7,6 +7,8 @@ import { Eye, File, ExternalLink, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import QRModal from "@/components/QRModal";
 import { Spinner } from "@/components/ui/spinner";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 
 interface ILink {
   _id: string;
