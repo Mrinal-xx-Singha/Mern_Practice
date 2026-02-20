@@ -8,21 +8,29 @@ const isProduction = process.env.NODE_ENV === "production";
 // Helper for cookie options
 const cookieOptions = {
   httpOnly: true,
-  sameSite: isProduction ? "none" : "lax", // none for cross-site cookies in prod
-  secure: isProduction, // must be true for HTTPS in prod
+  sameSite: isProduction ? "none" : "lax",
+  secure: isProduction,
 };
 
 // ================== REGISTER ==================
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
+
   try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({
       username,
       email,
       password: hashed,
     });
-    await user.save();
     res.status(201).json({ message: "User saved successfully", user });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
@@ -45,7 +53,7 @@ router.post("/login", async (req, res) => {
     const refreshToken = jwt.sign(
       { id: user._id },
       process.env.REFRESH_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     user.refreshToken = refreshToken;
@@ -78,7 +86,7 @@ router.post("/refresh-token", async (req, res) => {
     const newAccessToken = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
 
     res.cookie("token", newAccessToken, cookieOptions);

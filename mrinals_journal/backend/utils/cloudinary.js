@@ -9,14 +9,22 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "blog_posts",
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
-  },
-});
+function createUpload(
+  folder,
+  allowed_formats = ["jpg", "png", "jpeg", "webp"],
+) {
+  const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder,
+      allowed_formats,
+    },
+  });
+  return multer({ storage });
+}
 
-const upload = multer({ storage });
+// Default upload for blog posts
+const upload = createUpload("blog_posts");
 
 module.exports = upload;
+module.exports.createUpload = createUpload;

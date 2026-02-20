@@ -2,14 +2,15 @@ import React, { useState, useId } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import "highlight.js/styles/github-dark.css";
+import "highlight.js/styles/github.css";
 import toast from "react-hot-toast";
-import { Copy, CopyCheck } from "lucide-react";
+import { Copy, Check } from "lucide-react";
+
 const MarkdownRenderer = ({ content = "" }) => {
-  const [copied, setCopied] = useState(false);
+  const [copiedId, setCopiedId] = useState(null);
 
   return (
-    <div className="prose prose-lg max-w-none  dark:text-gray-700 prose-code:before:hidden prose-code:after:hidden">
+    <div className="prose prose-lg max-w-none prose-code:before:hidden prose-code:after:hidden">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
@@ -24,15 +25,19 @@ const MarkdownRenderer = ({ content = "" }) => {
                 ? children.join("")
                 : String(children);
               navigator.clipboard.writeText(text);
-              setCopied(true);
-              toast.success("✅ Copied to clipboard!");
-              setTimeout(() => setCopied(false), 1500);
+              setCopiedId(id);
+              toast.success("Copied!");
+              setTimeout(() => setCopiedId(null), 2000);
             };
 
             if (inline) {
               return (
                 <code
-                  className="bg-gray-200 dark:bg-gray-700 text-sm px-1.5 py-0.5 rounded font-mono"
+                  className="text-sm px-1.5 py-0.5 rounded font-mono"
+                  style={{
+                    backgroundColor: "var(--color-bg-subtle)",
+                    color: "var(--color-text)",
+                  }}
                   {...props}
                 >
                   {children}
@@ -41,13 +46,25 @@ const MarkdownRenderer = ({ content = "" }) => {
             }
 
             return (
-              <figure className="relative group my-6 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-sm">
+              <figure
+                className="relative group my-6 rounded-lg overflow-hidden"
+                style={{
+                  backgroundColor: "var(--color-bg-subtle)",
+                  border: "1px solid var(--color-border)",
+                }}
+              >
                 {language && (
-                  <figcaption className="absolute top-2 left-2 bg-gray-800 text-white text-xs px-2 py-0.5 rounded-md font-mono opacity-80">
+                  <figcaption
+                    className="text-xs px-3 py-1.5 font-mono"
+                    style={{
+                      color: "var(--color-text-muted)",
+                      borderBottom: "1px solid var(--color-border)",
+                    }}
+                  >
                     {language}
                   </figcaption>
                 )}
-                <pre className="p-4 text-sm overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
+                <pre className="p-4 text-sm overflow-x-auto">
                   <code
                     className={`${className} font-mono`}
                     aria-labelledby={id}
@@ -57,16 +74,22 @@ const MarkdownRenderer = ({ content = "" }) => {
                   </code>
                 </pre>
                 <button
-                  aria-label="Copy code to clipboard"
+                  aria-label="Copy code"
                   onClick={handleCopy}
-                  className={`absolute top-2 right-2 text-xs px-2 py-1 rounded-md transition-opacity duration-200 ${
-                    copied ? "opacity-100" : "opacity-80 hover:opacity-100"
-                  }`}
+                  className="absolute top-2 right-2 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  style={{
+                    backgroundColor: "var(--color-bg)",
+                    border: "1px solid var(--color-border)",
+                    color: "var(--color-text-secondary)",
+                  }}
                 >
-                  {copied ? (
-                    <CopyCheck className="w-4 h-4" />
+                  {copiedId === id ? (
+                    <Check
+                      className="w-3.5 h-3.5"
+                      style={{ color: "var(--color-accent)" }}
+                    />
                   ) : (
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-3.5 h-3.5" />
                   )}
                 </button>
               </figure>

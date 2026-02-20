@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../../config/api.js";
 
 const EditPost = () => {
   const { id } = useParams();
@@ -12,63 +13,121 @@ const EditPost = () => {
     tags: "",
     category: "",
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`https://mern-practice-o3a9.onrender.com/api/posts/${id}`).then((res) => {
-      const { tags, title, category, content } = res.data;
-      setForm({ title, content, tags: tags.join(", "), category });
-    });
+    axios
+      .get(`${API_BASE_URL}/api/posts/${id}`)
+      .then((res) => {
+        const { tags, title, category, content } = res.data;
+        setForm({ title, content, tags: tags.join(", "), category });
+        setLoading(false);
+      })
+      .catch(() => {
+        toast.error("Failed to load post");
+        setLoading(false);
+      });
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`https://mern-practice-o3a9.onrender.com/api/posts/${id}`, {
-        ...form,
-        tags: form.tags.split(",").map((t) => t.trim()),
-      });
+      await axios.put(
+        `${API_BASE_URL}/api/posts/${id}`,
+        {
+          ...form,
+          tags: form.tags.split(",").map((t) => t.trim()),
+        },
+        { withCredentials: true },
+      );
       navigate(`/posts/${id}`);
-      toast.success("Post Updated Successfully!");
+      toast.success("Story updated!");
     } catch (error) {
-      console.error("Update failed",error.message);
-      toast.error("Update failed",error.message);
+      console.error("Update failed", error.message);
+      toast.error("Update failed");
     }
   };
-  return (
-    <div className="max-w-2xl mx-auto py-6">
-      <h2 className="text-xl font-semibold mb-4 px-2 ">Edit Post</h2>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow space-y-4"
+
+  if (loading) {
+    return (
+      <div
+        className="mx-auto py-12 px-6 min-h-screen"
+        style={{ maxWidth: "var(--max-width-article)" }}
       >
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-100 rounded w-1/2" />
+          <div className="h-40 bg-gray-100 rounded" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="mx-auto py-12 px-6 min-h-screen"
+      style={{ maxWidth: "var(--max-width-article)" }}
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
         <input
-          className="w-full border p-2"
+          type="text"
+          placeholder="Title"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
-        />
-        <textarea
-          rows={6}
-          value={form.content}
-          onChange={(e) => setForm({ ...form, content: e.target.value })}
-          className="w-full border p-2"
-        />
-        <input
-          className="w-full border p-2"
-          value={form.tags}
-          onChange={(e) => setForm({ ...form, tags: e.target.value })}
-        />
-        <input
-          className="w-full borer p-2"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
+          className="w-full font-serif text-[2.5rem] font-bold leading-tight outline-none border-none placeholder:font-serif"
+          style={{ color: "var(--color-text)" }}
         />
 
-        <button
-          type="submit"
-          className="bg-yellow-500 text-white px-4 py-2 rounded "
+        <textarea
+          placeholder="Tell your story..."
+          value={form.content}
+          onChange={(e) => setForm({ ...form, content: e.target.value })}
+          className="w-full text-lg leading-relaxed outline-none border-none resize-none min-h-[300px]"
+          style={{ color: "var(--color-text)" }}
+        />
+
+        <div
+          className="pt-6"
+          style={{ borderTop: "1px solid var(--color-border)" }}
         >
-          Update
-        </button>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex-1">
+              <label
+                className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
+                style={{ color: "var(--color-text-muted)" }}
+              >
+                Category
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Web Development"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="input-clean text-sm"
+              />
+            </div>
+            <div className="flex-1">
+              <label
+                className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
+                style={{ color: "var(--color-text-muted)" }}
+              >
+                Tags (comma separated)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. react, javascript"
+                value={form.tags}
+                onChange={(e) => setForm({ ...form, tags: e.target.value })}
+                className="input-clean text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <button type="submit" className="btn-accent px-6 py-2.5">
+              Update
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   );

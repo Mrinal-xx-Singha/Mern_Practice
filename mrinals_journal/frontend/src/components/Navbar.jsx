@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/slices/authSlice";
-import { Clipboard, Home, Pen, User, LogOut, Menu, X } from "lucide-react";
+import { PenLine, User, LogOut, Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
@@ -17,55 +17,71 @@ const Navbar = () => {
     toast.success("Logged out successfully");
   };
 
-  const navLinkClass =
-    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 hover:text-blue-600 transition-all";
-
   return (
-    <nav className="bg-white border-b shadow-md sticky top-0 z-50 transition-shadow">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <nav
+      className="sticky top-0 z-50 backdrop-blur-sm"
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.95)",
+        borderBottom: "1px solid var(--color-border)",
+      }}
+    >
+      <div
+        className="mx-auto flex items-center justify-between px-6 py-3"
+        style={{ maxWidth: "var(--max-width-page)" }}
+      >
         {/* Logo */}
         <Link
           to="/feed"
-          className="flex items-center gap-2 text-xl font-bold text-gray-800 hover:text-blue-600 transition uppercase"
+          className="font-serif text-[1.4rem] font-bold tracking-tight"
+          style={{ color: "var(--color-text)" }}
         >
-          <Clipboard size={24} />
-          <span>Mrinals Journal</span>
+          Mrinal's Journal
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-6 text-gray-700">
-          <Link to="/feed" className={navLinkClass}>
-            <Home size={18} />
-            <span>Home</span>
-          </Link>
-
+        <div className="hidden md:flex items-center gap-5">
           {user && (
             <>
-              <Link to="/create" className={navLinkClass}>
-                <Pen size={18} />
-                <span>New Post</span>
+              <Link
+                to="/feed"
+                className="link-underline text-sm"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                Home
               </Link>
 
-              <Link to="/profile" className={`${navLinkClass} group`}>
-                <div className="relative flex items-center gap-2">
-                  <img
-                    src={
-                      user?.avatar ||
-                      `https://ui-avatars.com/api/?name=${user?.name || "User"}`
-                    }
-                    alt="avatar"
-                    className="w-7 h-7 rounded-full border object-cover"
-                  />
-                  <span>{user?.name?.split(" ")[0]}</span>
-                </div>
+              <Link
+                to="/create"
+                className="inline-flex items-center gap-1.5 btn-accent"
+              >
+                <PenLine size={16} />
+                Write
+              </Link>
+
+              <Link to="/profile" className="flex items-center gap-2 ml-1">
+                <img
+                  src={
+                    user?.avatar ||
+                    `https://ui-avatars.com/api/?name=${user?.username || "U"}&background=f0f0f0&color=242424&bold=true&size=128`
+                  }
+                  alt="avatar"
+                  className="w-8 h-8 rounded-full object-cover"
+                  style={{ border: "1px solid var(--color-border)" }}
+                />
               </Link>
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-500 hover:text-red-600 transition"
+                className="text-sm transition-colors cursor-pointer"
+                style={{ color: "var(--color-text-muted)" }}
+                onMouseEnter={(e) =>
+                  (e.target.style.color = "var(--color-danger)")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.color = "var(--color-text-muted)")
+                }
               >
                 <LogOut size={18} />
-                <span>Logout</span>
               </button>
             </>
           )}
@@ -74,53 +90,51 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-gray-700 hover:text-blue-600 transition"
+          className="md:hidden"
+          style={{ color: "var(--color-text)" }}
         >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
       {/* Mobile Navigation Menu */}
       <div
-        className={`md:hidden overflow-hidden px-4 transition-all duration-300 ease-in-out ${
-          menuOpen ? "max-h-[300px] py-2" : "max-h-0"
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          menuOpen ? "max-h-[300px] py-3" : "max-h-0"
         }`}
+        style={{
+          borderTop: menuOpen ? "1px solid var(--color-border)" : "none",
+        }}
       >
-        <div className="flex flex-col gap-3 text-gray-700 text-sm">
+        <div className="flex flex-col gap-1 px-6">
           <Link
             to="/feed"
-            className={navLinkClass}
+            className="py-2 text-sm"
+            style={{ color: "var(--color-text-secondary)" }}
             onClick={() => setMenuOpen(false)}
           >
-            <Home size={18} />
-            <span>Home</span>
+            Home
           </Link>
 
           {user && (
             <>
               <Link
                 to="/create"
-                className={navLinkClass}
+                className="py-2 text-sm font-medium"
+                style={{ color: "var(--color-accent)" }}
                 onClick={() => setMenuOpen(false)}
               >
-                <Pen size={18} />
-                <span>New Post</span>
+                Write a story
               </Link>
 
               <Link
                 to="/profile"
-                className={navLinkClass}
+                className="py-2 text-sm flex items-center gap-2"
+                style={{ color: "var(--color-text-secondary)" }}
                 onClick={() => setMenuOpen(false)}
               >
-                <img
-                  src={
-                    user?.avatar ||
-                    `https://ui-avatars.com/api/?name=${user?.name || "User"}`
-                  }
-                  alt="avatar"
-                  className="w-6 h-6 rounded-full border object-cover"
-                />
-                <span>Profile</span>
+                <User size={16} />
+                Profile
               </Link>
 
               <button
@@ -128,10 +142,11 @@ const Navbar = () => {
                   handleLogout();
                   setMenuOpen(false);
                 }}
-                className="flex items-center gap-2 px-3 py-2 text-red-500 hover:text-red-600 transition"
+                className="py-2 text-sm text-left flex items-center gap-2"
+                style={{ color: "var(--color-danger)" }}
               >
-                <LogOut size={18} />
-                <span>Logout</span>
+                <LogOut size={16} />
+                Sign out
               </button>
             </>
           )}

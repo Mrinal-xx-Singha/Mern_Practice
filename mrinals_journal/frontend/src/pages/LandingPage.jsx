@@ -4,40 +4,88 @@ import { Link } from "react-router-dom";
 const LandingPage = () => {
   return (
     <div
-      className="relative h-screen w-full bg-cover bg-center flex items-center justify-center"
-      style={{
-        backgroundImage: `url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1920&q=80')`,
-        backgroundColor: "#1a1a1a",
-      }}
+      className="min-h-screen flex flex-col"
+      style={{ backgroundColor: "#fdf6e3" }}
     >
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40 z-0"></div>
-
-      {/* Content */}
-      <div className="relative z-10 text-center text-white px-4 md:px-8 animate-fadeIn">
-        <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">
+      {/* Top bar */}
+      <header
+        className="flex items-center justify-between px-6 md:px-12 py-5"
+        style={{ borderBottom: "1px solid #e8dcc8" }}
+      >
+        <span
+          className="font-serif text-[1.6rem] font-bold tracking-tight"
+          style={{ color: "var(--color-text)" }}
+        >
           Mrinal's Journal
-        </h1>
-        <p className="text-base md:text-xl mb-8 max-w-2xl mx-auto text-gray-200">
-          Write. Share. Inspire. Join our growing community of thinkers, writers, and dreamers.
-        </p>
-        <div className="flex gap-4 justify-center flex-wrap">
+        </span>
+        <div className="flex items-center gap-4">
           <Link
             to="/login"
-            className="bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-400 px-6 py-2 rounded-full text-white font-semibold transition duration-200 shadow-md"
-            aria-label="Get Started - Login or Register"
+            className="text-sm font-medium"
+            style={{ color: "var(--color-text-secondary)" }}
           >
+            Sign In
+          </Link>
+          <Link to="/register" className="btn-accent text-sm">
             Get Started
           </Link>
-          <Link
-            to="/feed"
-            className="border border-white hover:bg-white hover:text-black focus:ring-4 focus:ring-white/50 px-6 py-2 rounded-full text-white font-semibold transition duration-200"
-            aria-label="Explore public blog posts"
+        </div>
+      </header>
+
+      {/* Hero */}
+      <main className="flex-1 flex items-center px-6 md:px-12 lg:px-20">
+        <div
+          className="w-full mx-auto py-16 md:py-24"
+          style={{ maxWidth: "var(--max-width-page)" }}
+        >
+          <h1
+            className="font-serif font-bold leading-[1.1] tracking-tight mb-8 animate-fade-in"
+            style={{
+              fontSize: "clamp(3rem, 8vw, 6.5rem)",
+              color: "var(--color-text)",
+              letterSpacing: "-0.04em",
+            }}
           >
-            Explore Posts
+            Stay curious.
+          </h1>
+          <p
+            className="text-lg md:text-xl max-w-xl mb-10 leading-relaxed animate-fade-in"
+            style={{
+              color: "var(--color-text-secondary)",
+              animationDelay: "0.1s",
+            }}
+          >
+            Discover stories, thinking, and expertise from writers on any topic
+            that matters to you.
+          </p>
+          <Link
+            to="/register"
+            className="animate-fade-in inline-block px-8 py-3 rounded-full text-lg font-medium transition-colors"
+            style={{
+              backgroundColor: "var(--color-text)",
+              color: "#fdf6e3",
+              animationDelay: "0.2s",
+            }}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = "#333")}
+            onMouseLeave={(e) =>
+              (e.target.style.backgroundColor = "var(--color-text)")
+            }
+          >
+            Start reading
           </Link>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer
+        className="text-center py-6 text-xs"
+        style={{
+          color: "var(--color-text-muted)",
+          borderTop: "1px solid #e8dcc8",
+        }}
+      >
+        Built with ❤️ by Mrinal
+      </footer>
     </div>
   );
 };

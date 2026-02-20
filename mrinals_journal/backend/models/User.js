@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema(
       github: { type: String, default: "" },
       website: { type: String, default: "" },
     },
+    bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
     refreshToken: {
       type: String,
       default: null,
@@ -49,7 +50,7 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("User", userSchema);

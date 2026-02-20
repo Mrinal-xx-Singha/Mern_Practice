@@ -1,6 +1,172 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ========================
+   Design System
+   ======================== */
+
+:root {
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f7f7f7;
+  --color-border: #e6e6e6;
+  --color-text: #242424;
+  --color-text-secondary: #6b6b6b;
+  --color-text-muted: #9b9b9b;
+  --color-accent: #1a8917;
+  --color-accent-hover: #156d12;
+  --color-danger: #c94a4a;
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --max-width-article: 720px;
+  --max-width-page: 1192px;
+}
+
+/* ========================
+   Base Styles
+   ======================== */
+
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+}
+
+/* ========================
+   Typography Utilities
+   ======================== */
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Article prose overrides for Medium feel */
+.article-content {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  letter-spacing: -0.003em;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.article-content blockquote {
+  border-left: 3px solid var(--color-text);
+  padding-left: 1.25rem;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.article-content a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.article-content img {
+  border-radius: 4px;
+}
+
+/* ========================
+   Component Styles
+   ======================== */
+
+/* Smooth underline hover effect */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 1px;
+  background-color: currentColor;
+  transition: width 0.25s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Green accent button */
+.btn-accent {
+  background-color: var(--color-accent);
+  color: #ffffff;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-accent:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* Clean input style */
+.input-clean {
+  width: 100%;
+  padding: 0.625rem 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  outline: none;
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: transparent;
+  transition: border-color 0.2s ease;
+}
+
+.input-clean:focus {
+  border-bottom-color: var(--color-text);
+}
+
+.input-clean::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+/* Separator line */
+.separator {
+  border: none;
+  height: 1px;
+  background-color: var(--color-border);
 }

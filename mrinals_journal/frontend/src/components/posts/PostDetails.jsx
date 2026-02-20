@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { Trash2, Edit, Eye } from "lucide-react";
 import MarkdownRenderer from "../MarkdownRenderer";
 import MoreFromAuthor from "../MoreFromAuthor";
 import CommonItem from "../CommonItem";
 
-import {
-  getPostById,
-  reactToPost,
-  deletePost,
-} from "../../services/postService";
+import { getPostById, reactToPost } from "../../services/postService";
+import { deletePost } from "../../redux/slices/postSlice";
 import {
   getCommentsByPostId,
   addComment,
@@ -26,6 +23,7 @@ const PostDetails = () => {
   const [commentInput, setCommentInput] = useState("");
   const [replyTo, setReplyTo] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   const emojiOptions = ["👍", "❤️", "😂", "😢"];
@@ -100,7 +98,7 @@ const PostDetails = () => {
 
   const handleDelete = async () => {
     try {
-      await deletePost(id);
+      await dispatch(deletePost(id)).unwrap();
       toast.success("🗑️ Post deleted!");
       navigate("/");
     } catch (error) {

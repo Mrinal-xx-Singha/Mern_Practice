@@ -1,24 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 axios.defaults.withCredentials = true;
 
 export const fetchPosts = createAsyncThunk(
   "posts/fetch",
   async (query = "", thunkAPI) => {
     try {
-      const res = await axios.get(`https://mern-practice-o3a9.onrender.com/api/posts${query}`);
+      const res = await axios.get(`${API_BASE_URL}/api/posts${query}`);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const createPost = createAsyncThunk(
   "posts/create",
   async (data, thunkAPI) => {
     try {
-      const res = await axios.post("https://mern-practice-o3a9.onrender.com/api/posts", data, {
+      const res = await axios.post(`${API_BASE_URL}/api/posts`, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -27,7 +28,7 @@ export const createPost = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const fetchMoreFromAuthor = createAsyncThunk(
@@ -35,25 +36,25 @@ export const fetchMoreFromAuthor = createAsyncThunk(
   async ({ authorId, exclude }, thunkAPI) => {
     try {
       const res = await axios.get(
-        `https://mern-practice-o3a9.onrender.com/api/posts/author/${authorId}?exclude=${exclude}`
+        `${API_BASE_URL}/api/posts/author/${authorId}?exclude=${exclude}`,
       );
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const deletePost = createAsyncThunk(
   "posts/delete",
   async (id, thunkAPI) => {
     try {
-      await axios.delete(`https://mern-practice-o3a9.onrender.com/api/posts/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/posts/${id}`);
       return id;
     } catch (error) {
-      thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 const postSlice = createSlice({
@@ -69,7 +70,7 @@ const postSlice = createSlice({
       })
       .addCase(createPost.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts.unshift(action.payload); // Add the new post to the top
+        state.posts.unshift(action.payload);
       })
       .addCase(createPost.rejected, (state, action) => {
         state.loading = false;

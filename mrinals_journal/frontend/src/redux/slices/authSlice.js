@@ -1,18 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 
 axios.defaults.withCredentials = true;
 export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get("https://mern-practice-o3a9.onrender.com/api/protected");
+      const res = await axios.get(`${API_BASE_URL}/api/protected`);
       return res.data.user;
     } catch (error) {
       console.error(error);
       return thunkAPI.rejectWithValue(null);
     }
-  }
+  },
 );
 
 export const loginUser = createAsyncThunk(
@@ -20,26 +21,26 @@ export const loginUser = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post(
-        "https://mern-practice-o3a9.onrender.com/api/auth/login",
-        credentials
+        `${API_BASE_URL}/api/auth/login`,
+        credentials,
       );
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
-  }
+  },
 );
 
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, thunkAPI) => {
     try {
-      await axios.post("https://mern-practice-o3a9.onrender.com/api/auth/logout");
+      await axios.post(`${API_BASE_URL}/api/auth/logout`);
       return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
-  }
+  },
 );
 
 export const registerUser = createAsyncThunk(
@@ -47,14 +48,14 @@ export const registerUser = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post(
-        "https://mern-practice-o3a9.onrender.com/api/auth/register",
-        credentials
+        `${API_BASE_URL}/api/auth/register`,
+        credentials,
       );
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
-  }
+  },
 );
 
 const authSlice = createSlice({

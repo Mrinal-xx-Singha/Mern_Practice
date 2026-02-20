@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [
-  "http://localhost:5173",
+  // "http://localhost:5173",
   "https://whimsical-conkies-bb435c.netlify.app",
 ];
 
@@ -32,7 +32,7 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 
 mongoose

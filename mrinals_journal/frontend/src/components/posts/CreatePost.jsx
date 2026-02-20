@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { createPost } from "../../redux/slices/postSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ImagePlus, X } from "lucide-react";
 
 const CreatePost = () => {
   const [form, setForm] = useState({
@@ -12,8 +13,8 @@ const CreatePost = () => {
     category: "",
   });
 
-  const [images, setImages] = useState([]); // for storing image file
-  const [previews, setPreviews] = useState([]); // image preview
+  const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,6 +25,11 @@ const CreatePost = () => {
     setPreviews(previewUrls);
   };
 
+  const removeImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,10 +37,11 @@ const CreatePost = () => {
     formData.append("title", form.title);
     formData.append("content", form.content);
     formData.append("category", form.category);
-    formData.append(
-      "tags",
-      JSON.stringify(form.tags.split(",").map((tag) => tag.trim()))
-    );
+    const tags = form.tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+    tags.forEach((tag) => formData.append("tags", tag));
     images.forEach((img) => {
       formData.append("images", img);
     });
@@ -42,129 +49,133 @@ const CreatePost = () => {
     dispatch(createPost(formData))
       .unwrap()
       .then(() => {
-        toast.success("Post Created!");
+        toast.success("Story published!");
         navigate("/feed");
       })
       .catch((err) => {
         console.error(err);
-        toast.error("Failed to create post.");
+        toast.error("Failed to publish story.");
       });
-
-    console.log("Form Data Debug:");
-    console.log(formData.get("title"));
-    console.log(formData.get("content"));
-    console.log(formData.get("tags"));
-    console.log(formData.get("category"));
-    console.log(images.length, "images selected");
-    console.log(formData);
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-10 px-4">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center uppercase">
-        Create New Post
-      </h2>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-lg p-6 space-y-5"
-        encType="multipart/form-data"
-      >
+    <div
+      className="mx-auto py-12 px-6 min-h-screen"
+      style={{ maxWidth: "var(--max-width-article)" }}
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Title
-          </label>
-          <input
-            type="text"
-            placeholder="Enter post title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="w-full border rounded px-3 py-2"
-            required
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Title"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          required
+          className="w-full font-serif text-[2.5rem] font-bold leading-tight outline-none border-none placeholder:font-serif"
+          style={{
+            color: "var(--color-text)",
+            caretColor: "var(--color-text)",
+          }}
+        />
 
         {/* Content */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Content{" "}
-            <span className="text-xs text-gray-400">(Markdown supported)</span>
-          </label>
-          <textarea
-            placeholder="Write your post content here..."
-            value={form.content}
-            onChange={(e) => setForm({ ...form, content: e.target.value })}
-            className="w-full border rounded px-3 py-2 h-32 resize-none"
-            required
-          />
-        </div>
+        <textarea
+          placeholder="Tell your story..."
+          value={form.content}
+          onChange={(e) => setForm({ ...form, content: e.target.value })}
+          required
+          className="w-full text-lg leading-relaxed outline-none border-none resize-none min-h-[300px]"
+          style={{
+            color: "var(--color-text)",
+            caretColor: "var(--color-text)",
+          }}
+        />
 
-        {/* Tags */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Tags (comma-separated)
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. react, javascript, tailwind"
-            value={form.tags}
-            onChange={(e) => setForm({ ...form, tags: e.target.value })}
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-
-        {/* Category */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Category
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. Web Development"
-            value={form.category}
-            onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="w-full border rounded px-3 py-2"
-            required
-          />
-        </div>
-
-        {/* Image Upload */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Upload Image
-          </label>
-          <input
-            type="file"
-            multiple
-            onChange={handleImageChange}
-            className="block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded file:border-0
-              file:text-sm file:font-semibold
-              file:bg-blue-50 file:text-blue-700
-              hover:file:bg-blue-100"
-          />
-          {previews.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              {previews.map((src, i) => (
+        {/* Image previews */}
+        {previews.length > 0 && (
+          <div className="flex flex-wrap gap-3">
+            {previews.map((src, i) => (
+              <div key={i} className="relative group">
                 <img
-                  key={i}
                   src={src}
                   alt={`preview-${i}`}
-                  className="w-full max-h-60 object-cover rounded shadow"
+                  className="w-24 h-24 object-cover rounded-lg"
                 />
-              ))}
-            </div>
-          )}
-        </div>
+                <button
+                  type="button"
+                  onClick={() => removeImage(i)}
+                  className="absolute -top-2 -right-2 p-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  style={{
+                    backgroundColor: "var(--color-text)",
+                    color: "#fff",
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium"
+        {/* Bottom toolbar */}
+        <div
+          className="pt-6"
+          style={{ borderTop: "1px solid var(--color-border)" }}
         >
-          Publish Post
-        </button>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex-1">
+              <label
+                className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
+                style={{ color: "var(--color-text-muted)" }}
+              >
+                Category
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Web Development"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                required
+                className="input-clean text-sm"
+              />
+            </div>
+            <div className="flex-1">
+              <label
+                className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
+                style={{ color: "var(--color-text-muted)" }}
+              >
+                Tags (comma separated)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. react, javascript"
+                value={form.tags}
+                onChange={(e) => setForm({ ...form, tags: e.target.value })}
+                className="input-clean text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label
+              className="flex items-center gap-2 text-sm cursor-pointer transition-colors"
+              style={{ color: "var(--color-text-secondary)" }}
+            >
+              <ImagePlus size={20} />
+              <span>Add images</span>
+              <input
+                type="file"
+                multiple
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
+
+            <button type="submit" className="btn-accent px-6 py-2.5">
+              Publish
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   );

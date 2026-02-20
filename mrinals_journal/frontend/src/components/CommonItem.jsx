@@ -1,78 +1,115 @@
-// CommonItem.jsx
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { ThumbsUp, MessageCircle, Trash2 } from "lucide-react";
+import { API_BASE_URL } from "../config/api.js";
 
-// 🧩 Recursive Comment Component
 const CommonItem = ({ comment, onReply, onDelete, user }) => {
   const [likes, setLikes] = useState(comment?.likes?.length || 0);
-  const [liked, setLiked] = useState(comment?.likes?.includes(user?.id));
+  const [liked, setLiked] = useState(comment?.likes?.includes(user?._id));
 
   const toggleLike = async () => {
     try {
       const res = await axios.patch(
-        `https://mern-practice-o3a9.onrender.com/api/comments/like/${comment._id}`
+        `${API_BASE_URL}/api/comments/like/${comment._id}`,
+        {},
+        { withCredentials: true },
       );
       setLikes(res.data.likes);
       setLiked(res.data.liked);
-      toast.success(res.data.liked ? "👍 Liked!" : "👍 Unliked!");
     } catch (err) {
       console.error("Failed to toggle like", err);
-      toast.error("🚫 Failed to like comment.");
+      toast.error("Failed to like comment");
     }
   };
 
-  const isAuthor = user._id === comment.author._id || user?.role === "admin";
+  const isAuthor = user?._id === comment.author?._id || user?.role === "admin";
 
   return (
-    <div className="ml-6 mt-4 border-l-2 pl-4 border-gray-200 dark:border-gray-700">
-      <div className="flex justify-between items-start">
-        <div>
-          <p className="text-sm text-gray-800 dark:text-gray-100">
-            <span className="font-semibold">{comment.author?.username}</span>:{" "}
-            {comment.content}
-          </p>
-          <div className="flex gap-4 mt-1 text-sm text-gray-600 dark:text-gray-400">
-            <button
-              onClick={toggleLike}
-              className={`flex items-center gap-1 hover:text-red-600 dark:hover:text-red-400 ${
-                liked ? "text-red-600 dark:text-red-400" : ""
-              }`}
-            >
-              <ThumbsUp size={16} /> {likes}
-            </button>
-            {user && (
-              <button
-                onClick={() => onReply(comment._id)}
-                className="flex items-center gap-1 text-blue-600 hover:underline"
-              >
-                <MessageCircle size={16} /> Reply
-              </button>
-            )}
-            {isAuthor && (
-              <button
-                onClick={() => onDelete(comment._id)}
-                className="flex items-center gap-1 text-red-600 hover:underline"
-              >
-                <Trash2 size={16} /> Delete
-              </button>
-            )}
-          </div>
-        </div>
+    <div
+      className="py-4"
+      style={{ borderBottom: "1px solid var(--color-border)" }}
+    >
+      {/* Comment header */}
+      <div className="flex items-center gap-2 mb-2">
+        <img
+          src={
+            comment.author?.avatar ||
+            `https://ui-avatars.com/api/?name=${comment.author?.username || "U"}&background=f0f0f0&color=242424&size=64`
+          }
+          alt=""
+          className="w-6 h-6 rounded-full object-cover"
+        />
+        <span
+          className="text-sm font-medium"
+          style={{ color: "var(--color-text)" }}
+        >
+          {comment.author?.username}
+        </span>
       </div>
 
-      {/* Recursively render replies */}
-      {comment.replies?.length > 0 &&
-        comment.replies.map((reply) => (
-          <CommonItem
-            key={reply._id}
-            comment={reply}
-            onReply={onReply}
-            onDelete={onDelete}
-            user={user}
-          />
-        ))}
+      {/* Comment content */}
+      <p
+        className="text-sm leading-relaxed mb-2 pl-8"
+        style={{ color: "var(--color-text)" }}
+      >
+        {comment.content}
+      </p>
+
+      {/* Actions */}
+      <div className="flex items-center gap-4 pl-8">
+        <button
+          onClick={toggleLike}
+          className="flex items-center gap-1 text-xs transition-colors cursor-pointer"
+          style={{
+            color: liked ? "var(--color-danger)" : "var(--color-text-muted)",
+          }}
+        >
+          <ThumbsUp size={14} />
+          <span>{likes}</span>
+        </button>
+
+        {user && (
+          <button
+            onClick={() => onReply(comment._id)}
+            className="flex items-center gap-1 text-xs transition-colors cursor-pointer"
+            style={{ color: "var(--color-text-muted)" }}
+          >
+            <MessageCircle size={14} />
+            Reply
+          </button>
+        )}
+
+        {isAuthor && (
+          <button
+            onClick={() => onDelete(comment._id)}
+            className="flex items-center gap-1 text-xs transition-colors cursor-pointer"
+            style={{ color: "var(--color-danger)" }}
+          >
+            <Trash2 size={14} />
+          </button>
+        )}
+      </div>
+
+      {/* Nested replies */}
+      {comment.replies?.length > 0 && (
+        <div
+          className="ml-8 mt-2"
+          style={{ borderLeft: "2px solid var(--color-border)" }}
+        >
+          <div className="pl-4">
+            {comment.replies.map((reply) => (
+              <CommonItem
+                key={reply._id}
+                comment={reply}
+                onReply={onReply}
+                onDelete={onDelete}
+                user={user}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

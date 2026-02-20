@@ -1,5 +1,6 @@
 import axios from "axios";
-const API_URL = "https://mern-practice-o3a9.onrender.com/api/comments";
+import { API_BASE_URL } from "../config/api";
+const API_URL = `${API_BASE_URL}/api/comments`;
 
 export const getCommentsByPostId = async (postId) => {
   const res = await axios.get(`${API_URL}/post/${postId}`);
@@ -10,7 +11,7 @@ export const addComment = async (postId, content, parentId = null) => {
   const res = await axios.post(
     `${API_URL}/${postId}`,
     { content, parentId },
-    { withCredentials: true }
+    { withCredentials: true },
   );
   return res.data;
 };

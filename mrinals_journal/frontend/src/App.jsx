@@ -20,24 +20,32 @@ const App = () => {
   const location = useLocation();
 
   useEffect(() => {
-    dispatch(getCurrentUser()); // Persist login via cookie
+    dispatch(getCurrentUser());
   }, [dispatch]);
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-100">
-        <div className="text-lg font-semibold text-gray-600 animate-pulse">
-          Loading your personalized feed...
+      <div className="h-screen w-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-[var(--color-text-muted)] border-t-[var(--color-text)] rounded-full animate-spin" />
+          <p
+            className="text-sm"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
+            Loading...
+          </p>
         </div>
       </div>
     );
   }
 
-  // Pages where you don’t want navbar (like auth)
   const noNavbarRoutes = ["/login", "/register", "/"];
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800">
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--color-bg)" }}
+    >
       {!noNavbarRoutes.includes(location.pathname) && <Navbar />}
       <div>
         <Routes>

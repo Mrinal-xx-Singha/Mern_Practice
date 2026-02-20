@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts } from "../../redux/slices/postSlice";
 import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Plus, Funnel, UserRoundPen, Tags, Folder, X } from "lucide-react";
+import { PenLine, Search, X } from "lucide-react";
 
 const PostList = () => {
   const dispatch = useDispatch();
   const { posts, loading, error } = useSelector((state) => state.posts);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const currentTag = searchParams.get("tag") || "";
@@ -24,23 +25,20 @@ const PostList = () => {
   }, [dispatch, currentPage, currentTag, currentCategory]);
 
   useEffect(() => {
-    if (error) toast.error(`🚫 ${error}`);
+    if (error) toast.error(error);
   }, [error]);
 
   const handleFilter = () => {
-    const params = {};
+    const params = { page: 1 };
     if (tagInput) params.tag = tagInput;
     if (categoryInput) params.category = categoryInput;
-    params.page = 1;
     setSearchParams(params);
-    toast.success("✅ Filters applied!");
   };
 
   const handleClearFilters = () => {
     setTagInput("");
     setCategoryInput("");
     setSearchParams({ page: 1 });
-    toast("🔄 Filters cleared");
   };
 
   const handlePrev = () => {
@@ -65,156 +63,259 @@ const PostList = () => {
     if (e.key === "Enter") handleFilter();
   };
 
+  const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const getReadTime = (content) => {
+    const words = content?.split(/\s+/).length || 0;
+    return Math.max(1, Math.ceil(words / 200));
+  };
+
   return (
-    <div className="max-w-6xl mx-auto pt-10 pb-16 px-4 min-h-screen">
+    <div
+      className="mx-auto pt-8 pb-16 px-6 min-h-screen"
+      style={{ maxWidth: "var(--max-width-article)" }}
+    >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white tracking-tight">
-          Recent Posts
+      <div className="flex items-center justify-between mb-10">
+        <h1
+          className="font-serif text-3xl font-bold"
+          style={{ color: "var(--color-text)" }}
+        >
+          Feed
         </h1>
-        <Link
-          to="/create"
-          className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 transition-all"
-        >
-          <Plus size={18} /> Create
-        </Link>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 rounded-xl shadow-sm mb-10 flex flex-col sm:flex-row gap-3 items-center w-full">
-        <input
-          type="text"
-          placeholder="🔍 Filter by Tag"
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-2 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
-        />
-        <input
-          type="text"
-          placeholder="📂 Filter by Category"
-          value={categoryInput}
-          onChange={(e) => setCategoryInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-2 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
-        />
-        <div className="flex gap-2">
+        <div className="flex items-center gap-3">
           <button
-            onClick={handleFilter}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-1"
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="p-2 rounded-full transition-colors cursor-pointer"
+            style={{
+              color: "var(--color-text-secondary)",
+              backgroundColor: filtersOpen
+                ? "var(--color-bg-subtle)"
+                : "transparent",
+            }}
           >
-            <Funnel size={16} />
-            Apply
+            <Search size={18} />
           </button>
-          <button
-            onClick={handleClearFilters}
-            className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition flex items-center gap-1"
+          <Link
+            to="/create"
+            className="inline-flex items-center gap-1.5 btn-accent"
           >
-            <X size={16} />
-            Clear
-          </button>
+            <PenLine size={16} />
+            Write
+          </Link>
         </div>
       </div>
 
-      {/* Posts Grid */}
-      {loading ? (
+      {/* Filters - collapsible */}
+      <div
+        className={`overflow-hidden transition-all duration-300 ${
+          filtersOpen ? "max-h-[200px] mb-8" : "max-h-0"
+        }`}
+      >
         <div
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          aria-busy="true"
+          className="flex flex-col sm:flex-row gap-3 p-4 rounded-lg"
+          style={{ backgroundColor: "var(--color-bg-subtle)" }}
         >
-          {Array.from({ length: 6 }).map((_, idx) => (
-            <div
-              key={idx}
-              className="animate-pulse bg-gray-100 dark:bg-gray-800 rounded-xl h-60"
-            />
-          ))}
-        </div>
-      ) : posts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => (
-            <div
-              key={post._id}
-              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex flex-col overflow-hidden"
+          <input
+            type="text"
+            placeholder="Filter by tag..."
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="input-clean px-3 py-2 rounded-lg text-sm flex-1"
+            style={{
+              borderBottom: "none",
+              border: "1px solid var(--color-border)",
+              backgroundColor: "var(--color-bg)",
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Filter by category..."
+            value={categoryInput}
+            onChange={(e) => setCategoryInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="input-clean px-3 py-2 rounded-lg text-sm flex-1"
+            style={{
+              borderBottom: "none",
+              border: "1px solid var(--color-border)",
+              backgroundColor: "var(--color-bg)",
+            }}
+          />
+          <div className="flex gap-2">
+            <button onClick={handleFilter} className="btn-accent text-xs px-4">
+              Apply
+            </button>
+            <button
+              onClick={handleClearFilters}
+              className="text-xs px-3 py-1.5 rounded-full cursor-pointer transition-colors"
+              style={{
+                color: "var(--color-text-secondary)",
+                border: "1px solid var(--color-border)",
+              }}
             >
-              {/* Thumbnail */}
-              <img
-                src={
-                  post.images.length > 0
-                    ? post.images[0]
-                    : "https://placehold.co/600x400/EEE/31343C?font=poppins&text=BlogPost"
-                }
-                alt={post.title}
-                className="w-full h-48 object-cover"
-              />
+              <X size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
 
-              <div className="p-5 flex flex-col flex-1">
-                {/* Title */}
-                <Link
-                  to={`/posts/${post._id}`}
-                  className="text-lg font-semibold text-blue-700 dark:text-blue-400 hover:underline"
-                >
-                  {post.title}
-                </Link>
-
-                {/* Author */}
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
-                  <UserRoundPen size={14} />
-                  by <span className="font-medium">{post.author.username}</span>
-                </p>
-
-                {/* Excerpt */}
-                <p className="text-sm text-gray-700 dark:text-gray-300 mt-3 line-clamp-3 flex-1">
-                  {post.content}
-                </p>
-
-                {/* Tags & Category */}
-                <div className="mt-4 flex flex-wrap gap-2 text-xs">
-                  {post.tags?.length ? (
-                    <span className="flex items-center gap-1 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full">
-                      <Tags size={14} />
-                      {post.tags.join(", ")}
-                    </span>
-                  ) : (
-                    <span className="text-gray-400 italic">No tags</span>
-                  )}
-                  <span className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full">
-                    <Folder size={14} />
-                    {post.category || "Uncategorized"}
-                  </span>
-                </div>
-              </div>
+      {/* Posts */}
+      {loading ? (
+        <div className="space-y-8">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <div key={idx} className="animate-pulse">
+              <div className="h-4 bg-gray-100 rounded w-1/4 mb-3" />
+              <div className="h-5 bg-gray-100 rounded w-3/4 mb-2" />
+              <div className="h-4 bg-gray-100 rounded w-full mb-2" />
+              <div className="h-4 bg-gray-100 rounded w-2/3" />
             </div>
           ))}
         </div>
+      ) : posts.length > 0 ? (
+        <div className="space-y-0">
+          {posts.map((post, index) => (
+            <article
+              key={post._id}
+              className="animate-fade-in"
+              style={{
+                animationDelay: `${index * 0.05}s`,
+                borderBottom: "1px solid var(--color-border)",
+                padding: "2rem 0",
+              }}
+            >
+              <div className="flex gap-5">
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  {/* Author + date */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <img
+                      src={
+                        post.author?.avatar ||
+                        `https://ui-avatars.com/api/?name=${post.author?.username || "U"}&background=f0f0f0&color=242424&size=64`
+                      }
+                      alt=""
+                      className="w-5 h-5 rounded-full object-cover"
+                    />
+                    <span
+                      className="text-sm font-medium"
+                      style={{ color: "var(--color-text)" }}
+                    >
+                      {post.author?.username}
+                    </span>
+                    <span style={{ color: "var(--color-text-muted)" }}>·</span>
+                    <span
+                      className="text-sm"
+                      style={{ color: "var(--color-text-muted)" }}
+                    >
+                      {formatDate(post.createdAt)}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <Link to={`/posts/${post._id}`} className="block group">
+                    <h2
+                      className="font-serif text-xl font-bold leading-snug mb-1 group-hover:underline decoration-1 underline-offset-2"
+                      style={{ color: "var(--color-text)" }}
+                    >
+                      {post.title}
+                    </h2>
+                    <p
+                      className="text-[0.935rem] leading-relaxed line-clamp-2"
+                      style={{ color: "var(--color-text-secondary)" }}
+                    >
+                      {post.content}
+                    </p>
+                  </Link>
+
+                  {/* Meta */}
+                  <div className="flex items-center gap-3 mt-3 flex-wrap">
+                    {post.category && (
+                      <span
+                        className="text-xs px-2.5 py-1 rounded-full"
+                        style={{
+                          backgroundColor: "var(--color-bg-subtle)",
+                          color: "var(--color-text-secondary)",
+                        }}
+                      >
+                        {post.category}
+                      </span>
+                    )}
+                    <span
+                      className="text-xs"
+                      style={{ color: "var(--color-text-muted)" }}
+                    >
+                      {getReadTime(post.content)} min read
+                    </span>
+                  </div>
+                </div>
+
+                {/* Thumbnail (right side, Medium-style) */}
+                {post.images?.length > 0 && (
+                  <Link to={`/posts/${post._id}`} className="flex-shrink-0">
+                    <img
+                      src={post.images[0]}
+                      alt=""
+                      className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded"
+                    />
+                  </Link>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
       ) : (
-        <p className="text-center text-gray-500 dark:text-gray-400 mt-10 italic">
-          ⚠️ No posts found. Try different filters or create a post!
-        </p>
+        <div className="text-center py-20">
+          <p
+            className="text-lg font-serif"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
+            No stories yet.
+          </p>
+          <Link to="/create" className="inline-block mt-4 btn-accent">
+            Write the first one
+          </Link>
+        </div>
       )}
 
       {/* Pagination */}
-      <div className="flex justify-center items-center gap-4 mt-12">
-        <button
-          onClick={handlePrev}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            currentPage === 1
-              ? "bg-gray-200 dark:bg-gray-800 text-gray-500 cursor-not-allowed"
-              : "bg-blue-600 text-white hover:bg-blue-700"
-          }`}
-        >
-          ← Prev
-        </button>
-        <span className="px-4 py-2 font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full">
-          Page {currentPage}
-        </span>
-        <button
-          onClick={handleNext}
-          className="px-4 py-2 rounded-full text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all"
-        >
-          Next →
-        </button>
-      </div>
+      {posts.length > 0 && (
+        <div className="flex items-center justify-center gap-4 mt-12">
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="px-4 py-2 text-sm font-medium rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+            style={{
+              border: "1px solid var(--color-border)",
+              color: "var(--color-text-secondary)",
+            }}
+          >
+            ← Previous
+          </button>
+          <span
+            className="text-sm font-medium"
+            style={{ color: "var(--color-text-muted)" }}
+          >
+            {currentPage}
+          </span>
+          <button
+            onClick={handleNext}
+            className="px-4 py-2 text-sm font-medium rounded-full transition-all cursor-pointer"
+            style={{
+              border: "1px solid var(--color-border)",
+              color: "var(--color-text-secondary)",
+            }}
+          >
+            Next →
+          </button>
+        </div>
+      )}
     </div>
   );
 };
