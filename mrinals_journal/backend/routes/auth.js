@@ -65,7 +65,11 @@ router.post("/login", async (req, res) => {
       path: "/api/auth/refresh-token",
     });
 
-    res.status(200).json({ message: "Logged in successfully" });
+    const userResponse = await User.findById(user._id).select("-password");
+    res.status(200).json({
+      message: "Logged in successfully",
+      user: userResponse,
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }

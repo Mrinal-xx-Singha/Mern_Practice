@@ -35,7 +35,7 @@ const Navbar = () => {
           className="font-serif text-[1.4rem] font-bold tracking-tight"
           style={{ color: "var(--color-text)" }}
         >
-          Mrinal's Journal
+          Writely
         </Link>
 
         {/* Desktop Navigation */}
@@ -48,6 +48,13 @@ const Navbar = () => {
                 style={{ color: "var(--color-text-secondary)" }}
               >
                 Home
+              </Link>
+              <Link
+                to="/bookmarks"
+                className="link-underline text-sm"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                Bookmarks
               </Link>
 
               <Link
@@ -114,6 +121,14 @@ const Navbar = () => {
             onClick={() => setMenuOpen(false)}
           >
             Home
+          </Link>
+          <Link
+            to="/bookmarks"
+            className="py-2 text-sm"
+            style={{ color: "var(--color-text-secondary)" }}
+            onClick={() => setMenuOpen(false)}
+          >
+            Bookmarks
           </Link>
 
           {user && (

@@ -3,6 +3,7 @@ const router = express.Router();
 const Post = require("../models/Post");
 const auth = require("../middleware/auth");
 const checkAuthorOrAdmin = require("../middleware/checkAuthorOrAdmin");
+const User = require("../models/User");
 
 const upload = require("../utils/cloudinary");
 
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
     if (category) filter.category = category;
 
     const posts = await Post.find(filter)
-      .populate("author", "username")
+      .populate("author", "username avatar")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
@@ -94,6 +95,39 @@ router.get("/author/:authorId", auth, async (req, res) => {
   }
 });
 
+// Get bookmarked posts (Paginated)
+router.get("/bookmarks", auth, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const totalBookmarks = user.bookmarks.length;
+
+    // Sort bookmarks if we had a field, but since it's just an array of IDs,
+    // we'll slice for pagination based on the order in the array (usually recent first if we used push/addToSet)
+    const paginatedIds = user.bookmarks
+      .slice()
+      .reverse() // show latest first
+      .slice((page - 1) * limit, page * limit);
+
+    const bookmarkedPosts = await Post.find({ _id: { $in: paginatedIds } })
+      .populate("author", "username")
+      .sort({ createdAt: -1 });
+
+    res.json({
+      bookmarks: bookmarkedPosts,
+      totalPage: Math.ceil(totalBookmarks / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error("Fetch bookmarks error:", error);
+    res.status(500).json({ error: "Failed to fetch bookmarks" });
+  }
+});
+
 // Get Single post by ID
 router.get("/:id", async (req, res) => {
   try {
@@ -103,7 +137,7 @@ router.get("/:id", async (req, res) => {
     await Post.findByIdAndUpdate(id, { $inc: { views: 1 } });
 
     // Fetch updated post
-    const post = await Post.findById(id).populate("author", "username");
+    const post = await Post.findById(id).populate("author", "username avatar");
 
     if (!post) return res.status(404).json({ error: "Post not found" });
 
@@ -142,6 +176,43 @@ router.delete("/:id", auth, checkAuthorOrAdmin, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to delete post" });
+  }
+});
+// bookmark article
+router.patch("/bookmark/:postId", auth, async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+    const post = await Post.findById(postId);
+
+    if (!user || !post) {
+      return res.status(404).json({ error: "User or Post not found" });
+    }
+
+    const isBookmarked = user.bookmarks.includes(postId);
+
+    if (isBookmarked) {
+      // Unbookmark
+      user.bookmarks.pull(postId);
+      post.bookmarks.pull(userId);
+    } else {
+      // Bookmark
+      user.bookmarks.addToSet(postId);
+      post.bookmarks.addToSet(userId);
+    }
+
+    await Promise.all([user.save(), post.save()]);
+
+    res.json({
+      message: isBookmarked ? "Removed from bookmarks" : "Post bookmarked",
+      isBookmarked: !isBookmarked,
+      bookmarkCount: post.bookmarks.length,
+    });
+  } catch (error) {
+    console.error("Bookmark error:", error);
+    res.status(500).json({ error: "Failed to update bookmark" });
   }
 });
 

@@ -274,7 +274,7 @@ const Profile = () => {
             {["twitter", "github", "website"].map((field) => (
               <div key={field}>
                 <label
-                  className="block text-xs font-medium mb-1.5 uppercase tracking-wider capitalize"
+                  className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
                   style={{ color: "var(--color-text-muted)" }}
                 >
                   {field}

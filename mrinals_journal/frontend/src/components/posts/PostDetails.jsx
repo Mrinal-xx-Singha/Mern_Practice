@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
-import { Trash2, Edit, Eye } from "lucide-react";
+import { Trash2, Edit, Eye, Bookmark } from "lucide-react";
 import MarkdownRenderer from "../MarkdownRenderer";
 import MoreFromAuthor from "../MoreFromAuthor";
 import CommonItem from "../CommonItem";
 
-import { getPostById, reactToPost } from "../../services/postService";
+import {
+  getPostById,
+  reactToPost,
+  toggleBookmark,
+} from "../../services/postService";
 import { deletePost } from "../../redux/slices/postSlice";
 import {
   getCommentsByPostId,
@@ -22,6 +26,7 @@ const PostDetails = () => {
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [commentInput, setCommentInput] = useState("");
   const [replyTo, setReplyTo] = useState(null);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -40,6 +45,7 @@ const PostDetails = () => {
         ]);
         setPost(postData);
         setComments(commentsData);
+        setIsBookmarked(postData.bookmarks?.includes(user?._id));
       } catch (err) {
         console.error(err);
         toast.error("🚫 Failed to load post.");
@@ -136,19 +142,63 @@ const PostDetails = () => {
     minute: "2-digit",
   });
 
+  const handleBookmark = async () => {
+    if (!user) {
+      toast.error("Please login to bookmark posts");
+      return;
+    }
+    try {
+      const data = await toggleBookmark(post._id);
+      setIsBookmarked(data.isBookmarked);
+      setPost((prev) => ({
+        ...prev,
+        bookmarks: data.isBookmarked
+          ? [...(prev.bookmarks || []), user._id]
+          : (prev.bookmarks || []).filter((id) => id !== user._id),
+      }));
+      toast.success(data.message);
+    } catch (err) {
+      toast.error("Failed to update bookmark");
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
       {/* Post Header */}
       <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
         {post.title}
       </h1>
-      <p className="text-gray-500 text-center text-sm dark:text-gray-400">
-        By <span className="font-semibold">{post.author.username}</span> on{" "}
-        {postDate}
-      </p>
-      <p className="flex justify-center items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-        <Eye size={16} /> {post.views ?? 0} views
-      </p>
+      <div className="flex flex-col items-center justify-center gap-3">
+        <p className="text-gray-500 text-center text-sm dark:text-gray-400 flex items-center gap-2">
+          <img
+            src={
+              post.author?.avatar ||
+              `https://ui-avatars.com/api/?name=${post.author?.username || "U"}&background=f0f0f0&color=242424&bold=true&size=128`
+            }
+            alt=""
+            className="w-6 h-6 rounded-full object-cover"
+            style={{ border: "1px solid var(--color-border)" }}
+          />
+          By <span className="font-semibold">{post.author.username}</span> on{" "}
+          {postDate}
+        </p>
+      </div>
+      <div className="flex justify-center items-center gap-2 mt-3">
+        <p className="flex justify-center items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          <Eye size={16} /> {post.views ?? 0} views
+        </p>
+        <button
+          onClick={handleBookmark}
+          className="flex justify-center items-center gap-2 text-xs text-gray-500 dark:text-gray-400 hover:text-green-600 cursor-pointer transition-colors"
+        >
+          <Bookmark
+            size={16}
+            fill={isBookmarked ? "currentColor" : "none"}
+            className={isBookmarked ? "text-green-600" : ""}
+          />{" "}
+          {post.bookmarks?.length || 0} bookmarks
+        </button>
+      </div>
 
       {/* Images */}
       {post.images?.length > 0 && (

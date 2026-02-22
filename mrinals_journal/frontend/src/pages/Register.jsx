@@ -52,7 +52,7 @@ const Register = () => {
             className="font-serif text-2xl font-bold"
             style={{ color: "var(--color-text)" }}
           >
-            Mrinal's Journal
+            Writely
           </Link>
           <h1
             className="font-serif text-[1.75rem] font-bold mt-8 mb-2"

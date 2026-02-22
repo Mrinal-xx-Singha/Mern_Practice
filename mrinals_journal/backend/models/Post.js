@@ -21,13 +21,14 @@ const postSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    images: [{ type: String }], // avatar for the post, if any
+    images: [{ type: String }],
+    bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Post", postSchema);

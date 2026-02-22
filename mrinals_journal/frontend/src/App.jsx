@@ -12,6 +12,7 @@ import EditPost from "./components/posts/EditPost";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 import Profile from "./components/Profile";
+import Bookmarks from "./components/posts/Bookmarks";
 import LandingPage from "./pages/LandingPage";
 
 const App = () => {
@@ -76,6 +77,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/bookmarks"
+            element={
+              <PrivateRoute>
+                <Bookmarks />
               </PrivateRoute>
             }
           />

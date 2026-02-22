@@ -75,7 +75,6 @@ const PostList = () => {
     const words = content?.split(/\s+/).length || 0;
     return Math.max(1, Math.ceil(words / 200));
   };
-
   return (
     <div
       className="mx-auto pt-8 pb-16 px-6 min-h-screen"

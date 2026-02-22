@@ -11,6 +11,7 @@ const upload = createUpload("avatars", ["jpg", "jpeg", "png"]);
 router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
+      // -__v is mongoose versioning
       .select("-password -__v")
       .lean(); //return plain js object
 

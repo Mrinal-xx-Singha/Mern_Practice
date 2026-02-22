@@ -16,7 +16,7 @@ const LandingPage = () => {
           className="font-serif text-[1.6rem] font-bold tracking-tight"
           style={{ color: "var(--color-text)" }}
         >
-          Mrinal's Journal
+          Writely
         </span>
         <div className="flex items-center gap-4">
           <Link
