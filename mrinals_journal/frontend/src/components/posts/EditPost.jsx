@@ -29,6 +29,10 @@ const EditPost = () => {
       });
   }, [id]);
 
+  const handleCancel = () => {
+    navigate(`/posts/${id}`);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -122,7 +126,14 @@ const EditPost = () => {
             </div>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-between items-center">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+            >
+              Cancel
+            </button>
             <button type="submit" className="btn-accent px-6 py-2.5">
               Update
             </button>

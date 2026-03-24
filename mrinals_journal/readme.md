@@ -1,4 +1,4 @@
-# 📖 Mrinal's Journal — A MERN Stack Blogging Platform
+# 📖 Mrinal's — A MERN Stack Blogging Platform
 
 <div align="center">
 
@@ -19,7 +19,7 @@
 
 ## 📌 Overview
 
-**Mrinal's Journal** is a full-stack blogging platform that empowers users to create, share, and engage with content. Built with modern web technologies, it features JWT authentication, real-time interactions, markdown support, and a beautiful, responsive UI.
+**Writely** is a full-stack blogging platform that empowers users to create, share, and engage with content. Built with modern web technologies, it features JWT authentication, real-time interactions, markdown support, and a beautiful, responsive UI.
 
 ### 🎯 Key Highlights
 
@@ -119,7 +119,7 @@
 ## 📂 Project Structure
 
 ```
-mrinals_journal/
+Writely/
 │
 ├── backend/                    # Express API server
 │   ├── middleware/            # Custom middleware (auth, validation, error handling)
@@ -182,7 +182,7 @@ Before you begin, ensure you have the following installed:
 
 ```bash
 git clone https://github.com/Mrinal-xx-Singha/Mern_Practice.git
-cd Mern_Practice/mrinals_journal
+cd Mern_Practice/Writely_
 ```
 
 ### 2️⃣ Backend Setup
@@ -204,7 +204,7 @@ PORT=5000
 NODE_ENV=development
 
 # Database
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/mrinals_journal?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/Writely_?retryWrites=true&w=majority
 
 # JWT Secrets (use strong, random strings)
 JWT_SECRET=your_super_secret_jwt_key_here

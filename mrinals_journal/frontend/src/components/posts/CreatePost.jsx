@@ -171,9 +171,18 @@ const CreatePost = () => {
               />
             </label>
 
-            <button type="submit" className="btn-accent px-6 py-2.5">
-              Publish
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => navigate("/feed")}
+                className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn-accent px-6 py-2.5">
+                Publish
+              </button>
+            </div>
           </div>
         </div>
       </form>

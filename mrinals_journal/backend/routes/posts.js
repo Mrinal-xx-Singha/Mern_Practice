@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../models/Post");
 const auth = require("../middleware/auth");
-const checkAuthorOrAdmin = require("../middleware/checkAuthorOrAdmin");
+const checkOwnerOrAdmin = require("../middleware/checkOwnerOrAdmin");
 const User = require("../models/User");
 
 const upload = require("../utils/cloudinary");
@@ -148,7 +148,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update Post (Author only)
-router.put("/:id", auth, checkAuthorOrAdmin, async (req, res) => {
+router.put("/:id", auth, checkOwnerOrAdmin(Post), async (req, res) => {
   try {
     const { id } = req.params;
     const updatedPost = await Post.findByIdAndUpdate(
@@ -164,7 +164,7 @@ router.put("/:id", auth, checkAuthorOrAdmin, async (req, res) => {
 });
 
 // Delete Post (Author or Admin)
-router.delete("/:id", auth, checkAuthorOrAdmin, async (req, res) => {
+router.delete("/:id", auth, checkOwnerOrAdmin(Post), async (req, res) => {
   try {
     const { id } = req.params;
 

@@ -304,7 +304,20 @@ const Profile = () => {
               Save
             </button>
             <button
-              onClick={() => setEditing(false)}
+              onClick={() => {
+                setEditing(false);
+                setFormData({
+                  username: user.username,
+                  avatar: null,
+                  bio: user.bio || "",
+                  social: {
+                    twitter: user.social?.twitter || "",
+                    github: user.social?.github || "",
+                    website: user.social?.website || "",
+                  },
+                });
+                setAvatarPreview(user.avatar || "");
+              }}
               className="flex items-center gap-1 text-sm cursor-pointer px-4 py-2 rounded-full transition-colors"
               style={{
                 color: "var(--color-text-secondary)",

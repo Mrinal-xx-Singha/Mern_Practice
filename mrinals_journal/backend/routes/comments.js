@@ -3,6 +3,7 @@ const router = express.Router();
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 const auth = require("../middleware/auth");
+const checkOwnerOrAdmin = require("../middleware/checkOwnerOrAdmin");
 const buildNestedComments = require("../utils/buildNestedComments");
 
 // Add a comment or reply
@@ -36,20 +37,9 @@ router.post("/:postId", auth, async (req, res) => {
 });
 
 // Delete a comment (author or admin)
-router.delete("/:commentId", auth, async (req, res) => {
+router.delete("/:commentId", auth, checkOwnerOrAdmin(Comment, "commentId"), async (req, res) => {
   try {
-    const comment = await Comment.findById(req.params.commentId).populate(
-      "author"
-    );
-
-    if (!comment) return res.status(404).json({ error: "Comment not found" });
-
-    const isOwner = comment.author._id.toString() === req.user.id;
-    const isAdmin = req.user.role === "admin";
-
-    if (!isOwner && !isAdmin) {
-      return res.status(403).json({ error: "Unauthorized" });
-    }
+    const comment = req.doc; // Provided by checkOwnerOrAdmin
 
     // Remove from parent's replies if it's a reply
     if (comment.parent) {
