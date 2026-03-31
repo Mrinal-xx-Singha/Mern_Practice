@@ -21,7 +21,7 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cookieParser());
-app.use(morgan("dev"));
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -45,10 +45,9 @@ app.use("/api/", limiter);
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/register", authLimiter);
 
-const allowedOrigins = [
-  // "http://localhost:5173",
-  "https://whimsical-conkies-bb435c.netlify.app",
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : ["http://localhost:5173"];
 
 app.use(
   cors({
@@ -87,6 +86,11 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MONGO DB Connected ✅"))
   .catch((err) => console.error(err.message));
+
+// Health check
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
