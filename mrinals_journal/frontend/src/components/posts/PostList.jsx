@@ -7,7 +7,9 @@ import { PenLine, Search, X } from "lucide-react";
 
 const PostList = () => {
   const dispatch = useDispatch();
-  const { posts, loading, error } = useSelector((state) => state.posts);
+  const { posts, loading, error, totalPages } = useSelector(
+    (state) => state.posts,
+  );
   const [searchParams, setSearchParams] = useSearchParams();
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -304,6 +306,7 @@ const PostList = () => {
             {currentPage}
           </span>
           <button
+            disabled={currentPage === totalPages}
             onClick={handleNext}
             className="px-4 py-2 text-sm font-medium rounded-full transition-all cursor-pointer"
             style={{

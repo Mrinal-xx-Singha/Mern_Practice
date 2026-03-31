@@ -40,8 +40,10 @@ router.get("/", async (req, res) => {
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
+    const totalPosts = await Post.countDocuments(filter);
+    const totalPages = Math.ceil(totalPosts / limit);
 
-    res.json(posts);
+    res.json({ posts, totalPages, currentPage: parseInt(page) });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch posts" });
   }

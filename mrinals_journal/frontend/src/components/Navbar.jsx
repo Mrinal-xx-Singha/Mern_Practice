@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/slices/authSlice";
-import { PenLine, User, LogOut, Menu, X } from "lucide-react";
+import { PenLine, User, LogOut, Menu, X, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
@@ -56,6 +56,17 @@ const Navbar = () => {
               >
                 Bookmarks
               </Link>
+
+              {user.role === "admin" && (
+                <Link
+                  to="/admin"
+                  className="inline-flex items-center gap-1.5 text-sm transition-colors"
+                  style={{ color: "var(--color-accent)" }}
+                >
+                  <ShieldCheck size={15} />
+                  Admin
+                </Link>
+              )}
 
               <Link
                 to="/create"
@@ -141,6 +152,18 @@ const Navbar = () => {
               >
                 Write a story
               </Link>
+
+              {user.role === "admin" && (
+                <Link
+                  to="/admin"
+                  className="py-2 text-sm flex items-center gap-2 font-medium"
+                  style={{ color: "var(--color-accent)" }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <ShieldCheck size={16} />
+                  Admin Panel
+                </Link>
+              )}
 
               <Link
                 to="/profile"

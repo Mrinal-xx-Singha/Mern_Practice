@@ -38,7 +38,10 @@ router.patch("/users/:id/role", async (req, res) => {
 
     user.role = role;
     await user.save();
-    res.json({ message: "User role updated", user: { id: user._id, role: user.role } });
+    res.json({
+      message: "User role updated",
+      user: { id: user._id, role: user.role },
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to update role" });
   }

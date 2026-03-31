@@ -10,10 +10,12 @@ import PostList from "./components/posts/PostList";
 import PostDetails from "./components/posts/PostDetails";
 import EditPost from "./components/posts/EditPost";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminRoute from "./components/AdminRoute";
 import Navbar from "./components/Navbar";
 import Profile from "./components/Profile";
 import Bookmarks from "./components/posts/Bookmarks";
 import LandingPage from "./pages/LandingPage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   const { user, loading } = useSelector((state) => state.auth);
@@ -97,6 +99,14 @@ const App = () => {
             }
           />
           <Route path="/posts/:id" element={<PostDetails />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
           <Route
             path="/login"
             element={!user ? <Login /> : <Navigate to="/" />}
