@@ -15,7 +15,7 @@ const MarkdownRenderer = ({ content = "" }) => {
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
         components={{
-          code({ inline, className = "", children, ...props }) {
+          code: function CodeBlock({ inline, className = "", children, ...props }) {
             const match = /language-(\w+)/.exec(className);
             const language = match?.[1] || "";
             const id = useId();
