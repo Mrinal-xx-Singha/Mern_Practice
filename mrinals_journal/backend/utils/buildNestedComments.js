@@ -1,23 +1,39 @@
 const Comment = require("../models/Comment");
 
 async function buildNestedComments(rootComments) {
-  const buildTree = async (comments) => {
-    const result = [];
+  if (!rootComments || rootComments.length === 0) return [];
 
-    for (const comment of comments) {
-      const replies = await Comment.find({ parent: comment._id })
-        .populate("author", "username")
-        .sort({ createdAt: -1 });
+  // Extract all post IDs from root comments to fetch all related comments in one query
+  const postIds = [
+    ...new Set(
+      rootComments.map((c) => c.post?.toString()).filter(Boolean)
+    ),
+  ];
 
-      const nestedReplies = await buildTree(replies);
+  // Fetch all comments for these posts to build the tree in memory
+  const allComments = await Comment.find({ post: { $in: postIds } })
+    .populate("author", "username")
+    .sort({ createdAt: -1 });
 
-      result.push({
-        ...comment._doc,
-        replies: nestedReplies,
-      });
+  // Map comments by their parent ID for quick lookup
+  const commentMap = {};
+  for (const comment of allComments) {
+    const parentId = comment.parent ? comment.parent.toString() : "root";
+    if (!commentMap[parentId]) {
+      commentMap[parentId] = [];
     }
+    commentMap[parentId].push(comment);
+  }
 
-    return result;
+  // Recursive function to build the tree from the map
+  const buildTree = (comments) => {
+    return comments.map((comment) => {
+      const replies = commentMap[comment._id.toString()] || [];
+      return {
+        ...(comment._doc || comment),
+        replies: buildTree(replies),
+      };
+    });
   };
 
   return buildTree(rootComments);
