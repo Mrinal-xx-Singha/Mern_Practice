@@ -11,7 +11,7 @@ const MoreFromAuthor = ({ authorId, currentPostId }) => {
     if (authorId) {
       dispatch(fetchMoreFromAuthor({ authorId, exclude: currentPostId }));
     }
-  }, [authorId, currentPostId]);
+  }, [authorId, currentPostId, dispatch]);
 
   if (loading || !moreFromAuthor?.length) return null;
 

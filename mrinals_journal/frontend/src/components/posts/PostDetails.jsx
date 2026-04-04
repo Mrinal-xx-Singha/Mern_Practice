@@ -55,7 +55,7 @@ const PostDetails = () => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, user?._id]);
 
   // Handle reactions
   useEffect(() => {

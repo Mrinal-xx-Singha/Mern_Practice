@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -21,11 +21,7 @@ const Profile = () => {
 
   const API_PROFILE_URL = `${API_BASE_URL}/api/users/profile`;
 
-  useEffect(() => {
-    fetchProfile();
-  }, [page]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const res = await axios.get(`${API_PROFILE_URL}?page=${page}`, {
         withCredentials: true,
@@ -49,7 +45,11 @@ const Profile = () => {
       console.error("Profile load failed", error);
       toast.error("Failed to load profile");
     }
-  };
+  }, [API_PROFILE_URL, page]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
