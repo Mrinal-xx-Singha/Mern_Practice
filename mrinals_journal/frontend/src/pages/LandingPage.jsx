@@ -63,7 +63,7 @@ const LandingPage = () => {
             className="animate-fade-in inline-block px-8 py-3 rounded-full text-lg font-medium transition-colors"
             style={{
               backgroundColor: "var(--color-text)",
-              color: "#fdf6e3",
+              color: "var(--color-bg)",
               animationDelay: "0.2s",
             }}
             onMouseEnter={(e) => (e.target.style.backgroundColor = "#333")}
