@@ -19,11 +19,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="sticky top-0 z-50 backdrop-blur-sm"
-      style={{
-        backgroundColor: "rgba(255, 255, 255, 0.95)",
-        borderBottom: "1px solid var(--color-border)",
-      }}
+      className="sticky top-0 z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-900/95 border-b border-gray-200 dark:border-gray-800"
     >
       <div
         className="mx-auto flex items-center justify-between px-6 py-3"

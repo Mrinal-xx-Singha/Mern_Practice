@@ -107,7 +107,7 @@ const Login = () => {
             className="w-full py-2.5 rounded-full text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             style={{
               backgroundColor: "var(--color-text)",
-              color: "#fff",
+              color: "var(--color-bg)",
             }}
           >
             {loading ? "Signing in..." : "Sign in"}

@@ -55,7 +55,7 @@ const PostDetails = () => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, user?._id]);
 
   // Handle reactions
   useEffect(() => {
@@ -157,7 +157,7 @@ const PostDetails = () => {
           : (prev.bookmarks || []).filter((id) => id !== user._id),
       }));
       toast.success(data.message);
-    } catch (err) {
+    } catch {
       toast.error("Failed to update bookmark");
     }
   };
