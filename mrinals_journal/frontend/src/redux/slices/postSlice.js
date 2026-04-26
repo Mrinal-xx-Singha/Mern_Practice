@@ -59,7 +59,13 @@ export const deletePost = createAsyncThunk(
 
 const postSlice = createSlice({
   name: "posts",
-  initialState: { posts: [], loading: false, error: null, moreFromAuthor: [], totalPages: 1 },
+  initialState: {
+    posts: [],
+    loading: false,
+    error: null,
+    moreFromAuthor: [],
+    totalPages: 1,
+  },
 
   reducers: {},
   extraReducers: (builder) => {
