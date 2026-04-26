@@ -12,7 +12,6 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "mongodb-memory-server": "^11.0.1",
     "nodemon": "^3.1.9"
   },
   "dependencies": {

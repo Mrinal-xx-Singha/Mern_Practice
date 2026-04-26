@@ -110,8 +110,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
       .select(userArray)
       //* built in functions for pagination
       .skip(skip)
-      .limit(limit)
-      .lean();
+      .limit(limit);
 
     res.json({data:users});
   } catch (error) {
