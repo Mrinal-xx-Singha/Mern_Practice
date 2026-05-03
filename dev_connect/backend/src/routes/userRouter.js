@@ -99,11 +99,13 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
       blockedUsersFromFeed.add(req.toUserId.toString());
     });
 
+    const blockedUsersArray = Array.from(blockedUsersFromFeed);
+
     //* reverse query
     const users = await userModel
       .find({
         $and: [
-          { _id: { $nin: Array.from(blockedUsersFromFeed) } },
+          { _id: { $nin: blockedUsersArray } },
           { _id: { $ne: loggedInUser._id } },
         ],
       })
