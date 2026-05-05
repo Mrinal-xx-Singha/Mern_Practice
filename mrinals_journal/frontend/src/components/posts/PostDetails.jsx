@@ -126,9 +126,16 @@ const PostDetails = () => {
 
   if (!post) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-gray-400 animate-pulse">
-        <div className="w-24 h-24 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mb-4" />
-        Loading post...
+      <div className="h-screen w-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-[var(--color-text-muted)] border-t-[var(--color-text)] rounded-full animate-spin" />
+          <p
+            className="text-sm"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
+            Loading Posts...
+          </p>
+        </div>
       </div>
     );
   }

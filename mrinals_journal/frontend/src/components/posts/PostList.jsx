@@ -79,13 +79,13 @@ const PostList = () => {
   };
   return (
     <div
-      className="mx-auto pt-8 pb-16 px-6 min-h-screen"
+      className="mx-auto pt-4 sm:pt-8 pb-16 px-4 sm:px-6 min-h-screen"
       style={{ maxWidth: "var(--max-width-article)" }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex items-center justify-between mb-8 sm:mb-10">
         <h1
-          className="font-serif text-3xl font-bold"
+          className="font-serif text-2xl sm:text-3xl font-bold"
           style={{ color: "var(--color-text)" }}
         >
           Feed
@@ -184,35 +184,36 @@ const PostList = () => {
           {posts.map((post, index) => (
             <article
               key={post._id}
-              className="animate-fade-in"
+              className="animate-fade-in py-6 sm:py-8 border-b"
               style={{
                 animationDelay: `${index * 0.05}s`,
-                borderBottom: "1px solid var(--color-border)",
-                padding: "2rem 0",
+                borderColor: "var(--color-border)",
               }}
             >
-              <div className="flex gap-5">
+              <div className="flex gap-3 sm:gap-5">
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   {/* Author + date */}
-                  <div className="flex items-center gap-2 mb-2">
-                    <img
-                      src={
-                        post.author?.avatar ||
-                        `https://ui-avatars.com/api/?name=${post.author?.username || "U"}&background=f0f0f0&color=242424&size=64`
-                      }
-                      alt=""
-                      className="w-5 h-5 rounded-full object-cover"
-                    />
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <img
+                        src={
+                          post.author?.avatar ||
+                          `https://ui-avatars.com/api/?name=${post.author?.username || "U"}&background=f0f0f0&color=242424&size=64`
+                        }
+                        alt=""
+                        className="w-5 h-5 rounded-full object-cover"
+                      />
+                      <span
+                        className="text-xs sm:text-sm font-medium truncate max-w-[100px] sm:max-w-none"
+                        style={{ color: "var(--color-text)" }}
+                      >
+                        {post.author?.username}
+                      </span>
+                    </div>
+                    <span className="text-xs sm:text-sm" style={{ color: "var(--color-text-muted)" }}>·</span>
                     <span
-                      className="text-sm font-medium"
-                      style={{ color: "var(--color-text)" }}
-                    >
-                      {post.author?.username}
-                    </span>
-                    <span style={{ color: "var(--color-text-muted)" }}>·</span>
-                    <span
-                      className="text-sm"
+                      className="text-xs sm:text-sm whitespace-nowrap"
                       style={{ color: "var(--color-text-muted)" }}
                     >
                       {formatDate(post.createdAt)}
@@ -222,13 +223,13 @@ const PostList = () => {
                   {/* Title */}
                   <Link to={`/posts/${post._id}`} className="block group">
                     <h2
-                      className="font-serif text-xl font-bold leading-snug mb-1 group-hover:underline decoration-1 underline-offset-2"
+                      className="font-serif text-lg sm:text-xl font-bold leading-snug mb-1 group-hover:underline decoration-1 underline-offset-2"
                       style={{ color: "var(--color-text)" }}
                     >
                       {post.title}
                     </h2>
                     <p
-                      className="text-[0.935rem] leading-relaxed line-clamp-2"
+                      className="text-sm sm:text-[0.935rem] leading-relaxed line-clamp-2"
                       style={{ color: "var(--color-text-secondary)" }}
                     >
                       {post.content}
@@ -259,11 +260,11 @@ const PostList = () => {
 
                 {/* Thumbnail (right side, Medium-style) */}
                 {post.images?.length > 0 && (
-                  <Link to={`/posts/${post._id}`} className="flex-shrink-0">
+                  <Link to={`/posts/${post._id}`} className="flex-shrink-0 mt-1 sm:mt-0">
                     <img
                       src={post.images[0]}
                       alt=""
-                      className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded"
+                      className="w-20 h-20 sm:w-32 sm:h-32 object-cover rounded"
                     />
                   </Link>
                 )}
