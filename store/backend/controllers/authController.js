@@ -53,7 +53,6 @@ export const signup = async (req, res, next) => {
       password,
     });
 
-    // Authenticate user
     const { accessToken, refreshToken } = generateToken(user._id);
     await storeRefreshToken(user._id, refreshToken);
 
