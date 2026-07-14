@@ -11,7 +11,12 @@ export const getCurrentUser = createAsyncThunk(
       return res.data.user;
     } catch (error) {
       console.error(error);
-      return thunkAPI.rejectWithValue(null);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 
+        error.response?.data?.error || 
+        error.message || 
+        "Failed to get current user"
+      );
     }
   },
 );
@@ -26,7 +31,12 @@ export const loginUser = createAsyncThunk(
       );
       return res.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 
+        error.response?.data?.error || 
+        error.message || 
+        "Login failed"
+      );
     }
   },
 );
@@ -38,7 +48,12 @@ export const logoutUser = createAsyncThunk(
       await axios.post(`${API_BASE_URL}/api/auth/logout`);
       return true;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 
+        error.response?.data?.error || 
+        error.message || 
+        "Logout failed"
+      );
     }
   },
 );
@@ -53,7 +68,12 @@ export const registerUser = createAsyncThunk(
       );
       return res.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 
+        error.response?.data?.error || 
+        error.message || 
+        "Registration failed"
+      );
     }
   },
 );
