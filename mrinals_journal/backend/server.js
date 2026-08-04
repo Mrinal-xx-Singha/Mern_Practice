@@ -52,6 +52,7 @@ app.use("/api/auth/register", authLimiter);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://whimsical-conkies-bb435c.netlify.app",
+  // process.env.ALLOWED_ORIGINS,
 ];
 app.use(
   cors({
