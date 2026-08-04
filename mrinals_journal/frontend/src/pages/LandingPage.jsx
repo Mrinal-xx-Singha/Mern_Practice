@@ -1,16 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { demoLogin } from "../redux/slices/authSlice";
+import toast from "react-hot-toast";
 
 const LandingPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <div
-      className="min-h-screen flex flex-col"
-      style={{ backgroundColor: "#fdf6e3" }}
+      className="min-h-screen flex flex-col transition-colors duration-200"
+      style={{ backgroundColor: "var(--color-bg-landing)" }}
     >
       {/* Top bar */}
       <header
         className="flex items-center justify-between px-6 md:px-12 py-5"
-        style={{ borderBottom: "1px solid #e8dcc8" }}
+        style={{ borderBottom: "1px solid var(--color-border-landing)" }}
       >
         <span
           className="font-serif text-[1.6rem] font-bold tracking-tight"
@@ -21,7 +26,7 @@ const LandingPage = () => {
         <div className="flex items-center gap-4">
           <Link
             to="/login"
-            className="text-sm font-medium"
+            className="text-sm font-medium hover:opacity-80 transition-opacity"
             style={{ color: "var(--color-text-secondary)" }}
           >
             Sign In
@@ -58,21 +63,42 @@ const LandingPage = () => {
             Discover stories, thinking, and expertise from writers on any topic
             that matters to you.
           </p>
-          <Link
-            to="/register"
-            className="animate-fade-in inline-block px-8 py-3 rounded-full text-lg font-medium transition-colors"
-            style={{
-              backgroundColor: "var(--color-text)",
-              color: "var(--color-bg)",
-              animationDelay: "0.2s",
-            }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#333")}
-            onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = "var(--color-text)")
-            }
+          <div
+            className="flex flex-wrap gap-4 items-center animate-fade-in"
+            style={{ animationDelay: "0.2s" }}
           >
-            Start reading
-          </Link>
+            <Link
+              to="/register"
+              className="inline-block px-8 py-3 rounded-full text-lg font-medium transition-opacity shadow-sm hover:opacity-90"
+              style={{
+                backgroundColor: "var(--color-btn-invert-bg)",
+                color: "var(--color-btn-invert-text)",
+              }}
+            >
+              Start reading
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                toast.loading("Launching instant demo...", { duration: 1200 });
+                dispatch(demoLogin("user"))
+                  .unwrap()
+                  .then(() => {
+                    toast.success("Welcome to the Writely interactive demo!");
+                    navigate("/feed");
+                  })
+                  .catch(() => toast.error("Demo login failed."));
+              }}
+              className="px-6 py-3 rounded-full text-lg font-medium transition-all border shadow-xs cursor-pointer flex items-center gap-2 hover:opacity-85"
+              style={{
+                color: "var(--color-text)",
+                backgroundColor: "var(--color-bg-subtle)",
+                borderColor: "var(--color-border)",
+              }}
+            >
+              <span>⚡ Explore Instant Demo</span>
+            </button>
+          </div>
         </div>
       </main>
 
@@ -81,7 +107,7 @@ const LandingPage = () => {
         className="text-center py-6 text-xs"
         style={{
           color: "var(--color-text-muted)",
-          borderTop: "1px solid #e8dcc8",
+          borderTop: "1px solid var(--color-border-landing)",
         }}
       >
         Built with ❤️ by Mrinal

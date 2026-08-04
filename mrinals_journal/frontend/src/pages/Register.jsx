@@ -70,9 +70,10 @@ const Register = () => {
 
         {error && (
           <div
-            className="text-sm text-center py-2 px-4 rounded-lg mb-6"
+            className="text-sm text-center py-2 px-4 rounded-lg mb-6 border"
             style={{
-              backgroundColor: "#fef2f2",
+              backgroundColor: "var(--color-bg-subtle)",
+              borderColor: "var(--color-danger)",
               color: "var(--color-danger)",
             }}
           >

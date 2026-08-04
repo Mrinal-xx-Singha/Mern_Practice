@@ -79,6 +79,59 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// ================== DEMO LOGIN ==================
+router.post("/demo-login", async (req, res) => {
+  try {
+    const { role } = req.body;
+    const targetRole = role === "admin" ? "admin" : "user";
+    const email = targetRole === "admin" ? "admin@writely.com" : "demo@writely.com";
+    const defaultUsername = targetRole === "admin" ? "Admin User" : "Demo Writer";
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      const hashed = await bcrypt.hash("demo_password_secure_123!", 10);
+      user = await User.create({
+        username: defaultUsername,
+        email: email,
+        password: hashed,
+        role: targetRole,
+        bio: targetRole === "admin" ? "Official System Administrator for Writely." : "Tech enthusiast, passionate storyteller and full-stack explorer.",
+        avatar: targetRole === "admin" ? "https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff" : "https://ui-avatars.com/api/?name=Demo+Writer&background=10B981&color=fff",
+      });
+    }
+
+    const accessToken = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" },
+    );
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      process.env.REFRESH_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.cookie("token", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, {
+      ...cookieOptions,
+      path: "/api/auth/refresh-token",
+    });
+
+    const userResponse = await User.findById(user._id).select("-password");
+    res.status(200).json({
+      message: `Logged in as Demo ${targetRole.toUpperCase()} successfully`,
+      user: userResponse,
+    });
+  } catch (error) {
+    console.error("Demo login error:", error);
+    res.status(500).json({ message: "Internal server error during demo login" });
+  }
+});
+
 // ================== REFRESH TOKEN ==================
 router.post("/refresh-token", async (req, res) => {
   const token = req.cookies.refreshToken;
