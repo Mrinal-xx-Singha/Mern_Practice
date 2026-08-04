@@ -47,8 +47,14 @@ const Bookmarks = () => {
         <div className="space-y-8">
           {[1, 2, 3].map((n) => (
             <div key={n} className="animate-pulse">
-              <div className="h-6 bg-gray-100 rounded w-3/4 mb-2" />
-              <div className="h-4 bg-gray-100 rounded w-1/4" />
+              <div
+                className="h-6 rounded w-3/4 mb-2"
+                style={{ backgroundColor: "var(--color-skeleton)" }}
+              />
+              <div
+                className="h-4 rounded w-1/4"
+                style={{ backgroundColor: "var(--color-skeleton)" }}
+              />
             </div>
           ))}
         </div>

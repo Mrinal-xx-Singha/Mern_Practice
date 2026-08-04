@@ -99,10 +99,19 @@ const Profile = () => {
       >
         <div className="animate-pulse space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full bg-gray-100" />
+            <div
+              className="w-20 h-20 rounded-full"
+              style={{ backgroundColor: "var(--color-skeleton)" }}
+            />
             <div className="space-y-2 flex-1">
-              <div className="h-5 bg-gray-100 rounded w-1/3" />
-              <div className="h-4 bg-gray-100 rounded w-1/4" />
+              <div
+                className="h-5 rounded w-1/3"
+                style={{ backgroundColor: "var(--color-skeleton)" }}
+              />
+              <div
+                className="h-4 rounded w-1/4"
+                style={{ backgroundColor: "var(--color-skeleton)" }}
+              />
             </div>
           </div>
         </div>

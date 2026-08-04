@@ -31,6 +31,23 @@ export const loginUser = createAsyncThunk(
   },
 );
 
+export const demoLogin = createAsyncThunk(
+  "auth/demoLogin",
+  async (role = "user", thunkAPI) => {
+    try {
+      const res = await axios.post(
+        `${API_BASE_URL}/api/auth/demo-login`,
+        { role },
+      );
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Demo login failed",
+      );
+    }
+  },
+);
+
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, thunkAPI) => {
@@ -98,6 +115,20 @@ const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Demo Login
+      .addCase(demoLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(demoLogin.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.loading = false;
+      })
+      .addCase(demoLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
