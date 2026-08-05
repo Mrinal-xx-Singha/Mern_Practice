@@ -10,7 +10,7 @@ const MarkdownRenderer = ({ content = "" }) => {
   const [copiedId, setCopiedId] = useState(null);
 
   return (
-    <div className="prose prose-lg max-w-none prose-code:before:hidden prose-code:after:hidden">
+    <div className="article-content prose max-w-none prose-code:before:hidden prose-code:after:hidden">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}

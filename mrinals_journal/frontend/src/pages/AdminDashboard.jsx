@@ -30,7 +30,7 @@ const ConfirmModal = ({ user, onConfirm, onCancel }) => (
     >
       <div className="flex items-center gap-3">
         <div
-          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
           style={{ backgroundColor: "var(--color-bg-subtle)" }}
         >
           <AlertTriangle size={20} style={{ color: "var(--color-danger)" }} />
