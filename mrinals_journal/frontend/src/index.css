@@ -77,37 +77,67 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Article prose overrides for Medium feel */
-.article-content {
+/* Article prose and Tailwind typography overrides */
+.article-content,
+.prose {
+  --tw-prose-body: var(--color-text-secondary);
+  --tw-prose-headings: var(--color-text);
+  --tw-prose-lead: var(--color-text-secondary);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bold: var(--color-text);
+  --tw-prose-counters: var(--color-text-muted);
+  --tw-prose-bullets: var(--color-text-muted);
+  --tw-prose-hr: var(--color-border);
+  --tw-prose-quotes: var(--color-text);
+  --tw-prose-quote-borders: var(--color-border);
+  --tw-prose-captions: var(--color-text-muted);
+  --tw-prose-code: var(--color-text);
+  --tw-prose-pre-code: var(--color-text);
+  --tw-prose-pre-bg: var(--color-bg-subtle);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-border);
   font-family: var(--font-sans);
   font-size: 1.125rem;
   line-height: 1.8;
-  color: var(--color-text);
+  color: var(--color-text-secondary) !important;
   letter-spacing: -0.003em;
 }
 
-.article-content h1,
-.article-content h2,
-.article-content h3 {
+.article-content h1, .article-content h2, .article-content h3, .article-content h4,
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
   font-family: var(--font-serif);
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--color-text) !important;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
-.article-content blockquote {
+.article-content p, .prose p,
+.article-content li, .prose li {
+  color: var(--color-text-secondary) !important;
+}
+
+.article-content strong, .prose strong,
+.article-content b, .prose b {
+  color: var(--color-text) !important;
+}
+
+.article-content blockquote, .prose blockquote {
   border-left: 3px solid var(--color-text);
   padding-left: 1.25rem;
   font-style: italic;
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary) !important;
 }
 
-.article-content a {
-  color: var(--color-accent);
+.article-content a, .prose a {
+  color: var(--color-accent) !important;
   text-decoration: underline;
 }
 
-.article-content img {
-  border-radius: 4px;
+.article-content img, .prose img {
+  border-radius: 6px;
+  max-width: 100%;
 }
 
 /* ========================

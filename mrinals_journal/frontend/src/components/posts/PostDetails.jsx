@@ -222,7 +222,7 @@ const PostDetails = () => {
       )}
 
       {/* Content */}
-      <div className="mt-2 prose dark:prose-invert max-w-none my-6">
+      <div className="my-6">
         <MarkdownRenderer content={post.content} />
       </div>
 
@@ -269,64 +269,115 @@ const PostDetails = () => {
         </div>
       )}
 
-      <hr className="my-6" />
+      <hr
+        className="my-8"
+        style={{ borderColor: "var(--color-border)" }}
+      />
 
       {/* Comments */}
-      <h2 className="text-xl font-semibold mb-4">💬 Comments</h2>
+      <h2
+        className="text-2xl font-serif font-bold mb-6"
+        style={{ color: "var(--color-text)" }}
+      >
+        💬 Comments
+      </h2>
 
       {user ? (
-        <div className="bg-gray-50 dark:bg-gray-800 rounded p-4 mb-6 shadow-sm">
+        <div
+          className="rounded-xl p-5 mb-8 shadow-sm border transition-colors"
+          style={{
+            backgroundColor: "var(--color-bg-subtle)",
+            borderColor: "var(--color-border)",
+          }}
+        >
           <textarea
             rows="3"
             placeholder={replyTo ? "↩️ Replying..." : "Write a comment..."}
-            className="w-full p-3 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-400"
+            className="w-full p-3 rounded-lg border bg-transparent text-sm focus:outline-none transition-colors"
+            style={{
+              borderColor: "var(--color-border)",
+              color: "var(--color-text)",
+            }}
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
           />
-          <div className="flex gap-3 mt-2">
+          <div className="flex items-center justify-between mt-3">
+            <div className="flex items-center gap-2">
+              {replyTo && (
+                <button
+                  onClick={() => setReplyTo(null)}
+                  className="text-xs hover:underline cursor-pointer"
+                  style={{ color: "var(--color-text-muted)" }}
+                >
+                  Cancel Reply
+                </button>
+              )}
+            </div>
             <button
               onClick={handleSubmitComment}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+              className="btn-accent text-xs px-5 py-2 cursor-pointer shadow-xs hover:opacity-90"
+              style={{
+                backgroundColor: "var(--color-btn-invert-bg)",
+                color: "var(--color-btn-invert-text)",
+              }}
             >
-              {replyTo ? "↩️ Reply" : "💬 Comment"}
+              {replyTo ? "↩️ Reply" : "💬 Post Comment"}
             </button>
-            {replyTo && (
-              <button
-                onClick={() => setReplyTo(null)}
-                className="text-gray-600 underline"
-              >
-                Cancel
-              </button>
-            )}
           </div>
         </div>
       ) : (
-        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4">
-          <Link to="/login" className="underline">
+        <p
+          className="text-center text-sm py-4 rounded-xl border mb-8"
+          style={{
+            color: "var(--color-text-secondary)",
+            backgroundColor: "var(--color-bg-subtle)",
+            borderColor: "var(--color-border)",
+          }}
+        >
+          <Link
+            to="/login"
+            className="font-semibold underline text-[var(--color-accent)] mr-1"
+          >
             Login
-          </Link>{" "}
-          to comment.
+          </Link>
+          to join the discussion.
         </p>
       )}
 
       {commentsLoading ? (
-        <div className="text-gray-500 animate-pulse">Loading comments...</div>
+        <div
+          className="text-sm animate-pulse py-6 text-center"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          Loading comments...
+        </div>
       ) : comments.length === 0 ? (
-        <p className="text-gray-500">No comments yet.</p>
+        <p
+          className="text-sm py-6 text-center"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          No comments yet. Start the conversation!
+        </p>
       ) : (
-        comments.map((comment) => (
-          <div
-            key={comment._id}
-            className="bg-white dark:bg-gray-900 rounded shadow p-3 mb-2 border"
-          >
-            <CommonItem
-              comment={comment}
-              onReply={setReplyTo}
-              onDelete={handleCommentDelete}
-              user={user}
-            />
-          </div>
-        ))
+        <div className="space-y-4">
+          {comments.map((comment) => (
+            <div
+              key={comment._id}
+              className="rounded-xl p-4 border transition-colors shadow-xs"
+              style={{
+                backgroundColor: "var(--color-bg-subtle)",
+                borderColor: "var(--color-border)",
+              }}
+            >
+              <CommonItem
+                comment={comment}
+                onReply={setReplyTo}
+                onDelete={handleCommentDelete}
+                user={user}
+              />
+            </div>
+          ))}
+        </div>
       )}
 
       {/* More from Author */}
