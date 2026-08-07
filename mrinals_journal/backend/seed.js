@@ -20,11 +20,13 @@ mongoose
 
 const seedData = async () => {
     try {
-        // 1. Clear existing data to prevent duplicates
-        console.log("🗑️  Clearing existing data...");
-        await User.deleteMany();
-        await Post.deleteMany();
-        await Comment.deleteMany();
+        // 1. Check existing demo users to avoid duplicates instead of wiping the database
+    console.log("🔍 Checking for existing demo users...");
+    const existingAdmin = await User.findOne({ email: "admin@example.com" });
+    if (existingAdmin) {
+      console.log("⏭️ Demo users already exist. Skipping seed to protect your existing data!");
+      process.exit();
+    }
 
         // 2. Hash passwords for mock users
         const salt = await bcrypt.genSalt(10);
