@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
+    "seed":"node seed.js",
+    "seed:destroy":"node seed.js -d"
+
     "seed:users":"node seed/users.js"
+
   },
   "keywords": [],
   "author": "",
