@@ -7,11 +7,8 @@
     "start": "node server.js",
 
     "seed": "node seed.js",
-    "seed:destroy": "node seed.js -d"
-    "seed":"node seed.js",
-    "seed:destroy":"node seed.js -d"
-
-    "seed:users":"node seed/users.js"
+    "seed:destroy": "node seed.js -d",
+    "seed:users": "node seed/users.js"
 
 
   },
