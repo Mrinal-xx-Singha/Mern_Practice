@@ -3,6 +3,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../../config/api.js";
+import { ImagePlus, X } from "lucide-react";
+
 
 const EditPost = () => {
   const { id } = useParams();
@@ -14,6 +16,21 @@ const EditPost = () => {
     category: "",
   });
   const [loading, setLoading] = useState(true);
+  const [images, setImages] = useState([])
+  const [preview, setPreview] = useState([])
+
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files)
+    setImages(files)
+    const previewUrls = files.map((file) => URL.createObjectURL(file))
+    setPreview(previewUrls)
+  }
+
+  const removeImage = index => {
+    setImages((prev) => prev.filter((_, i) => i !== index))
+    setPreview((prev) => prev.filter((_, i) => i !== index))
+  }
 
   useEffect(() => {
     axios
@@ -36,14 +53,34 @@ const EditPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData()
+      formData.append('title', form.title)
+      formData.append('content', form.content)
+      formData.append('category', form.category)
+
+      // Append tags safely
+      const tagArray = form.tags.split(',').map((t) => t.trim()).filter(Boolean)
+      tagArray.forEach((tag) => formData.append('tags', tag))
+
+      // Append new images
+      images.forEach((img) => {
+        formData.append('images', img)
+      })
+
+
+
       await axios.put(
         `${API_BASE_URL}/api/posts/${id}`,
+
+        formData
+        ,
         {
-          ...form,
-          tags: form.tags.split(",").map((t) => t.trim()),
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" }
+
         },
-        { withCredentials: true },
       );
+
       navigate(`/posts/${id}`);
       toast.success("Story updated!");
     } catch (error) {
@@ -93,6 +130,28 @@ const EditPost = () => {
           className="pt-6"
           style={{ borderTop: "1px solid var(--color-border)" }}
         >
+          {/* Image previews */}
+          {preview.length > 0 && (
+            <div className="flex flex-wrap gap-3">
+              {preview.map((src, i) => (
+                <div key={i} className="relative group">
+                  <img
+                    src={src}
+                    alt={`preview-${i}`}
+                    className="w-24 h-24 object-cover rounded-lg border border-(--color-border)"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    className="absolute -top-2 -right-2 p-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow"
+                    style={{ backgroundColor: "var(--color-danger)", color: "#fff" }}
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="flex-1">
               <label
@@ -127,16 +186,28 @@ const EditPost = () => {
           </div>
 
           <div className="flex justify-between items-center">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+            <label
+              className="flex items-center gap-2 text-sm cursor-pointer transition-colors"
+              style={{ color: "var(--color-text-secondary)" }}
             >
-              Cancel
-            </button>
-            <button type="submit" className="btn-accent px-6 py-2.5">
-              Update
-            </button>
+              <ImagePlus size={20} />
+              <span>Add new Images</span>
+              <input type="file" multiple onChange={handleImageChange} className="hidden" />
+            </label>
+            <div className="flex items-center gap-4">
+
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn-accent px-6 py-2.5">
+                Update
+              </button>
+
+            </div>
           </div>
         </div>
       </form>

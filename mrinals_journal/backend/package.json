@@ -5,10 +5,14 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
+
+    "seed": "node seed.js",
+    "seed:destroy": "node seed.js -d"
     "seed":"node seed.js",
     "seed:destroy":"node seed.js -d"
 
     "seed:users":"node seed/users.js"
+
 
   },
   "keywords": [],
@@ -16,7 +20,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@faker-js/faker": "^10.5.0",
+    "@google/genai": "^2.16.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",

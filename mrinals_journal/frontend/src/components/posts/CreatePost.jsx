@@ -3,7 +3,9 @@ import { useDispatch } from "react-redux";
 import { createPost } from "../../redux/slices/postSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, X, Sparkles } from "lucide-react";
+import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 
 const CreatePost = () => {
   const [form, setForm] = useState({
@@ -15,6 +17,7 @@ const CreatePost = () => {
 
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [isAiLoading, setIsAiLoading] = useState(false)
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,6 +32,41 @@ const CreatePost = () => {
     setImages((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
+  const handleAIEnhance = async (action) => {
+    if (!form.content) {
+
+      return toast.error('write some content first for AI to analyze!')
+    }
+    setIsAiLoading(true)
+    const loadingToast = toast.loading("✨ Gemini is thinking....")
+
+    try {
+      const res = await axios.post(`${API_BASE_URL}/api/ai/enhance`, {
+        action, content: form.content
+      },
+        { withCredentials: true })
+
+      const generatedText = res.data.result
+
+      if (action === 'generate_title') {
+        setForm({ ...form, title: generatedText.replace(/["*]/g, "") })
+        toast.success("Title generated", { id: loadingToast })
+
+      } else if (action === "fix_grammar") {
+        setForm({ ...form, content: generatedText })
+        toast.success("Grammer polished!", { id: loadingToast })
+      } else if (action === "summarize") {
+        setForm({ ...form, content: `**TL;DR Summary:**\n${generatedText}\n\n---\n\n${form.content}` })
+        toast.success("Summary added!", { id: loadingToast })
+      }
+    } catch (err) {
+      console.error(err)
+      toast.error("AI Generation failed", { id: loadingToast })
+
+    } finally {
+      setIsAiLoading(false)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,6 +117,47 @@ const CreatePost = () => {
         />
 
         {/* Content */}
+        <div className="flex items-center gap-2 mb-2">
+          <button
+            type="button"
+            disabled={isAiLoading}
+            onClick={() => handleAIEnhance("fix_grammar")}
+            className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-bl-full transition-colors cursor-pointer disabled:opacity-50"
+            style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-text)", border: '1px solid var(--color-border)' }}
+
+
+          >
+            <Sparkles size={14} style={{ color: "var(--color-accent)" }} />
+            Fix Grammer
+          </button>
+          <button
+            type="button"
+            disabled={isAiLoading}
+            onClick={() => handleAIEnhance("summarize")}
+            className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-bl-full transition-colors cursor-pointer disabled:opacity-50"
+            style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-text)", border: '1px solid var(--color-border)' }}
+
+
+          >
+            <Sparkles size={14} style={{ color: "var(--color-accent)" }} />
+            Add TL;DR
+
+          </button>
+          <button
+            type="button"
+            disabled={isAiLoading}
+            onClick={() => handleAIEnhance("generate_title")}
+            className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-bl-full transition-colors cursor-pointer disabled:opacity-50"
+            style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-text)", border: '1px solid var(--color-border)' }}
+
+
+          >
+            <Sparkles size={14} style={{ color: "var(--color-accent)" }} />
+            Suggest Title
+
+          </button>
+
+        </div>
         <textarea
           placeholder="Tell your story..."
           value={form.content}

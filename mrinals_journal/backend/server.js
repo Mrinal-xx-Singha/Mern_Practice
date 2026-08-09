@@ -6,6 +6,7 @@ const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
 const commentRoutes = require("./routes/comments");
 const profileRoutes = require("./routes/profile");
+const aiRoutes = require("./routes/ai")
 const User = require("./models/User");
 const auth = require("./middleware/auth");
 const adminRoutes = require("./routes/admin");
@@ -102,6 +103,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/users", profileRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/ai", aiRoutes)
 
 app.get("/api/protected", auth, async (req, res) => {
   try {
