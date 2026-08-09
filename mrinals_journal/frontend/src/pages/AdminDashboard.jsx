@@ -80,6 +80,7 @@ const ConfirmModal = ({ user, onConfirm, onCancel }) => (
   </div>
 );
 
+
 // Skeleton Row
 const SkeletonRow = () => (
   <tr className="animate-pulse">
@@ -121,6 +122,7 @@ const SkeletonRow = () => (
     </td>
   </tr>
 );
+
 
 //Main Component
 const AdminDashboard = () => {
