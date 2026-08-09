@@ -153,12 +153,23 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", auth, checkOwnerOrAdmin(Post), async (req, res) => {
   try {
     const { id } = req.params;
+    const { title, content, tags, category } = req.body
+
+    let updateFields = { title, content, category }
+
+    if (tags) {
+      updateFields.tags = Array.isArray(tags) ? tags : tags.split(',').map((t) => t.trim())
+    }
+
+    // if user uploads new files, grab their cloudinary URLs 
+    if (req.files && req.files.length > 0) {
+      updateFields.images = req.files.map((file) => file.path)
+    }
     const updatedPost = await Post.findByIdAndUpdate(
       id,
-      { ...req.body },
-      { new: true },
-    );
-
+      { $set: updateFields },
+      { new: true }
+    )
     res.json(updatedPost);
   } catch (error) {
     res.status(500).json({ error: "Failed to update post" });
