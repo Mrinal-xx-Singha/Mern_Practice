@@ -5,12 +5,9 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-
     "seed": "node seed.js",
     "seed:destroy": "node seed.js -d",
     "seed:users": "node seed/users.js"
-
-
   },
   "keywords": [],
   "author": "",
@@ -18,7 +15,9 @@
   "description": "",
   "dependencies": {
     "@google/genai": "^2.16.0",
+    "axios": "^1.19.0",
     "bcryptjs": "^3.0.2",
+    "cheerio": "^1.2.0",
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

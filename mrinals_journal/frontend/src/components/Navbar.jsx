@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/slices/authSlice";
-import { PenLine, User, LogOut, Menu, X, ShieldCheck } from "lucide-react";
+import { PenLine, User, LogOut, Menu, X, ShieldCheck, Briefcase } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
@@ -56,6 +56,14 @@ const Navbar = () => {
               >
                 Bookmarks
               </Link>
+              <Link
+              to="/jobs"
+              className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-(--color-accent)"
+              
+              style={{color:"var(--color-text-secondary)"}}>
+              <Briefcase size={18}/>
+              <span>Jobs</span>
+              </Link>
 
               {user.role === "admin" && (
                 <Link
@@ -75,6 +83,7 @@ const Navbar = () => {
                 <PenLine size={16} />
                 Write
               </Link>
+              
 
               <Link to="/profile" className="flex items-center gap-2 ml-1">
                 <img

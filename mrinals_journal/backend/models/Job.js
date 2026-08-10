@@ -10,10 +10,10 @@ const jobSchema = new mongoose.Schema(
         salaryRange: { type: String, default: 'Not specified' },
 
         postedBy: {
-            type: mongoose.Schema.Types.ObjectId, ref: "User", default: false
+            type: mongoose.Schema.Types.ObjectId, ref: "User", default: null
         },
         isExternal: { type: Boolean, default: false },
-        applyLink: { type: String, defaukt: "" },
+        applyLink: { type: String, default: "" },
         isActive: { type: Boolean, default: true }
     },
     { timestamps: true }
