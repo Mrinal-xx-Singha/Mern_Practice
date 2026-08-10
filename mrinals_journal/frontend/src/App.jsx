@@ -16,6 +16,9 @@ import Profile from "./components/Profile";
 import Bookmarks from "./components/posts/Bookmarks";
 import LandingPage from "./pages/LandingPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import Jobs from "./pages/Jobs";
+
+
 
 const App = () => {
   const { user, loading } = useSelector((state) => state.auth);
@@ -73,6 +76,10 @@ const App = () => {
                 <CreatePost />
               </PrivateRoute>
             }
+          />
+          <Route 
+          path="/jobs"
+          element={<Jobs />}
           />
           <Route
             path="/profile"
