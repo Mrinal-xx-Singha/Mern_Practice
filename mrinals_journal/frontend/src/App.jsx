@@ -17,6 +17,7 @@ import Bookmarks from "./components/posts/Bookmarks";
 import LandingPage from "./pages/LandingPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import Jobs from "./pages/Jobs";
+import CreateJob from "./pages/CreateJob";
 
 
 
@@ -77,6 +78,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
+         <Route path="/jobs/create" element={<CreateJob />}/>
           <Route 
           path="/jobs"
           element={<Jobs />}

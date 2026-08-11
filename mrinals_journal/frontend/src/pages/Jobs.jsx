@@ -1,94 +1,140 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from "react-redux"
-import { fetchJobs } from "../redux/slices/jobSlice"
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchJobs } from "../redux/slices/jobSlice";
 import { Briefcase, MapPin, ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
+import ApplyModal from "../components/jobs/ApplyModal";
 
+// --- Premium Skeleton Loader ---
+const JobSkeleton = () => (
+  <div className="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] animate-pulse flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-3 w-full">
+      <div className="h-5 bg-[var(--color-border)] rounded w-1/3"></div>
+      <div className="flex gap-4">
+        <div className="h-4 bg-[var(--color-border)] rounded w-24"></div>
+        <div className="h-4 bg-[var(--color-border)] rounded w-24"></div>
+      </div>
+    </div>
+    <div className="h-10 bg-[var(--color-border)] rounded-full w-28 shrink-0"></div>
+  </div>
+);
 
 const Jobs = () => {
-    const dispatch = useDispatch()
-    const { jobs, status } = useSelector((state) => state.jobs)
+  const dispatch = useDispatch();
+  const { jobs, status } = useSelector((state) => state.jobs);
+  const [selectedJob, setSelectedJob] = useState(null);
 
-    useEffect(() => {
-        dispatch(fetchJobs())
+  useEffect(() => {
+    dispatch(fetchJobs());
+  }, [dispatch]);
 
-    }, [dispatch])
-
-    console.log(jobs)
-    if (status === "loading") {
-        return (
-            <div className="flex justify-center items-center min-h-screen text-(--color-text-secondary)">
-                <p className="animate-pulse">Loading job opportunities...</p>
-            </div>
-        )
+  // Framer Motion Animation Variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 } // Staggers the load!
     }
-    return (
-        <div className='mx-auto py-12 px-6 min-h-screen ' style={{ maxWidth: '800px' }}>
-            <h1 className='text-3xl font-serif font-bold mb-2'
-                style={{ color: "var(--color-text)" }}
-            >Job Board</h1>
-            <p
-                className='mb-8'
-                style={{ color: "var(--color-text-muted" }}
-            >Discover remote opportunities from around the web</p>
-            <div className='space-y-4'>
-                {jobs.length === 0 ? (
-                    <p
-                        className='var(--color-text-secondary)'
+  };
 
-                    >No jobs found..</p>
-                ) : (
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
 
-                    jobs.map((job) => (
-                        <div key={job._id}
-
-                            className='p-5 rounded-lg border flex flex-col sm:flex-row sm:text-center justify-between gap-4 transition-all hover:border-(--color-accent)'
-
-                            style={{
-                                backgroundColor: "var(--color-bg)",
-                                borderColor: 'var(--color-border)'
-                            }}
-                        >
-                            <div>
-                                <h3 className='text-lg font-semibold'
-                                    style={{ color: "var(--color-text)" }}
-                                >{job.title}</h3>
-                                <div
-                                    className='text-lg font-semibold'
-
-                                    style={{ color: "var(--color-text-secondary)" }}
-                                >
-                                    <span className='flex items-center gap-1'>
-                                        <Briefcase size={14} />{job.company}
-                                    </span>
-                                    <span className='flex items-center gap-1'>
-                                        <MapPin size={14} />{job.location}
-
-                                    </span>
-
-                                </div>
-                            </div>
-                            {job.isExternal ? (
-                                <a
-                                    href={job.applyLink}
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors'
-                                    style={{ backgroundColor: "var(--color-bg-subtle)", color: 'var(--color-text)' }}
-                                >
-                                    Apply<ExternalLink size={14} />
-                                </a>
-
-                            ) : (
-                                <button>Apply Now</button>
-                            )}
-
-                        </div>
-                    ))
-                )}
-
-            </div>
+  return (
+    <div className="mx-auto py-12 px-6 min-h-screen relative" style={{ maxWidth: "800px" }}>
+      
+      {/* Premium Header */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        className="flex justify-between items-center mb-10"
+      >
+        <div>
+          <h1 className="text-4xl font-serif font-bold mb-2 tracking-tight" style={{ color: "var(--color-text)" }}>
+            Job Board
+          </h1>
+          <p style={{ color: "var(--color-text-muted)" }}>
+            Discover remote opportunities from around the web.
+          </p>
         </div>
-    )
-}
+        <a href="/jobs/create" className="btn-accent px-5 py-2.5 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transition-all">
+          + Post a Job
+        </a>
+      </motion.div>
 
-export default Jobs
+      {/* List Section */}
+      {status === "loading" ? (
+        <div className="space-y-4">
+          {[1, 2, 3, 4].map(n => <JobSkeleton key={n} />)}
+        </div>
+      ) : (
+        <motion.div 
+          variants={containerVariants} 
+          initial="hidden" 
+          animate="show" 
+          className="space-y-4"
+        >
+          {jobs.length === 0 ? (
+            <p className="text-center py-12 text-lg" style={{ color: "var(--color-text-secondary)" }}>No jobs found.</p>
+          ) : (
+            jobs.map((job) => (
+              <motion.div
+                variants={itemVariants}
+                key={job._id}
+                className="p-5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group backdrop-blur-md bg-opacity-60"
+                style={{
+                  backgroundColor: "var(--color-bg)",
+                  borderColor: "var(--color-border)",
+                }}
+              >
+                <div>
+                  <h3 className="text-xl font-semibold group-hover:text-[var(--color-accent)] transition-colors" style={{ color: "var(--color-text)" }}>
+                    {job.title}
+                  </h3>
+                  <div className="flex items-center gap-4 mt-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
+                    <span className="flex items-center gap-1.5 bg-[var(--color-bg-subtle)] px-2.5 py-1 rounded-md">
+                      <Briefcase size={14} /> {job.company}
+                    </span>
+                    <span className="flex items-center gap-1.5 bg-[var(--color-bg-subtle)] px-2.5 py-1 rounded-md">
+                      <MapPin size={14} /> {job.location}
+                    </span>
+                  </div>
+                </div>
+
+                {job.isExternal ? (
+                  <a
+                    href={job.applyLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all hover:bg-[var(--color-text)] hover:text-[var(--color-bg)]"
+                    style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-text)" }}
+                  >
+                    Apply <ExternalLink size={14} />
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => setSelectedJob(job)}
+                    className="px-5 py-2.5 rounded-full text-sm font-medium transition-transform active:scale-95 btn-accent shadow-md"
+                  >
+                    Apply Now
+                  </button>
+                )}
+              </motion.div>
+            ))
+          )}
+        </motion.div>
+      )}
+
+      {selectedJob && (
+        <ApplyModal 
+          job={selectedJob} 
+          onClose={() => setSelectedJob(null)} 
+        />
+      )}
+    </div>
+  );
+};
+
+export default Jobs;

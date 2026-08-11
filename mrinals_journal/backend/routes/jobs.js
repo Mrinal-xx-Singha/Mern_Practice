@@ -1,9 +1,10 @@
 const express = require("express")
 const router = express.Router()
-const multer = require("multer")
-const { CloudinaryStorage } = require("multer-storage-cloudinary")
-const cloudinary = require("cloudinary")
-const auth = require("../middleware/auth")
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+require("../utils/cloudinary"); // Ensures API keys are loaded!
+const auth = require("../middleware/auth");
 const Application = require("../models/Application")
 const Job = require("../models/Job")
 const { scrapeWWRJobs } = require("../services/scraper");
@@ -32,7 +33,7 @@ router.get("/", async (req, res) => {
 
 // @route   POST /api/jobs
 // @desc    Create a new job (Must be logged in, ideally an employer)
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
     try {
         const newJob = new Job({
             ...req.body,
@@ -41,7 +42,8 @@ router.post("/", async (req, res) => {
         })
         await newJob.save()
         res.status(201).json(newJob)
-    } catch (error) {
+    } catch (err) {
+        console.error("Job Creation Error:", err);
         res.status(500).json({ error: "Failed to post job" })
     }
 })
