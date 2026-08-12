@@ -34,7 +34,7 @@ const App = () => {
     return (
       <div className="h-screen w-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-[var(--color-text-muted)] border-t-[var(--color-text)] rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-(--color-text-muted) border-t-(--color-text) rounded-full animate-spin" />
           <p
             className="text-sm"
             style={{ color: "var(--color-text-secondary)" }}
@@ -78,10 +78,18 @@ const App = () => {
               </PrivateRoute>
             }
           />
-         <Route path="/jobs/create" element={<CreateJob />}/>
-          <Route 
-          path="/jobs"
-          element={<Jobs />}
+          <Route path="/jobs/create" element={
+            <PrivateRoute>
+              <CreateJob />
+            </PrivateRoute>
+          } />
+          <Route
+            path="/jobs"
+            element={
+              <PrivateRoute>
+                <Jobs />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/profile"
