@@ -135,9 +135,6 @@ router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Safely increment view count
-    await Post.findByIdAndUpdate(id, { $inc: { views: 1 } });
-
     // Fetch updated post
     const post = await Post.findById(id).populate("author", "username avatar");
 
@@ -148,6 +145,19 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch post" });
   }
 });
+
+router.post("/:id/views", async (req, res) => {
+  try {
+    const { id } = req.params
+    await Post.findByIdAndUpdate(id, { $inc: { views: 1 } })
+
+    return res.status(200).json({ success: true })
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update views" })
+
+  }
+
+})
 
 // Update Post (Author only)
 router.put("/:id", auth, checkOwnerOrAdmin(Post), async (req, res) => {

@@ -31,6 +31,13 @@ export const createPost = createAsyncThunk(
   },
 );
 
+export const incrementViewCount = createAsyncThunk(
+  "posts/incrementView", async (postId) => {
+    await axios.post(`${API_BASE_URL}/api/posts/${postId}/views`)
+    return postId
+  }
+)
+
 export const fetchMoreFromAuthor = createAsyncThunk(
   "posts/moreFromAuthor",
   async ({ authorId, exclude }, thunkAPI) => {
