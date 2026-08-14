@@ -12,7 +12,7 @@ import {
   reactToPost,
   toggleBookmark,
 } from "../../services/postService";
-import { deletePost } from "../../redux/slices/postSlice";
+import { deletePost, incrementViewCount } from "../../redux/slices/postSlice";
 import {
   getCommentsByPostId,
   addComment,
@@ -70,6 +70,21 @@ const PostDetails = () => {
       setReactionCounts(counts);
     }
   }, [post, user]);
+
+  useEffect(()=>{
+    const currentPostId = id 
+    const viewedPosts =JSON.parse(localStorage.getItem("viewedPosts")) || []
+
+
+    if(!viewedPosts.includes(currentPostId)){
+      dispatch(incrementViewCount(currentPostId))
+
+      viewedPosts.push(currentPostId)
+      localStorage.setItem('viewedPosts',JSON.stringify(viewedPosts))
+
+    }
+
+  },[dispatch,id])
 
   const handleReact = async (emoji) => {
     try {
