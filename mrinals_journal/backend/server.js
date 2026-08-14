@@ -53,7 +53,7 @@ app.use("/api/auth/register", authLimiter);
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://writelyjobs.netlify.app/",
+  "https://writelyjobs.netlify.app",
   // process.env.ALLOWED_ORIGINS,
 ];
 app.use(
