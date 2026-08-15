@@ -18,6 +18,8 @@ import LandingPage from "./pages/LandingPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import Jobs from "./pages/Jobs";
 import CreateJob from "./pages/CreateJob";
+import { AnimatePresence } from "motion/react"
+import PageTransition from "./components/PageTransition";
 
 
 
@@ -54,11 +56,16 @@ const App = () => {
       style={{ backgroundColor: "var(--color-bg)" }}
     >
       {!noNavbarRoutes.includes(location.pathname) && <Navbar />}
-      <div>
-        <Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
           <Route
             path="/"
-            element={user ? <Navigate to="/feed" replace /> : <LandingPage />}
+            element={user ? <Navigate to="/feed" replace /> :
+              <PageTransition>
+                <LandingPage />
+              </PageTransition>
+
+            }
           />
 
           {/* protected feed, visible only after login  */}
@@ -66,7 +73,9 @@ const App = () => {
             path="/feed"
             element={
               <PrivateRoute>
-                <PostList />
+                <PageTransition>
+                  <PostList />
+                </PageTransition>
               </PrivateRoute>
             }
           />
@@ -74,20 +83,26 @@ const App = () => {
             path="/create"
             element={
               <PrivateRoute>
-                <CreatePost />
+                <PageTransition>
+                  <CreatePost />
+                </PageTransition>
               </PrivateRoute>
             }
           />
           <Route path="/jobs/create" element={
             <PrivateRoute>
-              <CreateJob />
+              <PageTransition>
+                <CreateJob />
+              </PageTransition>
             </PrivateRoute>
           } />
           <Route
             path="/jobs"
             element={
               <PrivateRoute>
-                <Jobs />
+                <PageTransition>
+                  <Jobs />
+                </PageTransition>
               </PrivateRoute>
             }
           />
@@ -95,7 +110,10 @@ const App = () => {
             path="/profile"
             element={
               <PrivateRoute>
-                <Profile />
+                <PageTransition>
+
+                  <Profile />
+                </PageTransition>
               </PrivateRoute>
             }
           />
@@ -103,7 +121,9 @@ const App = () => {
             path="/bookmarks"
             element={
               <PrivateRoute>
-                <Bookmarks />
+                <PageTransition>
+                  <Bookmarks />
+                </PageTransition>
               </PrivateRoute>
             }
           />
@@ -111,7 +131,9 @@ const App = () => {
             path="/edit/:id"
             element={
               <PrivateRoute>
-                <EditPost />
+                <PageTransition>
+                  <EditPost />
+                </PageTransition>
               </PrivateRoute>
             }
           />
@@ -120,20 +142,30 @@ const App = () => {
             path="/admin"
             element={
               <AdminRoute>
-                <AdminDashboard />
+                <PageTransition>
+                  <AdminDashboard />
+                </PageTransition>
               </AdminRoute>
             }
           />
           <Route
             path="/login"
-            element={!user ? <Login /> : <Navigate to="/" />}
+            element={!user ?
+              <PageTransition>
+                <Login />
+              </PageTransition>
+              : <Navigate to="/" />}
           />
           <Route
             path="/register"
-            element={!user ? <Register /> : <Navigate to="/" />}
+            element={!user ?
+              <PageTransition>
+                <Register />
+              </PageTransition>
+              : <Navigate to="/" />}
           />
         </Routes>
-      </div>
+      </AnimatePresence>
     </div>
   );
 };
