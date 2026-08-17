@@ -4,6 +4,7 @@ import { fetchJobs } from "../redux/slices/jobSlice";
 import { Briefcase, MapPin, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import ApplyModal from "../components/jobs/ApplyModal";
+import { Link } from "react-router-dom";
 
 // --- Premium Skeleton Loader ---
 const JobSkeleton = () => (
@@ -90,9 +91,12 @@ const Jobs = () => {
                 }}
               >
                 <div>
+                  <Link to={`/jobs/${job._id}`}>
+
                   <h3 className="text-xl font-semibold group-hover:text-[var(--color-accent)] transition-colors" style={{ color: "var(--color-text)" }}>
                     {job.title}
                   </h3>
+                  </Link>
                   <div className="flex items-center gap-4 mt-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
                     <span className="flex items-center gap-1.5 bg-[var(--color-bg-subtle)] px-2.5 py-1 rounded-md">
                       <Briefcase size={14} /> {job.company}
@@ -101,6 +105,15 @@ const Jobs = () => {
                       <MapPin size={14} /> {job.location}
                     </span>
                   </div>
+                  
+                  {/* Job Description (Truncated & HTML Stripped) */}
+                  <p 
+                    className="mt-4 text-sm leading-relaxed line-clamp-3" 
+                    style={{ color: "var(--color-text-secondary)" }}
+                  >
+                    {/* Strip HTML tags safely for the preview card */}
+                    {job.description?.replace(/<[^>]*>?/gm, '')}
+                  </p>
                 </div>
 
                 {job.isExternal ? (
