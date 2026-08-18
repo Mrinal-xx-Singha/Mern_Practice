@@ -5,6 +5,9 @@ import { Briefcase, MapPin, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import ApplyModal from "../components/jobs/ApplyModal";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { API_BASE_URL } from "../config/api";
+
 
 // --- Premium Skeleton Loader ---
 const JobSkeleton = () => (
@@ -24,6 +27,8 @@ const Jobs = () => {
   const dispatch = useDispatch();
   const { jobs, status } = useSelector((state) => state.jobs);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [isScraping, setIsScraping] = useState(false)
+
 
   useEffect(() => {
     dispatch(fetchJobs());
@@ -43,16 +48,34 @@ const Jobs = () => {
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
+  const handleScrapeJobs = async () => {
+    setIsScraping(true)
+    try {
+      await axios.post(`${API_BASE_URL}/api/jobs/scrape`, {}, { withCredentials: true })
+
+      dispatch(fetchJobs())
+
+      alert("Successfully scraped new remote jobs!")
+    } catch (err) {
+      console.error(err)
+      alert("Failed to scrape jobs. Make sure your backend is running.")
+
+    } finally {
+      setIsScraping(false)
+    }
+  }
+
   return (
     <div className="mx-auto py-12 px-6 min-h-screen relative" style={{ maxWidth: "800px" }}>
-      
+
       {/* Premium Header */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        className="flex justify-between items-center mb-10"
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-10 gap-4"
       >
         <div>
+
           <h1 className="text-4xl font-serif font-bold mb-2 tracking-tight" style={{ color: "var(--color-text)" }}>
             Job Board
           </h1>
@@ -60,9 +83,20 @@ const Jobs = () => {
             Discover remote opportunities from around the web.
           </p>
         </div>
-        <a href="/jobs/create" className="btn-accent px-5 py-2.5 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transition-all">
-          + Post a Job
-        </a>
+        <div className="flex items-center gap-4">
+
+          <button
+            onClick={handleScrapeJobs}
+            disabled={isScraping}
+            className="px-5 py-2.5 rounded-full text-sm font-medium border border-[var(--color-border)] hover:bg-[var(--color-bg-subtle)] transition-all disabled:opacity-50"
+            style={{ color: "var(--color-text)" }}
+          >
+            {isScraping ? "Scraping Web..." : "🔄 Sync  Jobs"}
+          </button>
+          <Link to="/jobs/create" className="btn-accent px-5 py-2.5 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transition-all">
+            + Post a Job
+          </Link>
+        </div>
       </motion.div>
 
       {/* List Section */}
@@ -71,10 +105,10 @@ const Jobs = () => {
           {[1, 2, 3, 4].map(n => <JobSkeleton key={n} />)}
         </div>
       ) : (
-        <motion.div 
-          variants={containerVariants} 
-          initial="hidden" 
-          animate="show" 
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
           className="space-y-4"
         >
           {jobs.length === 0 ? (
@@ -93,9 +127,9 @@ const Jobs = () => {
                 <div>
                   <Link to={`/jobs/${job._id}`}>
 
-                  <h3 className="text-xl font-semibold group-hover:text-[var(--color-accent)] transition-colors" style={{ color: "var(--color-text)" }}>
-                    {job.title}
-                  </h3>
+                    <h3 className="text-xl font-semibold group-hover:text-[var(--color-accent)] transition-colors" style={{ color: "var(--color-text)" }}>
+                      {job.title}
+                    </h3>
                   </Link>
                   <div className="flex items-center gap-4 mt-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
                     <span className="flex items-center gap-1.5 bg-[var(--color-bg-subtle)] px-2.5 py-1 rounded-md">
@@ -105,10 +139,10 @@ const Jobs = () => {
                       <MapPin size={14} /> {job.location}
                     </span>
                   </div>
-                  
+
                   {/* Job Description (Truncated & HTML Stripped) */}
-                  <p 
-                    className="mt-4 text-sm leading-relaxed line-clamp-3" 
+                  <p
+                    className="mt-4 text-sm leading-relaxed line-clamp-3"
                     style={{ color: "var(--color-text-secondary)" }}
                   >
                     {/* Strip HTML tags safely for the preview card */}
@@ -141,9 +175,9 @@ const Jobs = () => {
       )}
 
       {selectedJob && (
-        <ApplyModal 
-          job={selectedJob} 
-          onClose={() => setSelectedJob(null)} 
+        <ApplyModal
+          job={selectedJob}
+          onClose={() => setSelectedJob(null)}
         />
       )}
     </div>
