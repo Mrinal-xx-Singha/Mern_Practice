@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import CreatePost from "./components/posts/CreatePost";
 import PostList from "./components/posts/PostList";
 import PostDetails from "./components/posts/PostDetails";
+import JobDetails from "./pages/JobDetails"
 import EditPost from "./components/posts/EditPost";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
@@ -104,6 +105,17 @@ const App = () => {
                   <Jobs />
                 </PageTransition>
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="/jobs/:id"
+            element={
+              <PrivateRoute>
+                <PageTransition>
+                  <JobDetails />
+                </PageTransition>
+              </PrivateRoute>
+
             }
           />
           <Route
