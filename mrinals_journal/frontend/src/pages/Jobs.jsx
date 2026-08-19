@@ -28,6 +28,8 @@ const Jobs = () => {
   const { jobs, status } = useSelector((state) => state.jobs);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isScraping, setIsScraping] = useState(false)
+  const { user } = useSelector((state) => state.auth)
+
 
 
   useEffect(() => {
@@ -84,18 +86,26 @@ const Jobs = () => {
           </p>
         </div>
         <div className="flex items-center gap-4">
+          
+          {/* SCRAPE BUTTON: Only show to ADMINS */}
+          {user?.role === "admin" && (
+            <button
+              onClick={handleScrapeJobs}
+              disabled={isScraping}
+              className="px-5 py-2.5 rounded-full text-sm font-medium border border-[var(--color-border)] hover:bg-[var(--color-bg-subtle)] transition-all disabled:opacity-50"
+              style={{ color: "var(--color-text)" }}
+            >
+              {isScraping ? "Scraping Web..." : "🔄 Sync Jobs"}
+            </button>
+          )}
 
-          <button
-            onClick={handleScrapeJobs}
-            disabled={isScraping}
-            className="px-5 py-2.5 rounded-full text-sm font-medium border border-[var(--color-border)] hover:bg-[var(--color-bg-subtle)] transition-all disabled:opacity-50"
-            style={{ color: "var(--color-text)" }}
-          >
-            {isScraping ? "Scraping Web..." : "🔄 Sync  Jobs"}
-          </button>
-          <Link to="/jobs/create" className="btn-accent px-5 py-2.5 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transition-all">
-            + Post a Job
-          </Link>
+          {/* POST JOB BUTTON: Show to EMPLOYERS OR ADMINS */}
+          {(user?.role === "employer" || user?.role === "admin") && (
+            <Link to="/jobs/create" className="btn-accent px-5 py-2.5 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transition-all">
+              + Post a Job
+            </Link>
+          )}
+
         </div>
       </motion.div>
 
