@@ -35,6 +35,11 @@ router.get("/", async (req, res) => {
 // @desc    Create a new job (Must be logged in, ideally an employer)
 router.post("/", auth, async (req, res) => {
     try {
+        if (req.user.role !== "employer" && req.user.role !== "admin") {
+            return res.status(403).json({ error: "Access denied. Only employers can post jobs." })
+
+        }
+
         const newJob = new Job({
             ...req.body,
             postedBy: req.user.id,
@@ -76,7 +81,10 @@ router.post("/:id/apply", auth, upload.single('resume'), async (req, res) => {
 })
 // @route   POST /api/jobs/scrape
 // @desc    Trigger the web scraper to fetch new external jobs
-router.post("/scrape", async (req, res) => {
+router.post("/scrape", auth, async (req, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ error: "Only admins can scrape jobs" })
+    }
     try {
         const result = await scrapeWWRJobs()
         res.json(result)
