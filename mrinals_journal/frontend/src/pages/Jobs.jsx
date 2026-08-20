@@ -85,7 +85,7 @@ const Jobs = () => {
             Discover remote opportunities from around the web.
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex justify-between items-center gap-4">
           
           {/* SCRAPE BUTTON: Only show to ADMINS */}
           {user?.role === "admin" && (

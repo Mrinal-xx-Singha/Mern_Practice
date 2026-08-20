@@ -173,6 +173,16 @@ const Navbar = () => {
                   Admin Panel
                 </Link>
               )}
+              {user && (
+                <Link
+                to="/jobs"
+                className="py-2 text-sm flex items-center gap02 font-medium"
+                style={{color:"var(--color-text-secondary)"}}
+                onClick={()=>setMenuOpen(false)}
+                >
+                Jobs Board
+                </Link>
+              )}
 
               <Link
                 to="/profile"
