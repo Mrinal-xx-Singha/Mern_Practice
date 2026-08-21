@@ -95,5 +95,31 @@ router.post("/scrape", auth, async (req, res) => {
 
 })
 
+router.get("/employer/applications", auth, async (req, res) => {
+    try {
+        if (req.user.role !== "employer" && req.user.role !== "admin") {
+            return res.status(403).json({ error: "Access denied." })
+
+
+        }
+        // Find all the job ids created by the mployer
+        const jobs = await Job.find({ postedBy: req.user.id }).select('_id')
+        const jobIds = jobs.map(job => job._id)
+
+        // Find all the applications for their specific jobs
+        // Populate is SQL Join equivalent
+        const applications = await Application.find({ job: { $in: jobIds } })
+            .populate('job', "title company")
+            .populate('applicant', "username email avatar")
+            .sort({ createdAt: -1 })
+
+        res.json(applications)
+
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: "Server Error" })
+    }
+})
+
 
 module.exports = router

@@ -21,6 +21,7 @@ import Jobs from "./pages/Jobs";
 import CreateJob from "./pages/CreateJob";
 import { AnimatePresence } from "motion/react"
 import PageTransition from "./components/PageTransition";
+import EmployerDashboard from "./pages/EmployerDashboard";
 
 
 
@@ -159,6 +160,14 @@ const App = () => {
                 </PageTransition>
               </AdminRoute>
             }
+          />
+          <Route
+            path="/employer/dashboard"
+            element={<PrivateRoute>
+              <PageTransition>
+                <EmployerDashboard />
+              </PageTransition>
+            </PrivateRoute>}
           />
           <Route
             path="/login"

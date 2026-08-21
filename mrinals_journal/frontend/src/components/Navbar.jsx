@@ -83,6 +83,14 @@ const Navbar = () => {
                 <PenLine size={16} />
                 Write
               </Link>
+              {user.role=== "employer" && (
+                <Link to="/employer/dashboard" className="inline-flex items-center gap-1.5 text-sm transition-colors" 
+                style={{color:"var(--color-accent)"}}
+                >
+                  <Briefcase  size={15}/>
+                  Dashboard
+                </Link>
+              )}
               
 
               <Link to="/profile" className="flex items-center gap-2 ml-1">
