@@ -26,9 +26,11 @@ const JobSkeleton = () => (
 const Jobs = () => {
   const dispatch = useDispatch();
   const { jobs, status } = useSelector((state) => state.jobs);
+  const [currentPage, setCurrentPage] = useState(1)
   const [selectedJob, setSelectedJob] = useState(null);
   const [isScraping, setIsScraping] = useState(false)
   const { user } = useSelector((state) => state.auth)
+  const jobsPerPage = 5
 
 
 
@@ -67,6 +69,12 @@ const Jobs = () => {
     }
   }
 
+  const indexOfLastJob = currentPage * jobsPerPage
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage
+
+  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob)
+  const totalPages = Math.ceil(jobs.length / jobsPerPage)
+
   return (
     <div className="mx-auto py-12 px-6 min-h-screen relative" style={{ maxWidth: "800px" }}>
 
@@ -86,7 +94,7 @@ const Jobs = () => {
           </p>
         </div>
         <div className="flex justify-between items-center gap-4">
-          
+
           {/* SCRAPE BUTTON: Only show to ADMINS */}
           {user?.role === "admin" && (
             <button
@@ -121,10 +129,10 @@ const Jobs = () => {
           animate="show"
           className="space-y-4"
         >
-          {jobs.length === 0 ? (
+          {currentJobs.length === 0 ? (
             <p className="text-center py-12 text-lg" style={{ color: "var(--color-text-secondary)" }}>No jobs found.</p>
           ) : (
-            jobs.map((job) => (
+            currentJobs.map((job) => (
               <motion.div
                 variants={itemVariants}
                 key={job._id}
@@ -180,6 +188,27 @@ const Jobs = () => {
                 )}
               </motion.div>
             ))
+          )}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-8 pt-4">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 rounded-lg border font-medium transition-all disabled:opacity-30 hover:bg-[var(--color-bg-subtle)]"
+                style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
+              >Previous</button>
+              <span className="text-sm font-medium "
+
+                style={{ color: "var(--color-text-secondary)" }}>Page {currentPage} of {totalPages}</span>
+              <button
+              onClick={()=>setCurrentPage(prev=>Math.min(prev+1,totalPages))}
+                className="px-4 py-2 rounded-lg border font-medium transition-all disabled:opacity-30 hover:bg-[var(--color-bg-subtle)]"
+                style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
+disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
           )}
         </motion.div>
       )}
