@@ -29,6 +29,8 @@ const Jobs = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedJob, setSelectedJob] = useState(null);
   const [isScraping, setIsScraping] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [locationFilter, setLocationFilter] = useState("All")
   const { user } = useSelector((state) => state.auth)
   const jobsPerPage = 5
 
@@ -69,11 +71,28 @@ const Jobs = () => {
     }
   }
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, locationFilter])
+
   const indexOfLastJob = currentPage * jobsPerPage
   const indexOfFirstJob = indexOfLastJob - jobsPerPage
 
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob)
-  const totalPages = Math.ceil(jobs.length / jobsPerPage)
+  // Filter the raw redux jobs 
+  const filteredJobs = jobs.filter((job) => {
+    // Check if the title or company matches the search term
+    const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.company.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const matchesLocation = locationFilter === "All" || job.location.includes(locationFilter)
+
+
+    return matchesLocation && matchesSearch
+  })
+
+
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob)
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage)
 
   return (
     <div className="mx-auto py-12 px-6 min-h-screen relative" style={{ maxWidth: "800px" }}>
@@ -116,6 +135,29 @@ const Jobs = () => {
 
         </div>
       </motion.div>
+      <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <input 
+        type="text"
+        placeholder="Search jobs by title or company....."
+        value={searchTerm}
+        onChange={(e)=>setSearchTerm(e.target.value)}
+        className="flex-1 px-4 py-3 rounded-xl border bg-[var(--color-bg-subtle)] outline-none focus:border-[var(--color-accent)] transition-colors"
+        style={{borderColor:"var(--color-border)",color:"var(--color-text)"}}
+       
+       />
+       <select
+       value={locationFilter}
+       onChange={(e)=>setLocationFilter(e.target.value)}
+       className="px-4 py-3 rounded-xl border bg-[var(--color-bg-subtle)] outline-none focus:border-[var(--color-accent)] transition-colors"
+       style={{borderColor:"var(--color-border) ",color:"var(--color-text)"}}
+       >
+        <option value="All">All Locations</option>
+        <option value="Remote">Remote</option>
+        <option value="Hybrid">Hybrid</option>
+        <option value="On-site">On-site</option>
+       </select>
+
+      </div>
 
       {/* List Section */}
       {status === "loading" ? (
@@ -201,10 +243,10 @@ const Jobs = () => {
 
                 style={{ color: "var(--color-text-secondary)" }}>Page {currentPage} of {totalPages}</span>
               <button
-              onClick={()=>setCurrentPage(prev=>Math.min(prev+1,totalPages))}
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 className="px-4 py-2 rounded-lg border font-medium transition-all disabled:opacity-30 hover:bg-[var(--color-bg-subtle)]"
                 style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
-disabled={currentPage === totalPages}
+                disabled={currentPage === totalPages}
               >
                 Next
               </button>
