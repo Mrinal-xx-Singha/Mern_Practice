@@ -14,7 +14,7 @@ const cookieOptions = {
 
 // ================== REGISTER ==================
 router.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, role } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -30,6 +30,8 @@ router.post("/register", async (req, res) => {
       username,
       email,
       password: hashed,
+      // Savinf the role (if they didnt provide one default to "user")
+      role: role || "user"
     });
     res.status(201).json({ message: "User saved successfully", user });
   } catch (error) {
@@ -83,7 +85,7 @@ router.post("/login", async (req, res) => {
 router.post("/demo-login", async (req, res) => {
   try {
     const { role } = req.body;
-    const targetRole = role === "admin" ? "admin" : "user";
+    const targetRole = role === "admin" ? "admin" : role === "employer" ? "employer" : "user";
     const email = targetRole === "admin" ? "admin@writely.com" : "demo@writely.com";
     const defaultUsername = targetRole === "admin" ? "Admin User" : "Demo Writer";
 
