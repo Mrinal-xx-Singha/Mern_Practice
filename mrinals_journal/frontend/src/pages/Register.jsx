@@ -9,7 +9,7 @@ import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Register = () => {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ username: "", email: "", password: "", role: "user" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -135,6 +135,26 @@ const Register = () => {
               className="input-clean"
             />
           </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2"
+
+                style={{ color: "var(--color-text-secondary)" }}>Account Type</label>
+              <select
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-all focus:ring-2 focus:ring-[var(--color-accent)]"
+                style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
+
+              >
+                <option
+                className="bg-[var(--color-bg-subtle)]"
+                value="user">Candidate (I'm looking for a job)</option>
+                <option 
+                className="bg-[var(--color-bg-subtle)]"
+                value="employer">Recruiter (I'm hiring)</option>
+              </select>
+            </div>
 
           <button
             type="submit"
