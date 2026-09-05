@@ -126,8 +126,8 @@ const LandingPage = () => {
       <section className="px-6 md:px-12 lg:px-20 py-20 bg-[var(--color-bg-subtle)] border-t border-[var(--color-border-landing)]">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold tracking-tight mb-4" style={{ color: "var(--color-text)" }}>Everything you need in one platform</h2>
-            <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--color-text-secondary)" }}>Writely merges the power of a developer blog with an automated remote job board.</p>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold tracking-tight mb-4" style={{ color: "var(--color-text)" }}>What's under the hood?</h2>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--color-text-secondary)" }}>I built Writely to solve two problems: sharing knowledge and finding remote work.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -136,8 +136,8 @@ const LandingPage = () => {
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-accent)" }}>
                 <PenTool size={24} />
               </div>
-              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Developer Community</h3>
-              <p style={{ color: "var(--color-text-secondary)" }}>Publish articles, share your expertise, and build your audience with our distraction-free reading experience.</p>
+              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Write & Read</h3>
+              <p style={{ color: "var(--color-text-secondary)" }}>A clean, distraction-free editor for developers to share tutorials, stories, and code.</p>
             </div>
 
             {/* Feature 2 */}
@@ -145,8 +145,8 @@ const LandingPage = () => {
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-accent)" }}>
                 <Globe size={24} />
               </div>
-              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Automated Web Scraper</h3>
-              <p style={{ color: "var(--color-text-secondary)" }}>Our background Node.js scraper automatically syncs the latest remote developer jobs from across the web.</p>
+              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Auto-Updating Jobs</h3>
+              <p style={{ color: "var(--color-text-secondary)" }}>I wrote a custom script that scrapes the web every day to find remote dev jobs so you don't have to.</p>
             </div>
 
             {/* Feature 3 */}
@@ -154,8 +154,8 @@ const LandingPage = () => {
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-accent)" }}>
                 <Briefcase size={24} />
               </div>
-              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Employer Dashboard</h3>
-              <p style={{ color: "var(--color-text-secondary)" }}>Strict Role-Based Access Control allows verified recruiters to post jobs and securely download applicant resumes.</p>
+              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Hiring Dashboard</h3>
+              <p style={{ color: "var(--color-text-secondary)" }}>Recruiters get their own private dashboard to review applicants and grab PDF resumes in one click.</p>
             </div>
           </div>
         </div>
