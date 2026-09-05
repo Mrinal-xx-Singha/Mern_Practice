@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { demoLogin } from "../redux/slices/authSlice";
 import toast from "react-hot-toast";
+import { PenTool, Globe, Briefcase } from "lucide-react";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
@@ -38,30 +39,30 @@ const LandingPage = () => {
       </header>
 
       {/* Hero */}
-      <main className="flex-1 flex items-center px-6 md:px-12 lg:px-20">
+      <main className="flex-1 flex items-center px-6 md:px-12 lg:px-20 relative overflow-hidden">
         <div
-          className="w-full mx-auto py-16 md:py-24"
+          className="w-full mx-auto py-16 md:py-24 relative z-10"
           style={{ maxWidth: "var(--max-width-page)" }}
         >
           <h1
-            className="font-serif font-bold leading-[1.1] tracking-tight mb-8 animate-fade-in"
+            className="font-serif font-bold leading-[1.1] tracking-tight mb-6 animate-fade-in"
             style={{
-              fontSize: "clamp(3rem, 8vw, 6.5rem)",
+              fontSize: "clamp(2.5rem, 7vw, 6rem)",
               color: "var(--color-text)",
-              letterSpacing: "-0.04em",
+              letterSpacing: "-0.02em",
             }}
           >
-            Stay curious.
+            Share stories. <br/>
+            <span style={{ color: "var(--color-accent)" }}>Find remote work.</span>
           </h1>
           <p
-            className="text-lg md:text-xl max-w-xl mb-10 leading-relaxed animate-fade-in"
+            className="text-lg md:text-xl max-w-2xl mb-10 leading-relaxed animate-fade-in"
             style={{
               color: "var(--color-text-secondary)",
               animationDelay: "0.1s",
             }}
           >
-            Discover stories, thinking, and expertise from writers on any topic
-            that matters to you.
+            A community platform built for developers and creators. Read expert articles, publish your thoughts, and instantly apply to the latest remote opportunities.
           </p>
           <div
             className="flex flex-wrap gap-4 items-center animate-fade-in"
@@ -69,42 +70,100 @@ const LandingPage = () => {
           >
             <Link
               to="/register"
-              className="inline-block px-8 py-3 rounded-full text-lg font-medium transition-opacity shadow-sm hover:opacity-90"
+              className="inline-block px-8 py-3 rounded-full text-lg font-medium transition-transform shadow-md hover:scale-105 active:scale-95"
               style={{
                 backgroundColor: "var(--color-btn-invert-bg)",
                 color: "var(--color-btn-invert-text)",
               }}
             >
-              Start reading
+              Get Started
             </Link>
             <button
               type="button"
               onClick={() => {
-                toast.loading("Launching instant demo...", { duration: 1200 });
+                toast.loading("Logging in as Candidate...", { duration: 1200 });
                 dispatch(demoLogin("user"))
                   .unwrap()
                   .then(() => {
-                    toast.success("Welcome to the Writely interactive demo!");
+                    toast.success("Welcome to Writely!");
                     navigate("/feed");
                   })
                   .catch(() => toast.error("Demo login failed."));
               }}
-              className="px-6 py-3 rounded-full text-lg font-medium transition-all border shadow-xs cursor-pointer flex items-center gap-2 hover:opacity-85"
+              className="px-6 py-3 rounded-full text-lg font-medium transition-all border shadow-sm cursor-pointer flex items-center gap-2 hover:bg-[var(--color-bg-subtle)] active:scale-95"
               style={{
                 color: "var(--color-text)",
-                backgroundColor: "var(--color-bg-subtle)",
                 borderColor: "var(--color-border)",
               }}
             >
-              <span>⚡ Explore Instant Demo</span>
+              <span>⚡ Demo as Candidate</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                toast.loading("Logging in as Recruiter...", { duration: 1200 });
+                dispatch(demoLogin("employer"))
+                  .unwrap()
+                  .then(() => {
+                    toast.success("Welcome to the Employer Dashboard!");
+                    navigate("/employer/dashboard");
+                  })
+                  .catch(() => toast.error("Demo login failed."));
+              }}
+              className="px-6 py-3 rounded-full text-lg font-medium transition-all border shadow-sm cursor-pointer flex items-center gap-2 hover:bg-[var(--color-bg-subtle)] active:scale-95"
+              style={{
+                color: "var(--color-text)",
+                borderColor: "var(--color-border)",
+              }}
+            >
+              <span>🏢 Demo as Recruiter</span>
             </button>
           </div>
         </div>
       </main>
 
+      {/* Features Section */}
+      <section className="px-6 md:px-12 lg:px-20 py-20 bg-[var(--color-bg-subtle)] border-t border-[var(--color-border-landing)]">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold tracking-tight mb-4" style={{ color: "var(--color-text)" }}>What's under the hood?</h2>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--color-text-secondary)" }}>I built Writely to solve two problems: sharing knowledge and finding remote work.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="p-8 rounded-2xl border bg-[var(--color-bg)] transition-transform hover:-translate-y-1 shadow-sm" style={{ borderColor: "var(--color-border)" }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-accent)" }}>
+                <PenTool size={24} />
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Write & Read</h3>
+              <p style={{ color: "var(--color-text-secondary)" }}>A clean, distraction-free editor for developers to share tutorials, stories, and code.</p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="p-8 rounded-2xl border bg-[var(--color-bg)] transition-transform hover:-translate-y-1 shadow-sm" style={{ borderColor: "var(--color-border)" }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-accent)" }}>
+                <Globe size={24} />
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Auto-Updating Jobs</h3>
+              <p style={{ color: "var(--color-text-secondary)" }}>I wrote a custom script that scrapes the web every day to find remote dev jobs so you don't have to.</p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="p-8 rounded-2xl border bg-[var(--color-bg)] transition-transform hover:-translate-y-1 shadow-sm" style={{ borderColor: "var(--color-border)" }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: "var(--color-bg-subtle)", color: "var(--color-accent)" }}>
+                <Briefcase size={24} />
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: "var(--color-text)" }}>Hiring Dashboard</h3>
+              <p style={{ color: "var(--color-text-secondary)" }}>Recruiters get their own private dashboard to review applicants and grab PDF resumes in one click.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer
-        className="text-center py-6 text-xs"
+        className="text-center py-8 text-sm"
         style={{
           color: "var(--color-text-muted)",
           borderTop: "1px solid var(--color-border-landing)",
