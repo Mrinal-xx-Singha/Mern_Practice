@@ -160,7 +160,7 @@ router.post("/:id/views", async (req, res) => {
 })
 
 // Update Post (Author only)
-router.put("/:id", auth, checkOwnerOrAdmin(Post), async (req, res) => {
+router.put("/:id", auth, checkOwnerOrAdmin(Post), upload.array("images", 2), async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, tags, category } = req.body
@@ -182,7 +182,8 @@ router.put("/:id", auth, checkOwnerOrAdmin(Post), async (req, res) => {
     )
     res.json(updatedPost);
   } catch (error) {
-    res.status(500).json({ error: "Failed to update post" });
+    console.error("PUT Error:", error);
+    res.status(500).json({ error: `Backend crash: ${error.message}` });
   }
 });
 

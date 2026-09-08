@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { ImagePlus, X, Sparkles } from "lucide-react";
 import axios from "axios";
 import { API_BASE_URL } from "../../config/api";
+import MDEditor from "@uiw/react-md-editor"
 
 const CreatePost = () => {
   const [form, setForm] = useState({
@@ -158,7 +159,7 @@ const CreatePost = () => {
           </button>
 
         </div>
-        <textarea
+        {/* <textarea
           placeholder="Tell your story..."
           value={form.content}
           onChange={(e) => setForm({ ...form, content: e.target.value })}
@@ -168,7 +169,25 @@ const CreatePost = () => {
             color: "var(--color-text)",
             caretColor: "var(--color-text)",
           }}
-        />
+        /> */}
+        <div data-color-mode="light" className="mb-6 rounded-xl overflow-hidden border"
+          style={{ borderColor: "var(--color-border)" }}
+        >
+          <MDEditor
+            value={form.content}
+            onChange={(val) => setForm({ ...form, content: val })}
+            preview="edit"
+            height={400}
+            hideToolbar={false}
+            textareaProps={{
+              placeholder: "Tell your story using Markdown"
+            }}
+            style={{
+              backgroundColor: "var(--color-bg)",
+              color: "var(--color-text)",
+            }}
+          />
+        </div>
 
         {/* Image previews */}
         {previews.length > 0 && (
