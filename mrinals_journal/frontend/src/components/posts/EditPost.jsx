@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../../config/api.js";
 import { ImagePlus, X } from "lucide-react";
+import MDEditor from "@uiw/react-md-editor";
 
 
 const EditPost = () => {
@@ -84,8 +85,8 @@ const EditPost = () => {
       navigate(`/posts/${id}`);
       toast.success("Story updated!");
     } catch (error) {
-      console.error("Update failed", error.message);
-      toast.error("Update failed");
+      console.error("Update failed", error.response?.data || error.message);
+      toast.error(error.response?.data?.error || "Update failed");
     }
   };
 
@@ -118,13 +119,24 @@ const EditPost = () => {
           style={{ color: "var(--color-text)" }}
         />
 
-        <textarea
-          placeholder="Tell your story..."
-          value={form.content}
-          onChange={(e) => setForm({ ...form, content: e.target.value })}
-          className="w-full text-lg leading-relaxed outline-none border-none resize-none min-h-[300px]"
-          style={{ color: "var(--color-text)" }}
-        />
+        <div
+          data-color-mode="light"
+          className="mb-6 rounded-xl overflow-hidden border"
+          style={{ borderColor: "var(--color-border)" }}
+
+        >
+          <MDEditor
+            value={form.content}
+            onChange={(val) => setForm({ ...form, content: val })}
+            preview="edit"
+            height={400}
+            hideToolbar={false}
+            style={{
+              backgroundColor: "var(--color-bg)",
+              color: "var(--color-text)"
+            }}
+          />
+        </div>
 
         <div
           className="pt-6"
