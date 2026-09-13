@@ -13,7 +13,9 @@ const applicationSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'reviewed', 'accepted', 'rejected'],
         default: "pending"
-    }
+    },
+    matchScore: { type: Number, default: null },
+    matchSummary: { type: String, default: "" }
 }, {
     timestamps: true
 })
