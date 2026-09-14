@@ -3,7 +3,7 @@ const auth = require("../middleware/auth")
 const { GoogleGenAI } = require("@google/genai")
 const Application = require("../models/Application")
 const axios = require("axios")
-const pdfParse = require("pdf-parse")
+const { PDFParse } = require("pdf-parse")
 const Job = require("../models/Job")
 
 
@@ -86,8 +86,10 @@ router.post("/match-resume", auth, async (req, res) => {
             responseType: "arraybuffer"
         })
         // Extract text from PDF 
-        const pdfData = await pdfParse(Buffer.from(pdfResponse.data))
-        const resumeText = pdfData.text?.trim()
+        // const pdfData = await PDFParse(Buffer.from(pdfResponse.data))
+        // const resumeText = pdfData.text?.trim()
+        const parser = new PDFParse(new Uint8Array(pdfResponse.data))
+        const resumeText = await parser.getText()
 
         if (!resumeText) {
             return res.status(400).json({ error: "Could not extract text from resume" })
@@ -103,7 +105,7 @@ router.post("/match-resume", auth, async (req, res) => {
         ${application.job.description}
 
         --- RESUME TEXT ---
-        ${resumeText.substring(0, 5000)}
+        ${resumeText.text.substring(0, 5000)}
         `
 
         // Call Gemini 
@@ -138,7 +140,7 @@ router.post("/match-resume", auth, async (req, res) => {
 
     } catch (error) {
         console.error("AI Match Error:", error)
-        res.status(500).json({ error: "Failed to analyze resume" })
+        res.status(500).json({ error: `Resume analysis failed: ${error.message}` })
     }
 })
 
