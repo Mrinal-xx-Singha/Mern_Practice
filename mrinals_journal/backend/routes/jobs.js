@@ -121,5 +121,59 @@ router.get("/employer/applications", auth, async (req, res) => {
     }
 })
 
+// @route GET /api/jobs/my-applications
+// @desc Get all applications submitted by logged-in candidate
+
+router.get("/my-applications", auth, async (req, res) => {
+    try {
+        const applications = await Application.find({ applicant: req.user.id })
+            .populate("job", "title company location salaryRange isActive")
+            .sort({ createdAt: -1 })
+
+        res.json(applications)
+
+    } catch (error) {
+        console.error("My applications error:", error)
+        res.status(500).json({ error: "Failed to fetch your applications" })
+    }
+})
+
+// @router PATCH /api/jobs/applications/:id/status
+// @desc Update applications status (Employer or Admin)
+
+router.patch("/applications/:id/status", auth, async (req, res) => {
+    try {
+        const { status } = req.body
+        const validStatuses = ["pending", "reviewed", "accepted", "rejected"]
+
+        if (!status || !validStatuses.includes(status)) {
+            return res.status(400).json({ error: "Invalid status value" })
+
+        }
+        const application = await Application.findById(req.params.id).populate("job", "postedBy")
+
+        if (!application) {
+            return res.status(404).json({ error: "Application not found" })
+        }
+
+        // Verify employer posted this job or is admin
+        const isOwner = application.job?.postedBy?.toString() === req.user.id
+        const isAdmin = req.user.role === "admin"
+
+        if (!isOwner && !isAdmin) {
+            return res.status(403).json({ error: "Access denied. You can only update applications for your own jobs." })
+
+        }
+
+        application.status = status
+        await application.save()
+
+        res.json({ message: "Status updated successfully", application })
+
+    } catch (err) {
+        console.error("Update application status error:", err)
+        res.status(500).json({ error: "Failed to update application status" })
+    }
+})
 
 module.exports = router
