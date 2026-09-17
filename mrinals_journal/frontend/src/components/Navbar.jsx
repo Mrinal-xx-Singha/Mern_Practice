@@ -57,13 +57,17 @@ const Navbar = () => {
                 Bookmarks
               </Link>
               <Link
-              to="/jobs"
-              className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-(--color-accent)"
-              
-              style={{color:"var(--color-text-secondary)"}}>
-              <Briefcase size={18}/>
-              <span>Jobs</span>
+                to="/jobs"
+                className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-(--color-accent) link-underline"
+
+                style={{ color: "var(--color-text-secondary)" }}>
+                <span>Jobs</span>
               </Link>
+              <Link
+                to="/my-applications"
+                className="link-underline text-sm"
+                style={{ color: "var(--color-text-secondary)" }}
+              >My Applications</Link>
 
               {user.role === "admin" && (
                 <Link
@@ -83,15 +87,15 @@ const Navbar = () => {
                 <PenLine size={16} />
                 Write
               </Link>
-              {user.role=== "employer" && (
-                <Link to="/employer/dashboard" className="inline-flex items-center gap-1.5 text-sm transition-colors" 
-                style={{color:"var(--color-accent)"}}
+              {user.role === "employer" && (
+                <Link to="/employer/dashboard" className="inline-flex items-center gap-1.5 text-sm transition-colors"
+                  style={{ color: "var(--color-accent)" }}
                 >
-                  <Briefcase  size={15}/>
+                  <Briefcase size={15} />
                   Dashboard
                 </Link>
               )}
-              
+
 
               <Link to="/profile" className="flex items-center gap-2 ml-1">
                 <img
@@ -134,9 +138,8 @@ const Navbar = () => {
 
       {/* Mobile Navigation Menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          menuOpen ? "max-h-[300px] py-3" : "max-h-0"
-        }`}
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? "max-h-[300px] py-3" : "max-h-0"
+          }`}
         style={{
           borderTop: menuOpen ? "1px solid var(--color-border)" : "none",
         }}
@@ -183,14 +186,20 @@ const Navbar = () => {
               )}
               {user && (
                 <Link
-                to="/jobs"
-                className="py-2 text-sm flex items-center gap02 font-medium"
-                style={{color:"var(--color-text-secondary)"}}
-                onClick={()=>setMenuOpen(false)}
+                  to="/jobs"
+                  className="py-2 text-sm flex items-center gap-2 font-medium"
+                  style={{ color: "var(--color-text-secondary)" }}
+                  onClick={() => setMenuOpen(false)}
                 >
-                Jobs Board
+                  Jobs Board
                 </Link>
               )}
+              <Link to='/my-applications'
+                className="py-2 text-sm flex items-center gap-2 font-medium"
+                style={{ color: "var(--color-text-secondary)" }}
+                onClick={() => setMenuOpen(false)}
+
+              >My Applications</Link>
 
               <Link
                 to="/profile"
