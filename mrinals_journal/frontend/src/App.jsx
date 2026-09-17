@@ -22,6 +22,7 @@ import CreateJob from "./pages/CreateJob";
 import { AnimatePresence } from "motion/react"
 import PageTransition from "./components/PageTransition";
 import EmployerDashboard from "./pages/EmployerDashboard";
+import MyApplications from "./pages/MyApplications";
 
 
 
@@ -68,6 +69,16 @@ const App = () => {
               </PageTransition>
 
             }
+          />
+          <Route 
+          path="/my-applications"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+              <MyApplications />
+              </PageTransition>
+            </PrivateRoute>
+          }
           />
 
           {/* protected feed, visible only after login  */}
