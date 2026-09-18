@@ -50,6 +50,22 @@ const EmployerDashboard = () => {
             setAnalyzingId(null)
         }
     }
+    const handleStatusChange = async (applicationId, newStatus) => {
+        try {
+            await axios.patch(`${API_BASE_URL}/api/jobs/applications/${applicationId}/status`, {
+                status: newStatus
+            }, {
+                withCredentials: true
+            })
+            setApplications((prev) => prev.map((app) => app._id === applicationId ? { ...app, status: newStatus } : app))
+
+            toast.success("Status updated!")
+        } catch (error) {
+            console.error("Status update error:", error)
+            toast.error(error?.response?.data?.error || "Failed to update status")
+
+        }
+    }
 
     const getScoreBadge = score => {
         if (score >= 80) return { label: "Great Match", color: "#16a34a", bg: "#dcfce7" }
@@ -82,6 +98,7 @@ const EmployerDashboard = () => {
                                 <th className="p-4 font-medium" style={{ width: "15%" }}>Date</th>
                                 <th className='p-4 font-medium text-center' style={{ width: "18%" }}>AI Match</th>
                                 <th className="p-4 font-medium text-right" style={{ width: "12%" }}>Resume</th>
+                                <th className='p-4 font-medium text-center' style={{ width: "16%" }}>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,6 +162,24 @@ const EmployerDashboard = () => {
                                             >
                                                 <Download size={16} /> PDF
                                             </a>
+                                        </td>
+                                        <td className='p-4 text-center'>
+                                            <select 
+                                            value={app.status || "pending"}
+                                            onChange={(e)=>handleStatusChange(app._id,e.target.value)}
+                                            className='text-xs font-semibold px-2.5 py-1.5 rounded-lg border outline-none cursor-pointer'
+                                           
+                                           style={{
+                                            backgroundColor:"var(--color-bg)",
+                                            color:"var(--color-text)",
+                                            borderColor:"var(--color-border)"
+                                           }}
+                                           >
+                                                <option value="pending">⏳ Pending</option>
+                                                <option value="reviewed">👀 Reviewed</option>
+                                                <option value="accepted">✅ Accepted</option>
+                                                <option value="rejected">❌ Rejected</option>
+                                            </select>
                                         </td>
                                     </tr>
 
