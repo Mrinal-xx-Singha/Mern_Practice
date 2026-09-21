@@ -19,23 +19,20 @@ const Navbar = () => {
 
   return (
     <nav
-      className="sticky top-0 z-50 backdrop-blur-md transition-colors"
-      style={{
-        backgroundColor: "var(--color-bg)",
-        borderBottom: "1px solid var(--color-border)",
-      }}
+      className="sticky top-0 z-50 backdrop-blur-xl bg-[var(--color-bg)]/90 transition-all border-b border-[var(--color-border)]"
     >
       <div
-        className="mx-auto flex items-center justify-between px-6 py-3"
+        className="mx-auto flex items-center justify-between px-6 py-3.5"
         style={{ maxWidth: "var(--max-width-page)" }}
       >
         {/* Logo */}
         <Link
           to="/feed"
-          className="font-serif text-[1.4rem] font-bold tracking-tight"
+          className="font-bold tracking-tight text-[1.3rem] inline-flex items-center gap-2 font-sans transition-transform hover:opacity-90"
           style={{ color: "var(--color-text)" }}
         >
-          Writely
+          <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_8px_var(--color-accent)]" />
+          <span>Writely</span>
         </Link>
 
         {/* Desktop Navigation */}

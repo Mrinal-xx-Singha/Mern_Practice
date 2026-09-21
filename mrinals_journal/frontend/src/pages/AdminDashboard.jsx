@@ -87,7 +87,7 @@ const SkeletonRow = () => (
     <td className="px-4 py-3">
       <div className="flex items-center gap-3">
         <div
-          className="w-8 h-8 rounded-full flex-shrink-0"
+          className="w-8 h-8 rounded-full shrink-0"
           style={{ backgroundColor: "var(--color-skeleton)" }}
         />
         <div className="space-y-1.5">
@@ -337,7 +337,7 @@ const AdminDashboard = () => {
                             `https://ui-avatars.com/api/?name=${u.username}&background=f0f0f0&color=242424&bold=true&size=64`
                           }
                           alt={u.username}
-                          className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                          className="w-8 h-8 rounded-full object-cover shrink-0"
                           style={{ border: "1px solid var(--color-border)" }}
                         />
                         <div>
