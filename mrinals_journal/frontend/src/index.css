@@ -6,45 +6,58 @@
    ======================== */
 
 :root {
+  /* Linear / Vercel Light Palette */
   --color-bg: #ffffff;
-  --color-bg-subtle: #f7f7f7;
+  --color-bg-subtle: #f4f4f5;       /* Zinc 100 */
   --color-bg-card: #ffffff;
-  --color-bg-landing: #fdf6e3;
-  --color-border: #e6e6e6;
-  --color-border-landing: #e8dcc8;
-  --color-text: #242424;
-  --color-text-secondary: #6b6b6b;
-  --color-text-muted: #9b9b9b;
-  --color-accent: #1a8917;
-  --color-accent-hover: #156d12;
-  --color-danger: #c94a4a;
-  --color-btn-invert-bg: #242424;
+  --color-bg-landing: #fafafa;
+  --color-border: #e4e4e7;          /* Zinc 200 - crisp, modern dividers */
+  --color-border-landing: #e4e4e7;
+  --color-text: #09090b;            /* Zinc 950 - deep ink black */
+  --color-text-secondary: #52525b;  /* Zinc 600 */
+  --color-text-muted: #a1a1aa;      /* Zinc 400 */
+
+  /* Electric Indigo / Violet Accent */
+  --color-accent: #6366f1;          /* Indigo 500 */
+  --color-accent-hover: #4f46e5;    /* Indigo 600 */
+  --color-accent-subtle: #eef2ff;   /* Soft indigo badge tint */
+
+  --color-danger: #ef4444;
+  --color-btn-invert-bg: #09090b;
   --color-btn-invert-text: #ffffff;
-  --color-skeleton: #e5e7eb;
-  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
-  --font-sans:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --max-width-article: 720px;
-  --max-width-page: 1192px;
+  --color-skeleton: #f4f4f5;
+
+  /* Modern Sans & Mono Typography */
+  --font-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  --max-width-article: 760px;
+  --max-width-page: 1200px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #0f172a;
-    --color-bg-subtle: #1e293b;
-    --color-bg-card: #1e293b;
-    --color-bg-landing: #0b1120;
-    --color-border: #334155;
-    --color-border-landing: #1e293b;
-    --color-text: #f8fafc;
-    --color-text-secondary: #cbd5e1;
-    --color-text-muted: #94a3b8;
-    --color-accent: #22c55e;
-    --color-accent-hover: #16a34a;
-    --color-danger: #ef4444;
-    --color-btn-invert-bg: #f8fafc;
-    --color-btn-invert-text: #0f172a;
-    --color-skeleton: #334155;
+    /* Vercel Obsidian Dark Palette */
+    --color-bg: #09090b;            /* Deep OLED Zinc Black */
+    --color-bg-subtle: #141418;     /* Elevated card surface */
+    --color-bg-card: #111113;       /* High-contrast dark card */
+    --color-bg-landing: #09090b;
+    --color-border: #27272a;        /* Zinc 800 - crisp subtle borders */
+    --color-border-landing: #27272a;
+    --color-text: #f4f4f5;          /* Crisp high-contrast white */
+    --color-text-secondary: #a1a1aa;/* Zinc 400 */
+    --color-text-muted: #71717a;    /* Zinc 500 */
+
+    /* Glowing Electric Indigo Accent */
+    --color-accent: #818cf8;        /* Indigo 400 */
+    --color-accent-hover: #6366f1;  /* Indigo 500 */
+    --color-accent-subtle: #1e1b4b; /* Dark indigo badge */
+
+    --color-danger: #f87171;
+    --color-btn-invert-bg: #f4f4f5;
+    --color-btn-invert-text: #09090b;
+    --color-skeleton: #27272a;
   }
 }
 
@@ -165,21 +178,32 @@ body {
   width: 100%;
 }
 
-/* Green accent button */
+/* Modern Tech Button */
 .btn-accent {
   background-color: var(--color-accent);
   color: #ffffff;
-  border-radius: 9999px;
-  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  padding: 0.5rem 1.1rem;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .btn-accent:hover {
   background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+}
+
+.btn-accent:active {
+  transform: translateY(0);
 }
 
 /* Clean input style */
