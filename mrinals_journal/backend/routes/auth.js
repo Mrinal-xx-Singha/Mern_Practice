@@ -4,6 +4,12 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const router = express.Router();
 const isProduction = process.env.NODE_ENV === "production";
+const validate = require("../middleware/validate")
+const {
+  registerSchema,
+  loginSchema,
+  demoLoginSchema
+} = require("../schema/authSchema")
 
 // Helper for cookie options
 const cookieOptions = {
@@ -13,16 +19,13 @@ const cookieOptions = {
 };
 
 // ================== REGISTER ==================
-router.post("/register", async (req, res) => {
+router.post("/register", validate(registerSchema), async (req, res) => {
   const { username, email, password, role } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
-    }
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
     }
 
     const hashed = await bcrypt.hash(password, 10);
@@ -40,7 +43,7 @@ router.post("/register", async (req, res) => {
 });
 
 // ================== LOGIN ==================
-router.post("/login", async (req, res) => {
+router.post("/login", validate(loginSchema), async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -82,7 +85,7 @@ router.post("/login", async (req, res) => {
 });
 
 // ================== DEMO LOGIN ==================
-router.post("/demo-login", async (req, res) => {
+router.post("/demo-login", validate(demoLoginSchema), async (req, res) => {
   try {
     const { role } = req.body;
     const targetRole = role === "admin" ? "admin" : role === "employer" ? "employer" : "user";
