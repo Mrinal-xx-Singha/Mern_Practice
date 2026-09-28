@@ -8,6 +8,8 @@ const auth = require("../middleware/auth");
 const Application = require("../models/Application")
 const Job = require("../models/Job")
 const { scrapeWWRJobs } = require("../services/scraper");
+const validate = require("../middleware/validate")
+const { createJobSchema, updateStatusSchema } = require("../schema/jobSchema")
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
@@ -33,7 +35,7 @@ router.get("/", async (req, res) => {
 
 // @route   POST /api/jobs
 // @desc    Create a new job (Must be logged in, ideally an employer)
-router.post("/", auth, async (req, res) => {
+router.post("/", auth, validate(createJobSchema), async (req, res) => {
     try {
         if (req.user.role !== "employer" && req.user.role !== "admin") {
             return res.status(403).json({ error: "Access denied. Only employers can post jobs." })
@@ -141,15 +143,10 @@ router.get("/my-applications", auth, async (req, res) => {
 // @router PATCH /api/jobs/applications/:id/status
 // @desc Update applications status (Employer or Admin)
 
-router.patch("/applications/:id/status", auth, async (req, res) => {
+router.patch("/applications/:id/status", auth, validate(updateStatusSchema), async (req, res) => {
     try {
         const { status } = req.body
-        const validStatuses = ["pending", "reviewed", "accepted", "rejected"]
 
-        if (!status || !validStatuses.includes(status)) {
-            return res.status(400).json({ error: "Invalid status value" })
-
-        }
         const application = await Application.findById(req.params.id).populate("job", "postedBy")
 
         if (!application) {
