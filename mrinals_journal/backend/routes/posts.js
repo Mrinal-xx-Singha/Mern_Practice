@@ -7,15 +7,27 @@ const User = require("../models/User");
 
 const upload = require("../utils/cloudinary");
 
+const validate = require("../middleware/validate")
+
+const {
+  createPostSchema,
+  updatePostSchema,
+  reactionSchema
+} = require("../schema/postSchema")
+
 // Create Post (Auth required) Image support
-router.post("/", auth, upload.array("images", 2), async (req, res) => {
+router.post("/", auth, upload.array("images", 2), validate(createPostSchema), async (req, res) => {
   try {
     const { title, content, tags, category } = req.body;
     const imageUrls = req.files?.map((file) => file.path) || []; //Cloudinary returns `file.path
+
+    // Process tags into an array if passed as string 
+    const processedTags = typeof tags === "string" ? tags.split(",").map((t) => t.trim()).filter(Boolean) : tags || []
+
     const newPost = new Post({
       title,
       content,
-      tags,
+      tags: processedTags,
       category,
       images: imageUrls,
       author: req.user.id,
@@ -50,16 +62,12 @@ router.get("/", async (req, res) => {
 });
 
 // Patch /api/posts/react/:postId
-router.patch("/react/:postId", auth, async (req, res) => {
+router.patch("/react/:postId", auth, validate(reactionSchema), async (req, res) => {
   try {
     const { emoji } = req.body;
     const post = await Post.findById(req.params.postId);
 
     if (!post) return res.status(404).json({ error: "Post not found" });
-
-    if (!["👍", "❤️", "😂", "😢"].includes(emoji)) {
-      return res.status(400).json({ error: "Invalid emoji" });
-    }
 
     const existing = post.reactions.find(
       (r) => r.user.toString() === req.user.id,
@@ -160,7 +168,7 @@ router.post("/:id/views", async (req, res) => {
 })
 
 // Update Post (Author only)
-router.put("/:id", auth, checkOwnerOrAdmin(Post), upload.array("images", 2), async (req, res) => {
+router.put("/:id", auth, checkOwnerOrAdmin(Post), upload.array("images", 2), validate(updatePostSchema), async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, tags, category } = req.body
