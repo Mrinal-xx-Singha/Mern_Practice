@@ -5,9 +5,13 @@ const Post = require("../models/Post");
 const auth = require("../middleware/auth");
 const checkOwnerOrAdmin = require("../middleware/checkOwnerOrAdmin");
 const buildNestedComments = require("../utils/buildNestedComments");
+const validate = require("../middleware/validate")
+const { createCommentSchema } = require("../schema/commentSchema")
+
+
 
 // Add a comment or reply
-router.post("/:postId", auth, async (req, res) => {
+router.post("/:postId", auth, validate(createCommentSchema), async (req, res) => {
   const { content, parentId } = req.body;
 
   try {
