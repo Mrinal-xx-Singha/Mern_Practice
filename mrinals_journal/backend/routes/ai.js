@@ -18,7 +18,7 @@ router.post("/enhance", auth, async (req, res) => {
 
 
         if (!content) {
-            return res.status(400).json({ erro: "Content is required" })
+            return res.status(400).json({ error: "Content is required" })
         }
 
 

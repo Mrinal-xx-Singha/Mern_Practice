@@ -53,7 +53,7 @@ const LandingPage = () => {
           {/* Announcement pill badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-8 border border-indigo-500/30 bg-indigo-500/10 text-[var(--color-accent)] animate-fade-in shadow-sm">
             <Sparkles size={13} />
-            <span>Powered by Gemini 2.5 Flash AI & Live Job Scraping</span>
+            <span>Powered by Gemini  AI & Live Job Scraping</span>
           </div>
 
           <h1
