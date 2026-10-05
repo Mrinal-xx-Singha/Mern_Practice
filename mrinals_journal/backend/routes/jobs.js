@@ -5,6 +5,7 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
 require("../utils/cloudinary"); // Ensures API keys are loaded!
 const auth = require("../middleware/auth");
+const requireRole = require("../middleware/requireRole");
 const Application = require("../models/Application")
 const Job = require("../models/Job")
 const { scrapeWWRJobs } = require("../services/scraper");
@@ -35,13 +36,8 @@ router.get("/", async (req, res) => {
 
 // @route   POST /api/jobs
 // @desc    Create a new job (Must be logged in, ideally an employer)
-router.post("/", auth, validate(createJobSchema), async (req, res) => {
+router.post("/", auth, requireRole("employer", "admin"), validate(createJobSchema), async (req, res) => {
     try {
-        if (req.user.role !== "employer" && req.user.role !== "admin") {
-            return res.status(403).json({ error: "Access denied. Only employers can post jobs." })
-
-        }
-
         const newJob = new Job({
             ...req.body,
             postedBy: req.user.id,
@@ -83,10 +79,7 @@ router.post("/:id/apply", auth, upload.single('resume'), async (req, res) => {
 })
 // @route   POST /api/jobs/scrape
 // @desc    Trigger the web scraper to fetch new external jobs
-router.post("/scrape", auth, async (req, res) => {
-    if (req.user.role !== "admin") {
-        return res.status(403).json({ error: "Only admins can scrape jobs" })
-    }
+router.post("/scrape", auth, requireRole("admin"), async (req, res) => {
     try {
         const result = await scrapeWWRJobs()
         res.json(result)
@@ -97,14 +90,9 @@ router.post("/scrape", auth, async (req, res) => {
 
 })
 
-router.get("/employer/applications", auth, async (req, res) => {
+router.get("/employer/applications", auth, requireRole("employer", "admin"), async (req, res) => {
     try {
-        if (req.user.role !== "employer" && req.user.role !== "admin") {
-            return res.status(403).json({ error: "Access denied." })
-
-
-        }
-        // Find all the job ids created by the mployer
+        // Find all the job ids created by the employer
         const jobs = await Job.find({ postedBy: req.user.id }).select('_id')
         const jobIds = jobs.map(job => job._id)
 

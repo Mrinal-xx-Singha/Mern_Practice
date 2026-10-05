@@ -7,6 +7,7 @@ import ApplyModal from "../components/jobs/ApplyModal";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../config/api";
+import toast from "react-hot-toast";
 
 
 // --- Premium Skeleton Loader ---
@@ -61,10 +62,10 @@ const Jobs = () => {
 
       dispatch(fetchJobs())
 
-      alert("Successfully scraped new remote jobs!")
+      toast.success("Successfully scraped new remote jobs!")
     } catch (err) {
       console.error(err)
-      alert("Failed to scrape jobs. Make sure your backend is running.")
+      toast.error("Failed to scrape jobs. Make sure your backend is running.")
 
     } finally {
       setIsScraping(false)

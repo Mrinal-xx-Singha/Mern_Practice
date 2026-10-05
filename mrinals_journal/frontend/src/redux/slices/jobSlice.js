@@ -1,9 +1,9 @@
-import { createSlice, createAsyncThunk, __DO_NOT_USE__ActionTypes } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
 import { API_BASE_URL } from "../../config/api"
 
 
-export const fetchJobs = createAsyncThunk("jobs/fetchAll", async (__DO_NOT_USE__ActionTypes, thunkAPI) => {
+export const fetchJobs = createAsyncThunk("jobs/fetchAll", async (_, thunkAPI) => {
     try {
         const res = await axios.get(`${API_BASE_URL}/api/jobs`)
         return res.data
