@@ -1,9 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("cloudinary").v2;
-require("../utils/cloudinary"); // Ensures API keys are loaded!
+const { createUpload } = require("../utils/cloudinary")
 const auth = require("../middleware/auth");
 const requireRole = require("../middleware/requireRole");
 const Application = require("../models/Application")
@@ -12,16 +9,8 @@ const { scrapeWWRJobs } = require("../services/scraper");
 const validate = require("../middleware/validate")
 const { createJobSchema, updateStatusSchema } = require("../schema/jobSchema")
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: "journal_resumes",
-        resource_type: "auto"
-    }
-})
 
-const upload = multer({ storage })
-
+const upload = createUpload("journal_resumes", ['pdf'])
 // @route   GET /api/jobs
 // @desc    Get all active jobs (internal + external)
 router.get("/", async (req, res) => {
