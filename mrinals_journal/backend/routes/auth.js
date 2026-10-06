@@ -3,20 +3,16 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const router = express.Router();
-const isProduction = process.env.NODE_ENV === "production";
-const validate = require("../middleware/validate")
+const validate = require("../middleware/validate");
 const {
   registerSchema,
   loginSchema,
   demoLoginSchema
-} = require("../schema/authSchema")
+} = require("../schema/authSchema");
+const { issueTokens, cookieOptions } = require("../utils/issueTokens");
 
-// Helper for cookie options
-const cookieOptions = {
-  httpOnly: true,
-  sameSite: isProduction ? "none" : "lax",
-  secure: isProduction,
-};
+
+
 
 // ================== REGISTER ==================
 router.post("/register", validate(registerSchema), async (req, res) => {
@@ -52,27 +48,7 @@ router.post("/login", validate(loginSchema), async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const accessToken = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "15m",
-      },
-    );
-    const refreshToken = jwt.sign(
-      { id: user._id },
-      process.env.REFRESH_SECRET,
-      { expiresIn: "7d" },
-    );
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    res.cookie("token", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, {
-      ...cookieOptions,
-      path: "/api/auth/refresh-token",
-    });
+    await issueTokens(res, user);
 
     const userResponse = await User.findById(user._id).select("-password");
     res.status(200).json({
@@ -106,25 +82,7 @@ router.post("/demo-login", validate(demoLoginSchema), async (req, res) => {
       });
     }
 
-    const accessToken = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "15m" },
-    );
-    const refreshToken = jwt.sign(
-      { id: user._id },
-      process.env.REFRESH_SECRET,
-      { expiresIn: "7d" },
-    );
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    res.cookie("token", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, {
-      ...cookieOptions,
-      path: "/api/auth/refresh-token",
-    });
+    await issueTokens(res, user);
 
     const userResponse = await User.findById(user._id).select("-password");
     res.status(200).json({
