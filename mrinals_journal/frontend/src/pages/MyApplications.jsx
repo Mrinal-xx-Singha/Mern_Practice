@@ -1,44 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import axios from "axios"
+import React from 'react'
 import { API_BASE_URL } from "../config/api"
 import { Briefcase, Download, MapPin, Calendar, ExternalLink } from "lucide-react"
 import { Link } from "react-router-dom"
+import { getStatusBadge } from "../utils/badges"
+import { useApplications } from "../hooks/useApplications"
 
 const MyApplications = () => {
-    const [applications, setApplications] = useState([])
-    const [loading, setLoading] = useState(true)
-
-
-    useEffect(() => {
-        const fetchApplications = async () => {
-            try {
-                const { data } = await axios.get(`${API_BASE_URL}/api/jobs/my-applications`, {
-                    withCredentials: true,
-                })
-                setApplications(data)
-            } catch (error) {
-                console.error("Failed to load applications", error)
-
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchApplications()
-    }, [])
-
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case 'accepted':
-                return { label: "Accepted", color: "#059669", bg: "#d1fae5" }
-            case 'reviewed':
-                return { label: "Reviewed", color: "#2563eb", bg: "#dbeafe" }
-            case "rejected":
-                return { label: "Rejected", color: "#dc2626", bg: "#fee2e2" }
-            case "pending":
-            default:
-                return { label: 'Pending', color: "#d97706", bg: "#fef3c7" }
-        }
-    }
+    const { applications, loading } = useApplications(`${API_BASE_URL}/api/jobs/my-applications`);
 
     if (loading) {
         return (

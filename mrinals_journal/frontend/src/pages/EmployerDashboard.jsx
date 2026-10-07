@@ -1,32 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { API_BASE_URL } from '../config/api'
 import { Download, Loader2, Sparkles } from "lucide-react";
 import axios from "axios"
 import toast from "react-hot-toast"
+import { getScoreBadge } from "../utils/badges";
+import { useApplications } from "../hooks/useApplications";
 
 
 const EmployerDashboard = () => {
-    const [applications, setApplications] = useState([])
+    const { applications, setApplications, loading } = useApplications(`${API_BASE_URL}/api/jobs/employer/applications`);
     const [analizingId, setAnalyzingId] = useState(null)
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        const fetchApplications = async () => {
-            try {
-                const { data } = await axios.get(`${API_BASE_URL}/api/jobs/employer/applications`, {
-                    withCredentials: true
-                })
-                setApplications(data)
-
-            } catch (error) {
-                console.error("Failed to load applications", error)
-
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchApplications()
-    }, [])
 
     const handleAnalyze = async (applicationId) => {
         setAnalyzingId(applicationId)
@@ -38,7 +21,6 @@ const EmployerDashboard = () => {
                 { applicationId },
                 { withCredentials: true }
             )
-            // Update local state so score renders instantly
             setApplications((prev) => prev.map((app) => app._id === applicationId ? { ...app, matchScore: data.matchScore, matchSummary: data.matchSummary } : app))
 
             toast.success("Resume analyzed!", { id: loadingToast })
@@ -66,16 +48,6 @@ const EmployerDashboard = () => {
 
         }
     }
-
-    const getScoreBadge = score => {
-        if (score >= 80) return { label: "Great Match", color: "#16a34a", bg: "#dcfce7" }
-
-        if (score >= 60) return { label: "Good Match", color: "#ca8a04", bg: "#fef9c3" }
-
-        return { label: "Weak Match", color: "#dc2626", bg: "#fee2e2" }
-    }
-
-    if (loading) return <div className='text-center py-20'>Loading candidates</div>
 
     return (
         <div className='mx-auto py-12 px-6 min-h-screen '

@@ -26,6 +26,12 @@ import MyApplications from "./pages/MyApplications";
 
 
 
+const ProtectedPage = ({ children }) => (
+  <PrivateRoute>
+    <PageTransition>{children}</PageTransition>
+  </PrivateRoute>
+);
+
 const App = () => {
   const { user, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -67,100 +73,17 @@ const App = () => {
               <PageTransition>
                 <LandingPage />
               </PageTransition>
-
             }
           />
-          <Route 
-          path="/my-applications"
-          element={
-            <PrivateRoute>
-              <PageTransition>
-              <MyApplications />
-              </PageTransition>
-            </PrivateRoute>
-          }
-          />
-
-          {/* protected feed, visible only after login  */}
-          <Route
-            path="/feed"
-            element={
-              <PrivateRoute>
-                <PageTransition>
-                  <PostList />
-                </PageTransition>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/create"
-            element={
-              <PrivateRoute>
-                <PageTransition>
-                  <CreatePost />
-                </PageTransition>
-              </PrivateRoute>
-            }
-          />
-          <Route path="/jobs/create" element={
-            <PrivateRoute>
-              <PageTransition>
-                <CreateJob />
-              </PageTransition>
-            </PrivateRoute>
-          } />
-          <Route
-            path="/jobs"
-            element={
-              <PrivateRoute>
-                <PageTransition>
-                  <Jobs />
-                </PageTransition>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/jobs/:id"
-            element={
-              <PrivateRoute>
-                <PageTransition>
-                  <JobDetails />
-                </PageTransition>
-              </PrivateRoute>
-
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <PageTransition>
-
-                  <Profile />
-                </PageTransition>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/bookmarks"
-            element={
-              <PrivateRoute>
-                <PageTransition>
-                  <Bookmarks />
-                </PageTransition>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/edit/:id"
-            element={
-              <PrivateRoute>
-                <PageTransition>
-                  <EditPost />
-                </PageTransition>
-              </PrivateRoute>
-            }
-          />
+          <Route path="/my-applications" element={<ProtectedPage><MyApplications /></ProtectedPage>} />
+          <Route path="/feed" element={<ProtectedPage><PostList /></ProtectedPage>} />
+          <Route path="/create" element={<ProtectedPage><CreatePost /></ProtectedPage>} />
+          <Route path="/jobs/create" element={<ProtectedPage><CreateJob /></ProtectedPage>} />
+          <Route path="/jobs" element={<ProtectedPage><Jobs /></ProtectedPage>} />
+          <Route path="/jobs/:id" element={<ProtectedPage><JobDetails /></ProtectedPage>} />
+          <Route path="/profile" element={<ProtectedPage><Profile /></ProtectedPage>} />
+          <Route path="/bookmarks" element={<ProtectedPage><Bookmarks /></ProtectedPage>} />
+          <Route path="/edit/:id" element={<ProtectedPage><EditPost /></ProtectedPage>} />
           <Route path="/posts/:id" element={<PostDetails />} />
           <Route
             path="/admin"
@@ -172,14 +95,7 @@ const App = () => {
               </AdminRoute>
             }
           />
-          <Route
-            path="/employer/dashboard"
-            element={<PrivateRoute>
-              <PageTransition>
-                <EmployerDashboard />
-              </PageTransition>
-            </PrivateRoute>}
-          />
+          <Route path="/employer/dashboard" element={<ProtectedPage><EmployerDashboard /></ProtectedPage>} />
           <Route
             path="/login"
             element={!user ?
