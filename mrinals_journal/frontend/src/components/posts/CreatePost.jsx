@@ -6,7 +6,9 @@ import toast from "react-hot-toast";
 import { ImagePlus, X, Sparkles } from "lucide-react";
 import axios from "axios";
 import { API_BASE_URL } from "../../config/api";
-import MDEditor from "@uiw/react-md-editor"
+import MDEditor from "@uiw/react-md-editor";
+import { useImageUpload } from "../../hooks/useImageUpload";
+import PostMetaFields from "./PostMetaFields";
 
 const CreatePost = () => {
   const [form, setForm] = useState({
@@ -16,23 +18,10 @@ const CreatePost = () => {
     category: "",
   });
 
-  const [images, setImages] = useState([]);
-  const [previews, setPreviews] = useState([]);
-  const [isAiLoading, setIsAiLoading] = useState(false)
+  const { images, previews, handleImageChange, removeImage } = useImageUpload();
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImages(files);
-    const previewUrls = files.map((file) => URL.createObjectURL(file));
-    setPreviews(previewUrls);
-  };
-
-  const removeImage = (index) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-    setPreviews((prev) => prev.filter((_, i) => i !== index));
-  };
   const handleAIEnhance = async (action) => {
     if (!form.content) {
 
@@ -220,39 +209,7 @@ const CreatePost = () => {
           className="pt-6"
           style={{ borderTop: "1px solid var(--color-border)" }}
         >
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="flex-1">
-              <label
-                className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                style={{ color: "var(--color-text-muted)" }}
-              >
-                Category
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Web Development"
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                required
-                className="input-clean text-sm"
-              />
-            </div>
-            <div className="flex-1">
-              <label
-                className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                style={{ color: "var(--color-text-muted)" }}
-              >
-                Tags (comma separated)
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. react, javascript"
-                value={form.tags}
-                onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                className="input-clean text-sm"
-              />
-            </div>
-          </div>
+          <PostMetaFields form={form} setForm={setForm} requiredCategory />
 
           <div className="flex items-center justify-between">
             <label
