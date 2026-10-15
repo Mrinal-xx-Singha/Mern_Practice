@@ -1,0 +1,139 @@
+const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+const User = require("../models/User")
+const { issueTokens, cookieOptions } = require("../utils/issueTokens")
+
+// @desc Register a new user 
+// @route POST /api/auth/register
+exports.register = async (req, res) => {
+    const { username, email, password, role } = req.body;
+
+    try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: "User already exists" });
+        }
+
+        const hashed = await bcrypt.hash(password, 10);
+        const user = await User.create({
+            username,
+            email,
+            password: hashed,
+            role: role || "user",
+        });
+        res.status(201).json({ message: "User saved successfully", user });
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const user = await User.findOne({ email })
+
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ error: "Invalid credentials" })
+        }
+        await issueTokens(res, user)
+
+        const userResponse = await User.findById(user._id).select("-password")
+        res.status(200).json({
+            message: "Logged in successfully",
+            user: userResponse
+        })
+
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" })
+
+    }
+}
+
+// @desc Instant demo login fro testing/recreating review
+// @route POST /api/auth/demo-login
+
+exports.demoLogin = async (req, res) => {
+    try {
+        const { role } = req.body
+        const targetRole = role === "admin" ? "admin" : role === "employer" ? "employer" : "user"
+        const email = targetRole === "admin" ? "admin@writely.com" : "demo@writely.com"
+        const defaultUsername = targetRole === "admin" ? "Admin User" : "Demo Writer"
+
+        let user = await User.findOne({ email })
+        if (!user) {
+            const hashed = await bcrypt.hash("demo_password_secure_123!", 10)
+            user = await User.create({
+                username: defaultUsername,
+                email: email,
+                password: hashed,
+                role: targetRole,
+                bio: targetRole === "admin"
+                    ? "Official System Administrator for Writely."
+                    : "Tech enthusiast, passionate storyteller and full-stack explorer.",
+                avatar: targetRole === "admin"
+                    ? "https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff"
+                    : "https://ui-avatars.com/api/?name=Demo+Writer&background=10B981&color=fff",
+            })
+        }
+        await issueTokens(res, user)
+
+        const userResponse = await User.findById(user._id).select("-password")
+        res.status(200).json({
+            message: `Logged in as Demo ${targetRole.toUpperCase()} successfully`,
+            user: userResponse
+        })
+
+    } catch (error) {
+        console.error("Demo login error:", error);
+        res.status(500).json({ error: "Internal server error during demo login" });
+
+    }
+}
+
+
+// @desc Refresh access token
+// @route POST /api/auth/refresh-token
+
+exports.refreshToken = async (req, res) => {
+    const token = req.cookies.refreshToken
+    if (!token) return res.status(401).json({ error: "No refresh token" })
+    try {
+        const decoded = jwt.verify(token, process.env.REFRESH_SECRET)
+        const user = await User.findById(decoded.id)
+        if (!user || user.refreshToken !== token) {
+            return res.status(403).json({ error: "Invalid refresh token" })
+        }
+        const newAccessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "15m" })
+
+        res.cookie("token", newAccessToken, cookieOptions)
+        res.json({ message: "Access token refreshed" })
+
+    } catch (error) {
+        res.status(403).json({ error: "Token verification failed" })
+    }
+
+}
+
+// @desc Logout user & clear cookies
+// @route POST /api/auth/logout
+
+
+
+exports.logout = async (req, res) => {
+    const token = req.cookies.refreshToken
+    const user = await User.findOne({ refreshToken: token })
+
+    if (user) {
+        user.refreshToken = null
+        await user.save()
+    }
+
+    res.clearCookie("refreshToken", {
+        ...cookieOptions,
+        path: "/api/auth/refresh-token"
+    })
+
+    res.clearCookie("token", cookieOptions)
+
+    res.json({ message: "Logged out successfully" })
+}
