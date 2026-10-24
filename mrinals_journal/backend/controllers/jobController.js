@@ -1,6 +1,7 @@
 const Job = require("../models/Job");
 const Application = require("../models/Application");
 const { scrapeWWRJobs } = require("../services/scraper");
+const createNotification = require("../utils/createNotification");
 
 // @desc    Get all active jobs (internal + external)
 // @route   GET /api/jobs
@@ -47,6 +48,17 @@ exports.applyJob = async (req, res) => {
         });
 
         await application.save();
+
+        // Notify the job poster (employer) that a new application arrived
+        // Fire-and-forget — no await, so a notification failure won't break the response
+        createNotification({
+            recipient: job.postedBy,
+            sender: req.user.id,
+            type: "new_application",
+            message: `Someone applied to your job: "${job.title}"`,
+            link: `/employer/applications`,
+        });
+
         res.status(201).json(application);
     } catch (err) {
         console.error(err);
@@ -104,7 +116,7 @@ exports.getMyApplications = async (req, res) => {
 exports.updateApplicationStatus = async (req, res) => {
     try {
         const { status } = req.body;
-        const application = await Application.findById(req.params.id).populate("job", "postedBy");
+        const application = await Application.findById(req.params.id).populate("job", "postedBy title");
 
         if (!application) {
             return res.status(404).json({ error: "Application not found" });
@@ -121,6 +133,15 @@ exports.updateApplicationStatus = async (req, res) => {
 
         application.status = status;
         await application.save();
+
+        // Notify the applicant that their application status changed
+        createNotification({
+            recipient: application.applicant,
+            sender: req.user.id,
+            type: "application_update",
+            message: `Your application for "${application.job?.title}" was marked as "${status}"`,
+            link: `/my-applications`,
+        });
 
         res.json({ message: "Status updated successfully", application });
     } catch (err) {

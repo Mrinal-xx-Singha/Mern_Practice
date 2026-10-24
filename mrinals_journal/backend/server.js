@@ -11,6 +11,7 @@ const jobRoutes = require("./routes/jobs")
 const User = require("./models/User");
 const auth = require("./middleware/auth");
 const adminRoutes = require("./routes/admin");
+const notificationRoutes = require("./routes/notifications");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
@@ -106,6 +107,7 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/ai", aiRoutes)
 app.use("/api/jobs", jobRoutes)
+app.use("/api/notifications", notificationRoutes)
 
 app.get("/api/protected", auth, async (req, res) => {
   try {

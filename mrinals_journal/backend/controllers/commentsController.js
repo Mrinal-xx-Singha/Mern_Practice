@@ -1,6 +1,7 @@
 const Comment = require("../models/Comment")
 const buildNestedComments = require("../utils/buildNestedComments")
 const Post = require("../models/Post")
+const createNotification = require("../utils/createNotification")
 
 exports.addComment = async (req, res) => {
     const { content, parentId } = req.body;
@@ -17,6 +18,16 @@ exports.addComment = async (req, res) => {
         });
 
         const savedComment = await newComment.save();
+
+        // Notify the post author when someone else comments
+        // parentId means it's a reply — still notify the post author (not the parent commenter, for now)
+        createNotification({
+            recipient: post.author,
+            sender: req.user.id,
+            type: "new_comment",
+            message: `Someone commented on your post: "${post.title}"`,
+            link: `/posts/${post._id}`,
+        });
 
         if (parentId) {
             await Comment.findByIdAndUpdate(parentId, {

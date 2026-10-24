@@ -2,6 +2,7 @@
 
 const Post = require("../models/Post");
 const User = require("../models/User");
+const createNotification = require("../utils/createNotification");
 
 exports.createPosts = async (req, res) => {
     try {
@@ -217,6 +218,17 @@ exports.bookmarkArticle = async (req, res) => {
         }
 
         await Promise.all([user.save(), post.save()]);
+
+        // Only notify when bookmarking, not when removing
+        if (!isBookmarked) {
+            createNotification({
+                recipient: post.author,
+                sender: userId,
+                type: "post_bookmarked",
+                message: `Someone bookmarked your post: "${post.title}"`,
+                link: `/posts/${post._id}`,
+            });
+        }
 
         res.json({
             message: isBookmarked ? "Removed from bookmarks" : "Post bookmarked",
