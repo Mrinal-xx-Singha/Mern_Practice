@@ -7,9 +7,6 @@ const createJobSchema = z.object({
     description: z.string({ error: "Job description is required" }).trim().min(10, "Job description must be at least 10 characters"),
 
     salaryRange: z.string().trim().default("Not specified").optional()
-
-
-
 })
 
 // Schema for updating an application's status
