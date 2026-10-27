@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/slices/authSlice";
 import { PenLine, User, LogOut, Menu, X, ShieldCheck, Briefcase } from "lucide-react";
 import toast from "react-hot-toast";
+import NotificationBell from "./ui/NotificationBell";
 
 const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
@@ -93,6 +94,7 @@ const Navbar = () => {
                 </Link>
               )}
 
+              <NotificationBell />
 
               <Link to="/profile" className="flex items-center gap-2 ml-1">
                 <img
