@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../../config/api.js";
+import { timeAgo } from "../../utils/timeAgo.js";
 
 const API_BOOKMARKS_URL = `${API_BASE_URL}/api/posts/bookmarks`;
 
@@ -97,11 +98,7 @@ const Bookmarks = () => {
                     <span>{post.author?.username}</span>
                     <span>·</span>
                     <span>
-                      {new Date(post.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {timeAgo(post.createdAt)}
                     </span>
                   </div>
                 </Link>

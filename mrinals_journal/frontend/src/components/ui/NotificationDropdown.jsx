@@ -2,6 +2,7 @@
 import React from 'react'
 import { X, CheckCheck, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { timeAgo } from '../../utils/timeAgo'
 
 
 const Type_Labels = {
@@ -95,7 +96,7 @@ const NotificationDropdown = ({ items, onMarkAllRead, onMarkOne, onDelete, onClo
                                     className='text-xs mt-1'
                                     style={{ color: "var(--color-text-muted)" }}
                                 >
-                                    {new Date(notif.createdAt).toLocaleDateString()}
+                                    {timeAgo(notif.createdAt)}
                                 </p>
 
 

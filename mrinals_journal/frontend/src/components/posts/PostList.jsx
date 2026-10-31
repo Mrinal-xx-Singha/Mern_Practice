@@ -4,6 +4,7 @@ import { fetchPosts } from "../../redux/slices/postSlice";
 import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { PenLine, Search, X } from "lucide-react";
+import { timeAgo } from "../../utils/timeAgo";
 
 const PostList = () => {
   const dispatch = useDispatch();
@@ -66,11 +67,7 @@ const PostList = () => {
   };
 
   const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    return timeAgo(dateStr)
   };
 
   const getReadTime = (content) => {
