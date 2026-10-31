@@ -5,6 +5,7 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { getScoreBadge } from "../utils/badges";
 import { useApplications } from "../hooks/useApplications";
+import { timeAgo } from '../utils/timeAgo';
 
 
 const EmployerDashboard = () => {
@@ -90,7 +91,7 @@ const EmployerDashboard = () => {
                                             {app.job?.title || "Deleted Job"}
                                         </td>
                                         <td className="p-4 text-sm">
-                                            {new Date(app.createdAt).toLocaleDateString()}
+                                            {timeAgo(app.createdAt)}
                                         </td>
                                         <td className="p-4 text-center">
                                             {analizingId === app._id ? (
