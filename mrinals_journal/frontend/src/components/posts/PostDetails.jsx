@@ -6,6 +6,8 @@ import { Trash2, Edit, Eye, Bookmark } from "lucide-react";
 import MarkdownRenderer from "../MarkdownRenderer";
 import MoreFromAuthor from "../MoreFromAuthor";
 import CommonItem from "../CommonItem";
+import { Clock } from "lucide-react"
+import { getReadingTime } from "../../utils/readingTime"
 
 import {
   getPostById,
@@ -71,20 +73,20 @@ const PostDetails = () => {
     }
   }, [post, user]);
 
-  useEffect(()=>{
-    const currentPostId = id 
-    const viewedPosts =JSON.parse(localStorage.getItem("viewedPosts")) || []
+  useEffect(() => {
+    const currentPostId = id
+    const viewedPosts = JSON.parse(localStorage.getItem("viewedPosts")) || []
 
 
-    if(!viewedPosts.includes(currentPostId)){
+    if (!viewedPosts.includes(currentPostId)) {
       dispatch(incrementViewCount(currentPostId))
 
       viewedPosts.push(currentPostId)
-      localStorage.setItem('viewedPosts',JSON.stringify(viewedPosts))
+      localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts))
 
     }
 
-  },[dispatch,id])
+  }, [dispatch, id])
 
   const handleReact = async (emoji) => {
     try {
@@ -205,10 +207,21 @@ const PostDetails = () => {
           {postDate}
         </p>
       </div>
-      <div className="flex justify-center items-center gap-2 mt-3">
+      <div className="flex justify-center items-center gap-4 mt-3">
+
+        {/* Reading Time */}
+        <p className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+          <Clock size={15} /> {getReadingTime(post.content)}
+        </p>
+
+
+        {/* Views */}
         <p className="flex justify-center items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
           <Eye size={16} /> {post.views ?? 0} views
         </p>
+
+        {/* Bookmark */}
+        
         <button
           onClick={handleBookmark}
           className="flex justify-center items-center gap-2 text-xs text-gray-500 dark:text-gray-400 hover:text-green-600 cursor-pointer transition-colors"
@@ -248,9 +261,8 @@ const PostDetails = () => {
             key={emoji}
             onClick={() => handleReact(emoji)}
             aria-label={`React with ${emoji}`}
-            className={`text-2xl transition-transform hover:scale-110 focus:outline-none rounded ${
-              userReaction === emoji ? "scale-125" : ""
-            }`}
+            className={`text-2xl transition-transform hover:scale-110 focus:outline-none rounded ${userReaction === emoji ? "scale-125" : ""
+              }`}
           >
             {emoji}
             <span className="text-sm">{reactionCounts[emoji] ?? 0}</span>
