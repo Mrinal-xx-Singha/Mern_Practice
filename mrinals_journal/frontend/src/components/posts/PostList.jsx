@@ -5,6 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { PenLine, Search, X } from "lucide-react";
 import { timeAgo } from "../../utils/timeAgo";
+import { getReadingTime } from "../../utils/readingTime";
 
 const PostList = () => {
   const dispatch = useDispatch();
@@ -70,10 +71,7 @@ const PostList = () => {
     return timeAgo(dateStr)
   };
 
-  const getReadTime = (content) => {
-    const words = content?.split(/\s+/).length || 0;
-    return Math.max(1, Math.ceil(words / 200));
-  };
+
   return (
     <div
       className="mx-auto pt-4 sm:pt-8 pb-16 px-4 sm:px-6 min-h-screen"
@@ -112,9 +110,8 @@ const PostList = () => {
 
       {/* Filters - collapsible */}
       <div
-        className={`overflow-hidden transition-all duration-300 ${
-          filtersOpen ? "max-h-[200px] mb-8" : "max-h-0"
-        }`}
+        className={`overflow-hidden transition-all duration-300 ${filtersOpen ? "max-h-[200px] mb-8" : "max-h-0"
+          }`}
       >
         <div
           className="flex flex-col sm:flex-row gap-3 p-4 rounded-lg"
@@ -262,7 +259,7 @@ const PostList = () => {
                       className="text-xs"
                       style={{ color: "var(--color-text-muted)" }}
                     >
-                      {getReadTime(post.content)} min read
+                      {getReadingTime(post.content)}
                     </span>
                   </div>
                 </div>
