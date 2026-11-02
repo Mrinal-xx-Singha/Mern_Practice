@@ -6,6 +6,9 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import store from "./redux/store.js";
 import { Toaster } from "react-hot-toast";
+import { setupAxiosInterceptors } from "./services/setupAxiosInterceptor.js";
+
+setupAxiosInterceptors(store)
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
