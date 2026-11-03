@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
-import { Trash2, Edit, Eye, Bookmark } from "lucide-react";
+import { Trash2, Edit, Eye, Bookmark, Share2 } from "lucide-react";
 import MarkdownRenderer from "../MarkdownRenderer";
 import MoreFromAuthor from "../MoreFromAuthor";
 import CommonItem from "../CommonItem";
@@ -185,6 +185,32 @@ const PostDetails = () => {
       toast.error("Failed to update bookmark");
     }
   };
+  // Handle Share 
+  const handleShare = async () => {
+    const shareData = {
+      title: post.title,
+      text: `Read "${post.title}" on writely`,
+      url: window.location.href
+    }
+    // Try native mobile/os Share sheet
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData)
+        return
+      } catch (error) {
+        // User canceled the share dialog -dont show an error
+        if (error.name === "AbortError") return
+      }
+    }
+
+    // Fallback: Copy URL to clipboard
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      toast.success("Link coppied to clipboard! ")
+    } catch (error) {
+      toast.error("Failed to copy link")
+    }
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
@@ -221,7 +247,7 @@ const PostDetails = () => {
         </p>
 
         {/* Bookmark */}
-        
+
         <button
           onClick={handleBookmark}
           className="flex justify-center items-center gap-2 text-xs text-gray-500 dark:text-gray-400 hover:text-green-600 cursor-pointer transition-colors"
@@ -232,6 +258,17 @@ const PostDetails = () => {
             className={isBookmarked ? "text-green-600" : ""}
           />{" "}
           {post.bookmarks?.length || 0} bookmarks
+        </button>
+        {/* Share button */}
+        <button
+          onClick={handleShare}
+          className="flex justify-center items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-blue-500 cursor-pointer transition-colors"
+          title="Share this article"
+        >
+          <Share2
+            size={16}
+          />
+          <span>Share</span>
         </button>
       </div>
 
