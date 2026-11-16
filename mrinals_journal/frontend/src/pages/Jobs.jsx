@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchJobs } from "../redux/slices/jobSlice";
-import { Briefcase, MapPin, ExternalLink } from "lucide-react";
+import { Briefcase, MapPin, ExternalLink, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
 import ApplyModal from "../components/jobs/ApplyModal";
 import { Link } from "react-router-dom";
@@ -120,10 +120,11 @@ const Jobs = () => {
             <button
               onClick={handleScrapeJobs}
               disabled={isScraping}
-              className="px-5 py-2.5 rounded-full text-sm font-medium border border-[var(--color-border)] hover:bg-[var(--color-bg-subtle)] transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium border border-[var(--color-border)] hover:bg-[var(--color-bg-subtle)] transition-all disabled:opacity-50 cursor-pointer"
               style={{ color: "var(--color-text)" }}
             >
-              {isScraping ? "Scraping Web..." : "🔄 Sync Jobs"}
+              <RefreshCw size={14} className={isScraping ? "animate-spin" : ""} />
+              <span>{isScraping ? "Syncing..." : "Sync Remote Jobs"}</span>
             </button>
           )}
 
