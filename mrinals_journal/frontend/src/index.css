@@ -6,28 +6,28 @@
    ======================== */
 
 :root {
-  /* Linear / Vercel Light Palette */
+  /* Linear / Vercel Light Palette (Default) */
   --color-bg: #ffffff;
   --color-bg-subtle: #f4f4f5;       /* Zinc 100 */
   --color-bg-card: #ffffff;
   --color-bg-landing: #fafafa;
-  --color-border: #e4e4e7;          /* Zinc 200 - crisp, modern dividers */
+  --color-border: #e4e4e7;          /* Zinc 200 */
   --color-border-landing: #e4e4e7;
-  --color-text: #09090b;            /* Zinc 950 - deep ink black */
+  --color-text: #09090b;            /* Zinc 950 */
   --color-text-secondary: #52525b;  /* Zinc 600 */
   --color-text-muted: #a1a1aa;      /* Zinc 400 */
 
-  /* Electric Indigo / Violet Accent */
+  /* Electric Indigo Accent */
   --color-accent: #6366f1;          /* Indigo 500 */
   --color-accent-hover: #4f46e5;    /* Indigo 600 */
-  --color-accent-subtle: #eef2ff;   /* Soft indigo badge tint */
+  --color-accent-subtle: #eef2ff;   /* Soft indigo tint */
 
   --color-danger: #ef4444;
   --color-btn-invert-bg: #09090b;
   --color-btn-invert-text: #ffffff;
   --color-skeleton: #f4f4f5;
 
-  /* Modern Sans & Mono Typography */
+  /* Typography & Layout */
   --font-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
@@ -36,6 +36,29 @@
   --max-width-page: 1200px;
 }
 
+/* Vercel Obsidian Dark Palette (Active when .dark class is on <html>) */
+:root.dark,
+.dark {
+  --color-bg: #09090b;            /* Deep OLED Zinc Black */
+  --color-bg-subtle: #141418;     /* Elevated card surface */
+  --color-bg-card: #111113;       /* High-contrast dark card */
+  --color-bg-landing: #09090b;
+  --color-border: #27272a;        /* Zinc 800 */
+  --color-border-landing: #27272a;
+  --color-text: #f4f4f5;          /* Crisp white */
+  --color-text-secondary: #a1a1aa;/* Zinc 400 */
+  --color-text-muted: #71717a;    /* Zinc 500 */
+
+  /* Glowing Indigo Accent */
+  --color-accent: #818cf8;        /* Indigo 400 */
+  --color-accent-hover: #6366f1;  /* Indigo 500 */
+  --color-accent-subtle: #1e1b4b; /* Dark indigo badge */
+
+  --color-danger: #f87171;
+  --color-btn-invert-bg: #f4f4f5;
+  --color-btn-invert-text: #09090b;
+  --color-skeleton: #27272a;
+}
 @media (prefers-color-scheme: dark) {
   :root {
     /* Vercel Obsidian Dark Palette */
