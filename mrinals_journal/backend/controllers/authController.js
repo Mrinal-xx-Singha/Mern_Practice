@@ -21,7 +21,10 @@ exports.register = async (req, res) => {
             password: hashed,
             role: role || "user",
         });
-        res.status(201).json({ message: "User saved successfully", user });
+        const userResponse = user.toObject()
+        delete userResponse.password
+
+        res.status(201).json({ message: "User saved successfully", user: userResponse });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }

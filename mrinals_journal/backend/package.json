@@ -10,6 +10,13 @@
     "seed:destroy": "node seed.js -d",
     "seed:users": "node seed/users.js"
   },
+  "jest":{
+    "testEnvironment":"node",
+    "setupFilesAfterEnv":[
+      "<rootDir>/tests/setup.js"
+
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
